@@ -1,0 +1,29 @@
+<site:top title="Login"/>
+<p>
+<:if test="isset(${data.status})">
+<header:status value="${data.status}"/>
+</:if>
+</p>
+<form action="" method="POST">
+    Username: <input type="text" name="username" required/><br/>
+    Password: <input type="password" name="password" required/><br/>
+    <input type="checkbox" name="remember_me" value="1" checked/> Remember me<br/>
+    <input type="hidden" name="csrf" value="${data.csrf}"/>
+    <input type="submit" value="LOGIN"/>
+</form>
+<p>
+    Use username '<i>john</i>' and password '<i>doe</i>' to login!
+</p>
+
+<p><a href="/">Back to HOME!</a></p>
+<hr/>
+<small>
+	Details for this page:
+	<ul>
+		<li><strong>controller</strong>: application/controllers/LoginController.php</li>
+		<li><strong>model</strong>: application/listeners/SecurityListener.php</li>
+		<li><strong>view</strong>: application/views/login.html</li>
+		<li><strong>route @ stdout.xml</strong>: &lt;route url="login" controller="LoginController" view="login" ... /&gt;</li>
+	</ul>
+</small>
+<site:bottom/>

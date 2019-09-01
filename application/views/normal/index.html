@@ -1,0 +1,107 @@
+<site:top title="Welcome to Lucinda Framework!"/>
+
+<:if test="isset(${data.status})">
+<header:status value="${data.status}"/>
+</:if>
+
+<p><strong>Welcome to Lucinda Framework!</strong> Here are features you've chosen to install and those you may want to install manually later on:</p>
+<table>
+    <thead>
+    <tr>
+        <th align="left">Feature</th>
+        <th align="left">Guide</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Site name</td>
+        <td>Name of your site is <i>${data.features.siteName}</i>, which results into domain name <i>www.${data.features.siteName}.local</i>. </td>
+    </tr>
+    <tr>
+        <td>Document root</td>
+        <td>Absolute location on disk of your project on server is: <i>${data.features.documentRoot}/${data.features.siteName}</i>.</td>
+    </tr>
+    <tr>
+        <td>Site type</td>
+        <td>
+            This is a <i>normal</i> public site outputting HTML by default, able to output JSON as well via AJAX requests.
+        </td>
+    </tr>
+    <tr>
+        <td>MVC</td>
+        <td>
+        	MVC is always <strong class="enabled">enabled</strong>! To learn more about framework and how to create controllers/models/views, follow <a href="http://www.lucinda-framework.com/tutorials" target="_blank">this guide</a>!
+        </td>
+    </tr>
+    <tr>
+        <td>Error Handling</td>
+        <td>
+        	Error handling is always <strong class="enabled">enabled</strong>! To learn more how errors are logged automatically into a file able to rotate, follow <a href="http://www.lucinda-framework.com/framework-skeleton/stderr/xml#reporters" target="_blank">this doc</a>!
+        </td>
+    </tr>
+    <tr>
+        <td>Logging</td>
+        <td>
+        	<site:feature name="logging" status="${data.features.logging}" url_failure="http://www.lucinda-framework.com/tutorials/logging#setting_loggers" url_success="http://www.lucinda-framework.com/tutorials/logging#logging_messages"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Request Validation</td>
+        <td>
+        	<site:feature name="request validation" status="${data.features.validation}" url_failure="http://www.lucinda-framework.com/tutorials/request#setting_validation" url_success="http://www.lucinda-framework.com/tutorials/request#getting_validation"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Templating</td>
+        <td>
+        	<site:feature name="templating" status="${data.features.templating}" url_failure="http://www.lucinda-framework.com/tutorials/mvc#views" url_success="http://www.lucinda-framework.com/tutorials/mvc#views"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Internationalization & Localization</td>
+        <td>
+           <site:feature name="internationalization" status="${data.features.internationalization}" url_failure="http://www.lucinda-framework.com/tutorials/response#setting_internationalization" url_success="http://www.lucinda-framework.com/tutorials/response#performing_internationalization"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Caching</td>
+        <td>
+           <site:feature name="http caching" status="${data.features.caching}" url_failure="http://www.lucinda-framework.com/tutorials/response#setting_caching" url_success="http://www.lucinda-framework.com/framework-skeleton/stdout/event-listeners#HttpCachingListener"/>
+        </td>
+    </tr>
+    <tr>
+        <td>SQL Servers Support</td>
+        <td>
+           <site:feature name="sql database support" status="${data.features.sqlServer}" url_failure="http://www.lucinda-framework.com/tutorials/sql#setting_sql_databases" url_success="http://www.lucinda-framework.com/tutorials/sql#querying_sql"/>
+        </td>
+    </tr>
+    <tr>
+        <td>NoSQL Servers Support</td>
+        <td>
+           <site:feature name="nosql database support" status="${data.features.nosqlServer}" url_failure="http://www.lucinda-framework.com/tutorials/nosql#setting_nosql_databases" url_success="http://www.lucinda-framework.com/tutorials/nosql#querying_nosql"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Authentication & Authorization</td>
+        <td>
+           <site:feature name="web security" status="${data.features.security}" url_failure="http://www.lucinda-framework.com/tutorials/security#setting_security" url_success="http://www.lucinda-framework.com/tutorials/security#authentication"/>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot></tfoot>
+</table>
+<p>
+<:if test="${data.features.security}">
+To access user area, go to <a href="/members">members</a> page!
+</:if>
+</p>
+<hr/>
+<small>
+	Details for this page:
+	<ul>
+		<li><strong>controller</strong>: application/controllers/IndexController.php</li>
+		<li><strong>view</strong>: application/views/index.html</li>
+		<li><strong>route @ stdout.xml</strong>: &lt;route url="index" controller="IndexController" view="index" ... /&gt;</li>
+	</ul>
+</small>
+<site:bottom/>

@@ -1,0 +1,20 @@
+<:if test="$[value]">
+    <p class="status">
+    <:if test="$[value]=='logout_ok'">
+    You have logged out successfully!
+    <:elseif test="$[value]=='logout_failed'">
+    You can only log out if you are logged in!
+    <:elseif test="$[value]=='forbidden'">
+    You are not allowed to access page requested!
+    <:elseif test="$[value]=='not_found'">
+    No authorization policy was set for page requested!
+    <:elseif test="$[value]=='unauthorized'">
+    You must be logged in to access page requested!
+    <:elseif test="$[value]=='login_ok'">
+    You have logged in successfully!
+    <:elseif test="$[value]=='login_failed'">
+    Username or password are wrong!
+    <:else>
+    </:if>
+    </p>
+</:if>
