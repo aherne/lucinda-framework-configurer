@@ -16,7 +16,7 @@ class WindowsApache2VirtualHost extends AbstractVirtualHost
         $baseDir = substr($this->documentRoot, 0, strrpos($this->documentRoot, "/"));
         $virtualHostFile = $this->locate($baseDir, "conf/extra/httpd-vhosts.conf");
         if (!$virtualHostFile) {
-            throw new Exception("Virtual host file could not be detected: httpd-vhosts.conf. Search for it manually and add following lines:\r\n".$this->getLines());
+            throw new \Exception("Virtual host file could not be detected: httpd-vhosts.conf. Search for it manually and add following lines:\r\n".$this->getLines());
         }
         return $virtualHostFile;
     }
@@ -44,7 +44,7 @@ class WindowsApache2VirtualHost extends AbstractVirtualHost
     {
         $contents = file_get_contents($virtualHostFile);
         if (strpos($contents, $this->hostName)!==false || strpos($contents, $this->documentRoot."/".$this->siteName)!==false) {
-            throw new Exception("Host is already configured");
+            throw new \Exception("Host is already configured");
         }
         file_put_contents($virtualHostFile, $contents."\r\n".$this->getLines());
     }
@@ -67,7 +67,7 @@ class WindowsApache2VirtualHost extends AbstractVirtualHost
         $baseDir = substr($this->documentRoot, 0, strrpos($this->documentRoot, "/"));
         $apacheLocation = $this->locate($baseDir, "httpd.exe");
         if (!$apacheLocation) {
-            throw new Exception("Web server could not be detected: httpd.exe. Please restart it manually!");
+            throw new \Exception("Web server could not be detected: httpd.exe. Please restart it manually!");
         }
         exec($apacheLocation." -k restart", $results);
         if (empty($results) || strpos($results[0], "error")!==false) {

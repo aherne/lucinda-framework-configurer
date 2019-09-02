@@ -63,7 +63,7 @@ class SQLInstallation
             }
         }
         if (!$found) {
-            throw new Exception("ERROR: User '".$this->features->sqlServer->user."' must have CREATE and DROP rights on '".$this->features->sqlServer->schema."' for tables to be installed!");
+            throw new \Exception("ERROR: User '".$this->features->sqlServer->user."' must have CREATE and DROP rights on '".$this->features->sqlServer->schema."' for tables to be installed!");
         }
         $this->pdo = $pdo;
     }

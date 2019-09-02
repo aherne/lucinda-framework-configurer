@@ -10,7 +10,7 @@ class StdoutXMLInstallation extends XMLInstallation
 {    
     protected function generateXML()
     {
-        $this->xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
+        $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
         $this->setApplicationTag();
         $this->setFormatsTag();
         $this->setListeners();

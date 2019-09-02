@@ -14,15 +14,15 @@ class MacApache2VirtualHost extends AbstractVirtualHost
     {
         $virtualHostsFile = "/etc/apache2/extra/httpd-vhosts.conf";
         if (!file_exists($virtualHostsFile)) {
-            throw new Exception("Virtual hosts file not found: ".$virtualHostsFile);
+            throw new \Exception("Virtual hosts file not found: ".$virtualHostsFile);
         }
         if (strpos(file_get_contents($virtualHostsFile), $this->documentRoot."/".$this->siteName)) {
-            throw new Exception("Site already installed");
+            throw new \Exception("Site already installed");
         }
         
         $apache2ConfigurationFile = "/etc/apache2/httpd.conf";
         if (!file_exists($apache2ConfigurationFile)) {
-            throw new Exception("Apache2 configuration file not found: ".$apache2ConfigurationFile);
+            throw new \Exception("Apache2 configuration file not found: ".$apache2ConfigurationFile);
         }
         $contents = file_get_contents($apache2ConfigurationFile);
         if (strpos($contents, "#LoadModule rewrite_module libexec/apache2/mod_rewrite.so")) {
@@ -32,7 +32,7 @@ class MacApache2VirtualHost extends AbstractVirtualHost
             $contents = str_replace($contents, "#LoadModule rewrite_module libexec/apache2/mod_env.so", "LoadModule rewrite_module libexec/apache2/mod_env.so");
         }
         if (!strpos($contents, "Include /etc/apache2/extra/httpd-vhosts.conf")) {
-            throw new Exception("Statement 'Include ".$virtualHostsFile."' not found in '".$apache2ConfigurationFile."'");
+            throw new \Exception("Statement 'Include ".$virtualHostsFile."' not found in '".$apache2ConfigurationFile."'");
         }
         
         return $virtualHostsFile;

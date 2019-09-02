@@ -44,7 +44,7 @@ class FeaturesSelection
      */
     private function getSiteType()
     {
-        return $this->prompt->singleSelect("[3/9] Choose your site type", array("normal", "CMS", "RESTful web services"), 0);
+        return $this->prompt->singleSelect("[1/7] Choose your site type", array("normal", "CMS", "RESTful web services"), 0);
     }
 
     /**
@@ -54,7 +54,7 @@ class FeaturesSelection
      */
     private function getLogging()
     {
-        return $this->prompt->singleSelect("[4/9] Do you want to use loggers", array("yes","no"), 0)=="yes";
+        return $this->prompt->singleSelect("[2/7] Do you want to use loggers", array("yes","no"), 0)=="yes";
     }
     
     /**
@@ -64,7 +64,7 @@ class FeaturesSelection
      */
     private function getValidation()
     {
-        return $this->prompt->singleSelect("[5/9] Do you want to use request/path parameters validation", array("yes","no"), 0)=="yes";
+        return $this->prompt->singleSelect("[3/7] Do you want to use request/path parameters validation", array("yes","no"), 0)=="yes";
     }
 
     /**
@@ -92,17 +92,17 @@ class FeaturesSelection
         if ($this->choices->siteType=="RESTful web services") {
             return false;
         }
-        $choice = $this->prompt->singleSelect("[6/9] Do you want to customize HTML output by user language", array("yes","no"), 1)=="yes";
+        $choice = $this->prompt->singleSelect("[4/7] Do you want to customize HTML output by user language", array("yes","no"), 1)=="yes";
         if (!$choice) {
             return false;
         }
         
-        $defaultLocale = $this->prompt->text("[6/9 1/2] Write default locale (lowercase ISO language followed by uppercase ISO country codes separated by underscore) your site will be using", "en_US", function ($result) {
+        $defaultLocale = $this->prompt->text("[4/7 1/2] Write default locale (lowercase ISO language followed by uppercase ISO country codes separated by underscore) your site will be using", "en_US", function ($result) {
             preg_match("/^([a-z]{2}_[A-Z]{2})$/", $result, $matches);
             return !empty($matches);
         });
         
-        $detectionMethod = $this->prompt->singleSelect("[6/9 2/2] Choose how user locale will be detected", ["request (via 'locale' query string param)", "session (via 'locale' query string param remembered in session)", "header (via 'Accept-Language' request header)"], 1);
+        $detectionMethod = $this->prompt->singleSelect("[4/7 2/2] Choose how user locale will be detected", ["request (via 'locale' query string param)", "session (via 'locale' query string param remembered in session)", "header (via 'Accept-Language' request header)"], 1);
         
         $features = new InternationalizationFeatures();
         $features->defaultLocale = $defaultLocale;
@@ -127,29 +127,29 @@ class FeaturesSelection
      */
     private function getSqlServer()
     {
-        $choice = $this->prompt->singleSelect("[7/9] Will your site use an SQL-type database (example: MySQL)", array("yes","no"), 0)=="yes";
+        $choice = $this->prompt->singleSelect("[5/7] Will your site use an SQL-type database (example: MySQL)", array("yes","no"), 0)=="yes";
         if (!$choice) {
             return false;
         }
         
-        $driverName = $this->prompt->text("[7/9 1/5] Write SQL vendor that will be used in connections", "mysql", function ($result) {
+        $driverName = $this->prompt->text("[5/7 1/5] Write SQL vendor that will be used in connections", "mysql", function ($result) {
             preg_match("/^([a-zA-Z0-9_\-]+)$/", $result, $matches1);
             return !empty($matches1);
         });
-        $hostName = $this->prompt->text("[7/9 2/5] Write SQL server hostname", "127.0.0.1", function ($result) {
+        $hostName = $this->prompt->text("[5/7 2/5] Write SQL server hostname", "127.0.0.1", function ($result) {
             preg_match(self::HOSTNAME_REGEX, $result, $matches1);
             preg_match(self::IP_REGEX, $result, $matches2);
             return !empty($matches1) || !empty($matches2);
         });
-        $schema = $this->prompt->text("[7/9 3/5] Write schema (database) your application will be installed to (NOTE: must exist already!)", null, function ($result) {
+        $schema = $this->prompt->text("[5/7 3/5] Write schema (database) your application will be installed to (NOTE: must exist already!)", null, function ($result) {
             preg_match("/^([0-9a-zA-Z_]+)$/", $result, $matches);
             return !empty($matches);
         });
-        $userName = $this->prompt->text("[7/9 4/5] Write database user name allowed to access that schema (NOTE: using root account is not recommended!)", "root", function ($result) {
+        $userName = $this->prompt->text("[5/7 4/5] Write database user name allowed to access that schema (NOTE: using root account is not recommended!)", "root", function ($result) {
             preg_match("/^([0-9a-zA-Z_]+)$/", $result, $matches);
             return !empty($matches);
         });
-        $userPassword = $this->prompt->text("[7/9 5/5] Write database user password allowed to access that schema (NOTE: using empty password is not recommended!)", "", function ($result) {
+        $userPassword = $this->prompt->text("[5/7 5/5] Write database user password allowed to access that schema (NOTE: using empty password is not recommended!)", "", function ($result) {
             return true; // any password is ok, including none
         });
         try {
@@ -176,13 +176,13 @@ class FeaturesSelection
      */
     private function getNosqlServer()
     {
-        $choice = $this->prompt->singleSelect("[8/9] Will your site use a NoSQL-type database (example: Redis)", array("yes","no"), 0)=="yes";
+        $choice = $this->prompt->singleSelect("[6/7] Will your site use a NoSQL-type database (example: Redis)", array("yes","no"), 0)=="yes";
         if (!$choice) {
             return false;
         }
         
         
-        $driverName = $this->prompt->singleSelect("[8/9 1/5] Choose NoSQL vendor that will be used in connections", array("apc","apcu","memcache","memcached","couchbase","redis"), null);
+        $driverName = $this->prompt->singleSelect("[6/7 1/5] Choose NoSQL vendor that will be used in connections", array("apc","apcu","memcache","memcached","couchbase","redis"), null);
         if (!extension_loaded($driverName)) {
             $this->prompt->error("PHP extension ".$driverName." is not installed!");
             return $this->getNosqlServer();
@@ -191,21 +191,21 @@ class FeaturesSelection
         $features = new NoSQLServerFeatures();
         $features->driver = $driverName;
         if (!in_array($driverName, array("apc","apcu"))) {
-            $features->host = $this->prompt->text("[8/9 2/5] Write NoSQL server hostname", "127.0.0.1", function ($result) {
+            $features->host = $this->prompt->text("[6/7 2/5] Write NoSQL server hostname", "127.0.0.1", function ($result) {
                 preg_match(self::HOSTNAME_REGEX, $result, $matches1);
                 preg_match(self::IP_REGEX, $result, $matches2);
                 return !empty($matches1) || !empty($matches2);
             });
         }
         if ($driverName == "couchbase") {
-            $features->user = $this->prompt->text("[8/9 3/5] Write user name to be used in couchbase connection", null, function ($result) {
+            $features->user = $this->prompt->text("[6/7 3/5] Write user name to be used in couchbase connection", null, function ($result) {
                 preg_match("/^([0-9a-zA-Z_]+)$/", $result, $matches);
                 return !empty($matches);
             });
-            $features->password = $this->prompt->text("[8/9 4/5] Write user password to be used in couchbase connection", null, function ($result) {
+            $features->password = $this->prompt->text("[6/7 4/5] Write user password to be used in couchbase connection", null, function ($result) {
                 return true; // any password is ok, excluding none
             });
-            $features->bucket = $this->prompt->text("[8/9 5/5] Write name of couchbase bucket that stores your data", "default", function ($result) {
+            $features->bucket = $this->prompt->text("[6/7 5/5] Write name of couchbase bucket that stores your data", "default", function ($result) {
                 preg_match("/^([0-9a-zA-Z_]+)$/", $result, $matches);
                 return !empty($matches);
             });
@@ -266,7 +266,7 @@ class FeaturesSelection
     private function getSecurity()
     {
         if ($this->choices->siteType!="CMS") {
-            $choice = $this->prompt->singleSelect("[9/9] Will your site have login", array("yes","no"), 1)=="yes";
+            $choice = $this->prompt->singleSelect("[7/7] Will your site have login", array("yes","no"), 1)=="yes";
             if (!$choice) {
                 return false;
             }
@@ -275,7 +275,7 @@ class FeaturesSelection
         $features = new SecurityFeatures();
         
         $features->persistenceDrivers = $this->prompt->multipleSelect(
-            "[9/9 1/4] Choose where logged in state is remembered across requests",
+            "[7/7 1/4] Choose where logged in state is remembered across requests",
             ($this->choices->siteType != "RESTful web services"?array("session","remember me"):array("synchronizer token","json web token")),
             0
         );
@@ -287,7 +287,7 @@ class FeaturesSelection
         }
         
         $features->authenticationMethods = $this->prompt->multipleSelect(
-            "[9/9 2/4] Choose where authentication will be performed",
+            "[7/7 2/4] Choose where authentication will be performed",
             array("database","oauth2 providers","access control list"),
             0
         );
@@ -298,21 +298,21 @@ class FeaturesSelection
         
         if (in_array("oauth2 providers", $features->authenticationMethods)) {
             $oauth2Providers = $this->prompt->multipleSelect(
-                "[9/9 3/4] Choose oauth2 providers you want to support",
+                "[7/7 3/4] Choose oauth2 providers you want to support",
                 array("Facebook","Google","Instagram","GitHub","LinkedIn","VK","Yandex"),
                 null
             );
             foreach ($oauth2Providers as $provider) {
                 $info = new OAuth2Provider();
                 $info->driver = $provider;
-                $info->clientID = $this->prompt->text("[9/9 3/4 1/3] Please write your client id setup in ".$provider." site", null, function ($result) {
+                $info->clientID = $this->prompt->text("[7/7 3/4 1/3] Please write your client id setup in ".$provider." site", null, function ($result) {
                     return !empty($result);
                 });
-                $info->clientSecret = $this->prompt->text("[9/9 3/4 2/3] Please write your client secret setup in ".$provider." site", null, function ($result) {
+                $info->clientSecret = $this->prompt->text("[7/7 3/4 2/3] Please write your client secret setup in ".$provider." site", null, function ($result) {
                     return !empty($result);
                 });
                 if ($provider=="GitHub") {
-                    $info->applicationName = $this->prompt->text("[9/9 3/4 3/3] Please write your application name setup in ".$provider." site", null, function ($result) {
+                    $info->applicationName = $this->prompt->text("[7/7 3/4 3/3] Please write your application name setup in ".$provider." site", null, function ($result) {
                         return !empty($result);
                     });
                 }
@@ -321,7 +321,7 @@ class FeaturesSelection
         }
         
         $features->authorizationMethod = $this->prompt->singleSelect(
-            "[9/9 4/4] Choose where authorization will be performed",
+            "[7/7 4/4] Choose where authorization will be performed",
             array("database","access control list"),
             1
         );

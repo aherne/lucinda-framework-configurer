@@ -9,7 +9,7 @@ abstract class XMLInstallation
     const DEFAULT_ENVIRONMENT = "local";
     
     /**
-     * @var SimpleXMLElement
+     * @var \SimpleXMLElement
      */
     protected $xml;
     
@@ -37,7 +37,7 @@ abstract class XMLInstallation
      */
     protected function saveFile($xmlFilePath)
     {
-        $domxml = new DOMDocument('1.0');
+        $domxml = new \DOMDocument('1.0');
         $domxml->preserveWhiteSpace = false;
         $domxml->formatOutput = true;
         $domxml->loadXML($this->xml->asXML());

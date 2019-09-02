@@ -14,7 +14,7 @@ class UbuntuApache2VirtualHost extends AbstractVirtualHost
     {
         $configurationFile = "/etc/apache2/sites-available/".$this->siteName.".conf";
         if (file_exists($configurationFile)) {
-            throw new Exception("Site already installed");
+            throw new \Exception("Site already installed");
         }
         return $configurationFile;
     }

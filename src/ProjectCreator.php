@@ -7,7 +7,7 @@ require_once("xml/StderrXMLInstallation.php");
 require_once("CodeInstallation.php");
 require_once("SQLInstallation.php");
 
-class Configurer
+class ProjectCreator
 {
     private $features;
 

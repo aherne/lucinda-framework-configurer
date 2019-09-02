@@ -32,13 +32,13 @@ class HostCreator
         $operatingSystem = $this->getOperatingSystem();
         
         if (!$this->isRoot($operatingSystem)) {
-            throw new Exception("Only root account can create virtual host!");
+            throw new \Exception("Only root account can create virtual host!");
         }
                 
         $this->prompt = new Prompter();
         
         $siteName = $this->getSiteName(str_replace(dirname($installationFolder)."/","",$installationFolder));
-        $documentRoot = $this->getDocumentRoot(dirname($installationFolder)."/");        
+        $documentRoot = $this->getDocumentRoot(dirname($installationFolder), $siteName);        
         $hostName = $this->getHostName($siteName);
         
         $this->setHostsFile($hostName, $operatingSystem);
@@ -62,7 +62,7 @@ class HostCreator
         } elseif (strpos($operatingSystemInfo, "Mac")!==false) {
             return self::OS_MAC;
         } else {
-            throw new Exception("Operating system not yet supported for automatic host creation: ".$operatingSystemInfo);
+            throw new \Exception("Operating system not yet supported for automatic host creation: ".$operatingSystemInfo);
         }
     }
     
@@ -124,7 +124,7 @@ class HostCreator
         });
             
         if (!file_exists($documentRoot.DIRECTORY_SEPARATOR.$siteName)) {
-            throw new Exception("No project was found at ".$documentRoot."/".$siteName);
+            throw new \Exception("No project was found at ".$documentRoot."/".$siteName);
         }
         
         return $documentRoot;
@@ -192,7 +192,7 @@ class HostCreator
                 } elseif (file_exists("/etc/nginx/sites-available")) {
                     new UbuntuNginxVirtualHost($siteName, $documentRoot, $hostName);
                 } else {
-                    throw new Exception("Apache/NGINX could not be detected! You must add virtual host manually....");
+                    throw new \Exception("Apache/NGINX could not be detected! You must add virtual host manually....");
                 }
                 break;
             case self::OS_WINDOWS:

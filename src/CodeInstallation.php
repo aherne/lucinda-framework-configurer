@@ -49,7 +49,7 @@ class CodeInstallation
             copy($sourceFolder.DIRECTORY_SEPARATOR.$controller.".php", $controllerPath);
             $controllerBody = file_get_contents($controllerPath);
             if ($controller=="IndexController") {
-                $controllerBody = str_replace("{FEATURES}", json_encode($features), $controllerBody);
+                $controllerBody = str_replace("{FEATURES}", json_encode($this->features), $controllerBody);
             }
             if ($this->features->siteType == "RESTful web services") {
                 $controllerBody = str_replace(array("Lucinda\MVC\STDOUT\Controller", "public function run"), array("RestController", "public function GET"), $controllerBody);
@@ -64,8 +64,7 @@ class CodeInstallation
     private function copyModels()
     {
         if ($this->features->validation) {
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."validators");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."validators", 0777);
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."validators");
         }
         if (!$this->features->security) {
             return;
@@ -91,8 +90,7 @@ class CodeInstallation
         if (!empty($daos)) {
             $sourceFolder = dirname(__DIR__).DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."dao";
             $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."dao";
-            mkdir($destinationFolder);
-            chmod($destinationFolder, 0777);
+            $this->makeFolder($destinationFolder);
             foreach ($daos as $dao) {
                 $daoFile = $destinationFolder.DIRECTORY_SEPARATOR.$dao.".php";
                 copy($sourceFolder.DIRECTORY_SEPARATOR.$dao.".php", $daoFile);
@@ -146,21 +144,15 @@ class CodeInstallation
         $viewExtension = ($this->features->templating?"html":"php");
         
         if ($this->features->templating) {
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."compilations");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."compilations", 0777);
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags", 0777);
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."header");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."header", 0777);
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site", 0777);
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."compilations");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."header");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
         }
 
         if ($this->features->internationalization) {
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."locale");
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."locale", 0777);
-            mkdir($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale);
-            chmod($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale, 0777);
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale);
         }
         
         $views = array();
@@ -200,8 +192,7 @@ class CodeInstallation
     
     private function copyPublic()
     {
-        mkdir($this->rootFolder.DIRECTORY_SEPARATOR."public");
-        chmod($this->rootFolder.DIRECTORY_SEPARATOR."public", 0777);
+        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."public");
         copy(
             dirname(__DIR__).DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."default.css",
             $this->rootFolder.DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."default.css"
@@ -213,5 +204,14 @@ class CodeInstallation
         $bootstrap = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
         file_put_contents($bootstrap, str_replace('require_once("vendor/lucinda/mvc/loader.php");', 'require_once("vendor/lucinda/mvc/loader.php");
 require_once("application/controllers/RestController.php");', file_get_contents($bootstrap)));
+    }
+    
+    private function makeFolder($folder)
+    {
+        if (!file_exists($folder))
+        {
+            mkdir($folder);
+            chmod($folder, 0777);
+        }
     }
 }

@@ -14,7 +14,7 @@ class UbuntuNginxVirtualHost extends AbstractVirtualHost
     {
         $configurationFile = "/etc/nginx/sites-available/".$this->siteName;
         if (file_exists($configurationFile)) {
-            throw new Exception("Site already installed");
+            throw new \Exception("Site already installed");
         }
         return $configurationFile;
     }
@@ -22,7 +22,7 @@ class UbuntuNginxVirtualHost extends AbstractVirtualHost
     protected function setVirtualHost($virtualHostFile)
     {
         if (!file_exists("/var/run/php")) {
-            throw new Exception("PHP FPM is not installed!");
+            throw new \Exception("PHP FPM is not installed!");
         }
         $files = scandir("/var/run/php");
         $socketFile = "";
@@ -32,7 +32,7 @@ class UbuntuNginxVirtualHost extends AbstractVirtualHost
             }
         }
         if (!$socketFile) {
-            throw new Exception("PHP FPM is not running (no active socket found)!");
+            throw new \Exception("PHP FPM is not running (no active socket found)!");
         }
 
         file_put_contents($virtualHostFile, '
