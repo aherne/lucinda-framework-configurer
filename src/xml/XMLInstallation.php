@@ -28,7 +28,7 @@ abstract class XMLInstallation
     /**
      * Populates XML based on user choices
      */
-    abstract protected function generateXML();    
+    abstract protected function generateXML();
     
     /**
      * Overrides project XML with one compiled here.

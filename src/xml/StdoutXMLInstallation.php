@@ -7,7 +7,7 @@ require_once("XMLInstallation.php");
  * Populates stdout.xml based on features selected by user
  */
 class StdoutXMLInstallation extends XMLInstallation
-{    
+{
     protected function generateXML()
     {
         $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
