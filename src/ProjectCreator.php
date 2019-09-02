@@ -33,7 +33,7 @@ class ProjectCreator
 
     /**
      * Creates project on disk based on features selected by user
-     * 
+     *
      * @param string $installationFolder
      */
     private function writeFiles($installationFolder)

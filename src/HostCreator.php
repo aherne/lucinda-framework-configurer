@@ -37,8 +37,8 @@ class HostCreator
                 
         $this->prompt = new Prompter();
         
-        $siteName = $this->getSiteName(str_replace(dirname($installationFolder)."/","",$installationFolder));
-        $documentRoot = $this->getDocumentRoot(dirname($installationFolder), $siteName);        
+        $siteName = $this->getSiteName(str_replace(dirname($installationFolder)."/", "", $installationFolder));
+        $documentRoot = $this->getDocumentRoot(dirname($installationFolder), $siteName);
         $hostName = $this->getHostName($siteName);
         
         $this->setHostsFile($hostName, $operatingSystem);
@@ -110,7 +110,7 @@ class HostCreator
      * @throws Exception If document root doesn't contain site.
      */
     private function getDocumentRoot($documentRoot, $siteName)
-    {        
+    {
         $documentRoot = $this->prompt->text("[2/4] Write folder http://localhost points to (DOCUMENT ROOT)", $documentRoot, function ($result) {
             $result = str_replace("\\", "/", $result);
             if (!file_exists($result) || !is_dir($result) || !is_writable($result)) {

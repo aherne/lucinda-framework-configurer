@@ -97,7 +97,7 @@ class Prompter
                 $availableOptionsWithoutHints[] = trim(substr($option, 0, $position));
             } else {
                 $availableOptionsWithoutHints[] = $option;
-            }            
+            }
         }
         $result = readline("write one of above".($defaultOption!==null?" or hit enter to confirm '".$this->stripHint($availableOptions[$defaultOption])."'":"").": ");
         if (!$result) {

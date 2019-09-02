@@ -11,7 +11,7 @@ class CommandRunner
 {
     /**
      * Runs option command.
-     * 
+     *
      * @param string $command Value of option
      * @param string[] $parameters Optional parameters
      * @throws \Exception
@@ -33,4 +33,3 @@ class CommandRunner
         }
     }
 }
-

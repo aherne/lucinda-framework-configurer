@@ -208,8 +208,7 @@ require_once("application/controllers/RestController.php");', file_get_contents(
     
     private function makeFolder($folder)
     {
-        if (!file_exists($folder))
-        {
+        if (!file_exists($folder)) {
             mkdir($folder);
             chmod($folder, 0777);
         }
