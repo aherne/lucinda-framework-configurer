@@ -54,10 +54,10 @@ class SQLInstallation
      */
     private function setDriver()
     {
-        $pdo = new PDO($this->features->sqlServer->driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
+        $pdo = new \PDO($this->features->sqlServer->driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
         $statement = $pdo->query("SHOW GRANTS");
         $found = false;
-        while ($value = $statement->fetch(PDO::FETCH_COLUMN)) {
+        while ($value = $statement->fetch(\PDO::FETCH_COLUMN)) {
             if (!(strpos($value, "ALL PRIVILEGES") || (strpos($value, "CREATE") && strpos($value, "DROP")))) {
                 $found = true;
             }

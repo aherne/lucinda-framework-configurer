@@ -18,13 +18,14 @@ class CommandRunner
      */
     public function run($command, $parameters)
     {
+        $installationFolder = dirname(dirname(dirname(dirname(__DIR__))));
         switch ($command) {
             case "project":
-                new ProjectCreator(__DIR__);
-                echo "Project installed successfully at: ".__DIR__."\n";
+                new ProjectCreator($installationFolder);
+                echo "Project installed successfully at: ".$installationFolder."\n";
                 break;
             case "vhost":
-                $configurer = new HostCreator(__DIR__);
+                $configurer = new HostCreator($installationFolder);
                 echo "Host created successfully! Open your browser and go to: http://".$configurer->getHostCreated()."\n";
                 break;
             default:
