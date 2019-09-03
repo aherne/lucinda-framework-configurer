@@ -4,7 +4,7 @@ class UsersOAuth2Authentication implements Lucinda\WebSecurity\OAuth2Authenticat
     public function login(Lucinda\WebSecurity\OAuth2UserInformation $userInformation, $accessToken)
     {
         // get driver ID
-        $driver = str_replace(array("\\Lucinda\\Framework\\", "UserInformation"), "", get_class($userInformation));
+        $driver = str_replace(array("Lucinda\\Framework\\", "UserInformation"), "", get_class($userInformation));
         $driverID = SQL(
             "SELECT id FROM oauth2_providers WHERE name=:driver",
             array(":driver"=>$driver)

@@ -11,7 +11,7 @@ class SQLInstallation
      * @var PDO
      */
     private $pdo;
-    // TODO: create users table instead of users__form is oauth2 is not used
+    
     /**
      * SQLInstallation constructor.
      * @param Features $features
@@ -298,7 +298,7 @@ class SQLInstallation
         (
         id int unsigned not null auto_increment,
         user_id int unsigned not null,
-        remote_user_id bigint unsigned not null,
+        remote_user_id varchar(32) not null,
         driver_id tinyint unsigned not null,
         access_token varchar(255) not null,
         primary key(id),
