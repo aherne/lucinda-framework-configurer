@@ -153,7 +153,7 @@ class FeaturesSelection
             return true; // any password is ok, including none
         });
         try {
-            $dbh = new PDO($driverName.":dbname=".$schema.";host=".$hostName, $userName, $userPassword);
+            $dbh = new \PDO($driverName.":dbname=".$schema.";host=".$hostName, $userName, $userPassword);
             
             $features = new SQLServerFeatures();
             $features->driver = $driverName;
@@ -162,7 +162,7 @@ class FeaturesSelection
             $features->password = $userPassword;
             $features->schema = $schema;
             return $features;
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->prompt->error("Connection to ".$driverName." failed with message '". $e->getMessage()."'");
             return $this->getSqlServer();
         }
@@ -214,7 +214,7 @@ class FeaturesSelection
         // test connection
         switch ($driverName) {
             case "redis":
-                $redis = new Redis();
+                $redis = new \Redis();
                 $result = $redis->connect($features->host);
                 if (!$result) {
                     $this->prompt->error("Connection to redis server failed!");
@@ -222,7 +222,7 @@ class FeaturesSelection
                 }
                 break;
             case "memcache":
-                $memcache = new Memcache();
+                $memcache = new \Memcache();
                 $result = $memcache->connect($features->host);
                 if (!$result) {
                     $this->prompt->error("Connection to memcache server failed!");
@@ -230,7 +230,7 @@ class FeaturesSelection
                 }
                 break;
             case "memcached":
-                $memcached = new Memcached();
+                $memcached = new \Memcached();
                 $memcached->addServer($features->host, 11211);
                 $result = $memcached->set("test", 1);
                 if (!$result) {
