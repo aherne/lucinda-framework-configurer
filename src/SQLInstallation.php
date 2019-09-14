@@ -284,7 +284,8 @@ class SQLInstallation
         (4, 'Instagram'),
         (5, 'LinkedIn'),
         (6, 'VK'),
-        (7, 'Yandex')
+        (7, 'Yahoo'),
+        (8, 'Yandex')
         ");
     }
 

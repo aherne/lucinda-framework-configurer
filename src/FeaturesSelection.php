@@ -299,7 +299,7 @@ class FeaturesSelection
         if (in_array("oauth2 providers", $features->authenticationMethods)) {
             $oauth2Providers = $this->prompt->multipleSelect(
                 "[7/7 3/4] Choose oauth2 providers you want to support",
-                array("Facebook","Google","Instagram","GitHub","LinkedIn","VK","Yandex"),
+                array("Facebook","Google","Instagram","GitHub","LinkedIn","VK","Yahoo","Yandex"),
                 null
             );
             foreach ($oauth2Providers as $provider) {
