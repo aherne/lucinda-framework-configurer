@@ -10,5 +10,8 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "ext-simplexml": "*",
+        "ext-xml": "*"  
+    }
 }
