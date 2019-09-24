@@ -6,14 +6,17 @@ require_once("XMLInstallation.php");
 /**
  * Populates stderr.xml based on features selected by user
  */
-class StderrXMLInstallation
+class StderrXMLInstallation extends XMLInstallation
 {
     protected function generateXML()
     {
-        $this->xml = simplexml_load_file($installationFolder.DIRECTORY_SEPARATOR."stderr.xml");
+        $this->xml = simplexml_load_file($this->xmlFilePath);
         $this->setApplication();
         $this->setReporter();
         $this->setRenderer();
+        if ($this->features->siteType=="RESTful web services") {
+            $this->setExceptions();
+        }
     }
     
     /**
@@ -21,7 +24,7 @@ class StderrXMLInstallation
      */
     private function setApplication()
     {
-        $this->xml->application["default_content_type"] = ($this->features->siteType=="normal"?"text/html":"application/json");
+        $this->xml->application["default_content_type"] = ($this->features->siteType!="RESTful web services"?"text/html":"application/json");
         if ($this->features->templating) {
             $this->xml->application->addAttribute("templates_extension", "html");
             $this->xml->application->paths->addChild("compilations", "compilations");
@@ -48,8 +51,21 @@ class StderrXMLInstallation
     {
         if ($this->features->templating) {
             $this->xml->renderers->renderer[0]["class"]= "ViewLanguageRenderer";
-        } else {
+        } else if($this->features->siteType!="RESTful web services") {
             $this->xml->renderers->renderer[0]["class"]= "HtmlRenderer";
+        } else {
+            unset($this->xml->renderers->renderer[0]);
+        }
+    }
+    
+    /**
+     * Sets exceptions
+     */
+    private function setExceptions()
+    {
+        $tmp = (array) $this->xml->exceptions;
+        foreach ($tmp["exception"] as $item) {
+            unset($item["view"]);
         }
     }
 }

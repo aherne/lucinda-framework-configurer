@@ -18,11 +18,17 @@ abstract class XMLInstallation
      */
     protected $features;
     
+    /**
+     * @var string
+     */
+    protected $xmlFilePath;
+    
     public function __construct(Features $features, $xmlFilePath)
     {
+        $this->xmlFilePath = $xmlFilePath;
         $this->features = $features;
         $this->generateXML();
-        $this->saveFile($xmlFilePath);
+        $this->saveFile();
     }
     
     /**
@@ -32,15 +38,13 @@ abstract class XMLInstallation
     
     /**
      * Overrides project XML with one compiled here.
-     *
-     * @param string $xmlFilePath Absolute path of XML file name to override
      */
-    protected function saveFile($xmlFilePath)
+    protected function saveFile()
     {
         $domxml = new \DOMDocument('1.0');
         $domxml->preserveWhiteSpace = false;
         $domxml->formatOutput = true;
         $domxml->loadXML($this->xml->asXML());
-        $domxml->save($xmlFilePath);
+        $domxml->save($this->xmlFilePath);
     }
 }

@@ -22,6 +22,7 @@ class CodeInstallation
             $this->copyViews();
             $this->copyPublic();
         } else {
+            $this->deleteViews();
             $this->updateBootstrap();
         }
     }
@@ -31,6 +32,9 @@ class CodeInstallation
      */
     private function copyControllers()
     {
+        $sourceFolder = dirname(__DIR__).DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
+        
         $controllers = array();
         $controllers[] = "IndexController";
         if ($this->features->security) {
@@ -42,8 +46,6 @@ class CodeInstallation
             }
         }
         
-        $sourceFolder = dirname(__DIR__).DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
         foreach ($controllers as $controller) {
             $controllerPath = $destinationFolder.DIRECTORY_SEPARATOR.$controller.".php";
             copy($sourceFolder.DIRECTORY_SEPARATOR.$controller.".php", $controllerPath);
@@ -55,6 +57,11 @@ class CodeInstallation
                 $controllerBody = str_replace(array("Lucinda\MVC\STDOUT\Controller", "public function run"), array("RestController", "public function GET"), $controllerBody);
             }
             file_put_contents($controllerPath, $controllerBody);
+        }
+        
+        if ($this->features->siteType == "RESTful web services") {
+            copy($sourceFolder.DIRECTORY_SEPARATOR."ErrorsController.php", $destinationFolder.DIRECTORY_SEPARATOR."ErrorsController.php");
+            copy($sourceFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php", $destinationFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php");
         }
     }
 
@@ -132,6 +139,12 @@ class CodeInstallation
                 }
             }
         }
+        
+        if ($this->features->siteType == "RESTful web services") {
+            $sourceFile = dirname(__DIR__).DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."EmergencyHandler.php";
+            $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."EmergencyHandler.php";
+            copy($sourceFile, $destinationFile);
+        }
     }
 
     /**
@@ -188,6 +201,16 @@ class CodeInstallation
                 $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."bottom.html"
                 );
         }
+    }
+    
+    private function deleteViews()
+    {
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."views";
+        if (!file_exists($destinationFolder)) {
+           return; 
+        }
+        array_map('unlink', glob("$destinationFolder/*.*"));
+        rmdir($destinationFolder);
     }
     
     private function copyPublic()
