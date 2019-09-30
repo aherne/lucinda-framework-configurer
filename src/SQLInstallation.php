@@ -19,7 +19,7 @@ class SQLInstallation
      */
     public function __construct($features)
     {
-        if (!$features->security || (in_array("access control list", $features->security->authenticationMethods) && $this->features->security->authorizationMethod=="access control list")) {
+        if (!$features->security || (in_array("access control list", $features->security->authenticationMethods) && $features->security->authorizationMethod=="access control list")) {
             return;
         }
         
