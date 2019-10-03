@@ -29,6 +29,10 @@ class SQLInstallation
         
         $this->setUsersTable();
         
+        if ($features->sqlServer) {
+            $this->setThrottlerTable();
+        }
+        
         if (in_array("oauth2 providers", $this->features->security->authenticationMethods)) {
             $this->setOauth2ProvidersTable();
             $this->setUsersOauth2Table();
@@ -120,6 +124,25 @@ class SQLInstallation
         (2, 'Jane Doe', 'jane@doe.com')
         ");
         }
+    }
+    
+    /**
+     * Sets table that stores login attempts and penalties
+     */
+    private function setThrottlerTable()
+    {
+        $this->pdo->exec("
+         CREATE TABLE user_logins (
+         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+         ip VARCHAR(45) NOT NULL,
+         username VARCHAR(255) NOT NULL,
+         attempts BIGINT UNSIGNED NOT NULL default 0,
+         penalty_expiration DATETIME DEFAULT NULL,
+         date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+         PRIMARY KEY(id),
+         UNIQUE(ip, username)
+         ) Engine=InnoDB;
+        ");
     }
 
 

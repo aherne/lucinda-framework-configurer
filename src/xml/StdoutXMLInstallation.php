@@ -243,8 +243,11 @@ class StdoutXMLInstallation extends XMLInstallation
             if (in_array("database", $this->features->security->authenticationMethods)) {
                 $form->addAttribute("dao", "UsersAuthentication");
             }
-            $form->addChild("login");
-            $form->addChild("logout");
+            if ($this->features->nosqlServer) {
+                $form->addAttribute("throttler", "NoSqlLoginThrottler");
+            } elseif ($this->features->sqlServer) {
+                $form->addAttribute("throttler", "SqlLoginThrottler");
+            }
         }
         if (in_array("oauth2 providers", $this->features->security->authenticationMethods)) {
             $oauth2 = $authentication->addChild("oauth2");
