@@ -9,10 +9,13 @@
     Password: <input type="password" name="password" required/><br/>
     <input type="checkbox" name="remember_me" value="1" checked/> Remember me<br/>
     <input type="hidden" name="csrf" value="${data.csrf}"/>
-    <input type="submit" value="LOGIN"/>
+    <input type="submit" value="LOGIN" ${(${data.wait}?"disabled":"")}/>
+    <:if test="${data.wait}">
+    <strong>Please wait for ${data.wait} seconds until next login!</strong>
+    </:if>
 </form>
 <p>
-    Use username '<i>john</i>' and password '<i>doe</i>' to login!
+    Use username '<i>john</i>' and password '<i>doe</i>' to login! To see throttling in action, try to login many times with same username and wrong password...
 </p>
 
 <p><a href="/">Back to HOME!</a></p>
