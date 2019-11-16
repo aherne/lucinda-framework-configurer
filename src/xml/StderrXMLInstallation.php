@@ -24,7 +24,7 @@ class StderrXMLInstallation extends XMLInstallation
      */
     private function setApplication()
     {
-        $this->xml->application["default_content_type"] = ($this->features->siteType!="RESTful web services"?"text/html":"application/json");
+        $this->xml->application["default_format"] = ($this->features->siteType!="RESTful web services"?"html":"json");
         if ($this->features->templating) {
             $this->xml->application->addAttribute("templates_extension", "html");
             $this->xml->application->paths->addChild("compilations", "compilations");
