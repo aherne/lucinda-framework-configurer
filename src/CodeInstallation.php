@@ -225,8 +225,8 @@ class CodeInstallation
     private function updateBootstrap()
     {
         $bootstrap = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
-        file_put_contents($bootstrap, str_replace('require_once("vendor/lucinda/mvc/loader.php");', 'require_once("vendor/lucinda/mvc/loader.php");
-require_once("application/controllers/RestController.php");', file_get_contents($bootstrap)));
+        file_put_contents($bootstrap, str_replace('require("vendor/lucinda/mvc/loader.php");', 'require("vendor/lucinda/mvc/loader.php");
+require("application/controllers/RestController.php");', file_get_contents($bootstrap)));
     }
     
     private function makeFolder($folder)
