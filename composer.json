@@ -9,6 +9,11 @@
             "email": "lucian.gabriel.popescu@gmail.com"
         }
     ],
+    "autoload": {
+    	"psr-4": {
+        	"Lucinda\\Configurer\\": "src/"
+    	}
+    },
     "require": {
         "php": "^7.1",
         "ext-simplexml": "*",    
