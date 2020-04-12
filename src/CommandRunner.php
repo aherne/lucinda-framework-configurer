@@ -1,9 +1,6 @@
 <?php
 namespace Lucinda\Configurer;
 
-require_once("ProjectCreator.php");
-require_once("HostCreator.php");
-
 /**
  * Executes a configuration option.
  */

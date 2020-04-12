@@ -1,0 +1,19 @@
+FeaturesSelection
+Prompter
+ProjectCreator
+	FeaturesSelection
+		Features
+			InternationalizationFeatures
+			SQLServerFeatures
+			NoSQLServerFeatures
+			SecurityFeatures
+				OAuth2Provider
+	StdoutXMLInstallation<>XMLInstallation
+	StderrXMLInstallation<>XMLInstallation
+	CodeInstallation
+	SQLInstallation
+HostCreator
+	UbuntuApache2VirtualHost<>AbstractVirtualHost
+	UbuntuNginxVirtualHost<>AbstractVirtualHost
+	WindowsApache2VirtualHost<>AbstractVirtualHost
+	MacApache2VirtualHost<>AbstractVirtualHost

@@ -1,0 +1,115 @@
+<site:top title="Welcome to Lucinda Framework!"/>
+
+<:if test="isset(${data.status})">
+<header:status value="${data.status}"/>
+</:if>
+
+<p><strong>Welcome to Lucinda Framework!</strong> Here are features you've chosen to install and those you may want to install manually later on:</p>
+<table>
+    <thead>
+	    <tr>
+	        <th align="left">Feature</th>
+	        <th align="left">Guide</th>
+	    </tr>
+    </thead>
+    <tbody>
+	    <tr>
+	        <td>Site type</td>
+	        <td>
+				This is a <i>CMS</i> site where <i>every resource inside is private except login</i>, outputting HTML by default, able to output JSON as well via AJAX requests.
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>MVC</td>
+	        <td>
+	        	MVC is always <strong class="enabled">enabled</strong>! To learn more about framework and how to create controllers/models/views, follow <a href="#" target="_blank">this guide</a>!
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>Error Handling</td>
+	        <td>
+	        	Error handling abilities are always <strong class="enabled">enabled</strong>! To learn more how errors are logged automatically into a file able to rotate, follow <a href="#" target="_blank">this guide</a>!
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>Logging</td>
+	        <td>
+	        	Logging abilities are always <strong class="enabled">enabled</strong>! To learn more how to log messages, follow <a href="#" target="_blank">this guide</a>!
+	        </td>
+	    </tr>
+	    <:if test="!empty(${data.features.isREST})">
+	    <tr>
+	        <td>Templating</td>
+	        <td>
+	        	Templating abilities are always <strong class="enabled">enabled</strong>! To learn more how to work with HTML views using templates and tags, follow <a href="#" target="_blank">this doc</a>!
+	        </td>
+	    </tr>
+	    </:if>
+	    <tr>
+	        <td>HTTP Headers Validation</td>
+	        <td>
+	           <site:feature name="http headers validation" status="${(!empty(${data.features.headers})?1:0)}" url_failure="#" url_success="#"/>
+	           <table>
+				    <thead>
+				    <tr>
+				        <th align="left">Feature</th>
+				        <th align="left">Guide</th>
+				    </tr>
+				    </thead>
+				    <tbody>
+					    <tr>
+					        <td>HTTP Caching Validation</td>
+					        <td>
+	           					<site:feature name="http caching validation" status="${(!empty(${data.features.headers.caching})?1:0)}" url_failure="#" url_success="#"/>
+					        </td>
+					    </tr>
+					    <tr>
+					        <td>HTTP CORS Validation</td>
+					        <td>
+	           					<site:feature name="http cors validation" status="${(!empty(${data.features.headers.caching})?1:0)}" url_failure="#" url_success="#"/>
+					        </td>
+					    </tr>
+				    </tbody>
+	           </table>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>Internationalization & Localization</td>
+	        <td>
+	           <site:feature name="internationalization" status="${(!empty(${data.features.internationalization})?1:0)}" url_failure="#" url_success="#"/>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>SQL Servers Support</td>
+	        <td>
+	           <site:feature name="sql database support" status="${(!empty(${data.features.sqlServer})?1:0)}" url_failure="#" url_success="#"/>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>NoSQL Servers Support</td>
+	        <td>
+	           <site:feature name="nosql database support" status="${(!empty(${data.features.nosqlServer})?1:0)}" url_failure="#" url_success="#"/>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>Authentication & Authorization</td>
+	        <td>
+	           <site:feature name="web security" status="${(!empty(${data.features.security})?1:0)}" url_failure="#" url_success="#"/>
+	        </td>
+	    </tr>
+    </tbody>
+    <tfoot></tfoot>
+</table>
+<p>
+	[<a href="/logout">LOGOUT</a>] To access administrator area, go to <a href="/restricted">restricted</a> page!
+</p>
+<hr/>
+<small>
+	Details for this page:
+	<ul>
+		<li><strong>controller</strong>: application/controllers/IndexController.php</li>
+		<li><strong>view</strong>: application/views/index.html</li>
+		<li><strong>route @ stdout.xml</strong>: &lt;route url="index" controller="IndexController" view="index" ... /&gt;</li>
+	</ul>
+</small>
+<site:bottom/>

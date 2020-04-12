@@ -1,12 +1,6 @@
 <?php
 namespace Lucinda\Configurer;
 
-require_once("Prompter.php");
-require_once("vhost/UbuntuApache2VirtualHost.php");
-require_once("vhost/UbuntuNginxVirtualHost.php");
-require_once("vhost/WindowsApache2VirtualHost.php");
-require_once("vhost/MacApache2VirtualHost.php");
-
 /**
  * Creates host on server machine, based on selected features, operating system and server vendor
  */
@@ -25,7 +19,7 @@ class HostCreator
      *
      * @param string $siteName Location of site on disk relative to webroot
      * @param string $documentRoot Webroot location
-     * @throws Exception If host creation fails.
+     * @throws \Exception If host creation fails.
      */
     public function __construct($installationFolder)
     {
@@ -50,7 +44,7 @@ class HostCreator
      * Gets caller's operating system. Supported: Windows & Linux
      *
      * @return int
-     * @throws Exception If operating system is not supported.
+     * @throws \Exception If operating system is not supported.
      */
     private function getOperatingSystem()
     {
@@ -107,7 +101,7 @@ class HostCreator
      * @param string $documentRoot
      * @param string $siteName
      * @return string
-     * @throws Exception If document root doesn't contain site.
+     * @throws \Exception If document root doesn't contain site.
      */
     private function getDocumentRoot($documentRoot, $siteName)
     {
@@ -180,7 +174,7 @@ class HostCreator
      * @param string $documentRoot
      * @param string $siteName
      * @param string $hostName
-     * @throws Exception
+     * @throws \Exception
      */
     private function setVirtualHost($operatingSystem, $documentRoot, $siteName, $hostName)
     {

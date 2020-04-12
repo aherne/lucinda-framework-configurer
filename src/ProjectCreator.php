@@ -1,34 +1,36 @@
 <?php
 namespace Lucinda\Configurer;
 
-require_once("FeaturesSelection.php");
-require_once("xml/StdoutXMLInstallation.php");
-require_once("xml/StderrXMLInstallation.php");
-require_once("CodeInstallation.php");
-require_once("SQLInstallation.php");
+use Lucinda\Configurer\Features\Features;
+use Lucinda\Configurer\Features\FeaturesSelector;
+use Lucinda\Configurer\XML\StdoutInstaller;
+use Lucinda\Configurer\XML\StderrInstaller;
+use Lucinda\Configurer\Code\Installer as CodeInstaller;
+use Lucinda\Configurer\SQL\Installer as SqlInstaller;
 
 class ProjectCreator
 {
-    private $features;
-
     /**
      * @param string $installationFolder
      */
-    public function __construct($installationFolder)
+    public function __construct(string $installationFolder)
     {
-        $this->features = $this->getSelectedFeatures();
-        $this->writeFiles($installationFolder);
+        $features = $this->getSelectedFeatures();
+        $this->writeFiles($installationFolder, $features);
     }
 
     /**
-     * Gets user selected install features.
+     * Gets user selected install features and validates them in the process
      *
      * @return Features
+     * @throws \Exception If process fails
      */
-    private function getSelectedFeatures()
+    private function getSelectedFeatures(): Features
     {
-        $selection = new FeaturesSelection();
-        return $selection->getChoices();
+        $selection = new FeaturesSelector();
+        $features = $selection->getChoices();
+        new FeaturesValidator($features);
+        return $features;
     }
 
     /**
@@ -36,19 +38,19 @@ class ProjectCreator
      *
      * @param string $installationFolder
      */
-    private function writeFiles($installationFolder)
+    private function writeFiles(string $installationFolder, Features $features)
     {
         chmod($installationFolder, 0777);
         chdir($installationFolder);
         
         echo "Setting up XML files\n";
-        new StdoutXMLInstallation($this->features, $installationFolder.DIRECTORY_SEPARATOR."stdout.xml");
-        new StderrXMLInstallation($this->features, $installationFolder.DIRECTORY_SEPARATOR."stderr.xml");
+        new StdoutInstaller($features, $installationFolder.DIRECTORY_SEPARATOR."stdout.xml");
+        new StderrInstaller($features, $installationFolder.DIRECTORY_SEPARATOR."stderr.xml");
         
         echo "Setting up php dependencies\n";
-        new CodeInstallation($this->features, $installationFolder);
+        new CodeInstaller($features, $installationFolder);
         
         echo "Setting up tables\n";
-        new SQLInstallation($this->features);
+        new SqlInstaller($features);
     }
 }
