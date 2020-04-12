@@ -21,6 +21,9 @@ class FeaturesValidator
     {
         $this->features = $features;
         if ($features->sqlServer) {
+            if ($features->sqlServer->driver!="mysql") {
+                throw new \Exception("Currently, SQL installer only works with mysql vendor");
+            }
             $this->validateSQLServer($features->sqlServer);
         } else if($features->security && !($features->security->authenticationMethod==1 && $features->security->authorizationMethod==1)) {
             throw new \Exception("A SQL server is required if you need DB authentication/authorization");

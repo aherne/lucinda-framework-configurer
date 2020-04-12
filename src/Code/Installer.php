@@ -179,7 +179,7 @@ class Installer
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."public";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."public";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."debug.css", $destinationFolder.DIRECTORY_SEPARATOR."debug.css");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."default.css", $destinationFolder.DIRECTORY_SEPARATOR."default.css");
     }
     
     /**
@@ -192,7 +192,7 @@ class Installer
         
         $contents = file_get_contents($sourceFile);
         $contents = preg_replace_callback('/\\n\/\/\s+\$object->addEventListener\([^"]+"([^"]+)"\);/', function($matches){
-            switch(matches[1]) {
+            switch($matches[1]) {
                 case "SQLDataSourceInjector":
                     return ($this->features->sqlServer?str_replace("// ", "", $matches[0]):"");
                     break;
@@ -206,13 +206,13 @@ class Installer
                     return ($this->features->headers?str_replace("// ", "", $matches[0]):"");
                     break;
                 case "HttpCorsListener":
-                    return ($this->features->headers->cors?str_replace("// ", "", $matches[0]):"");
+                    return ($this->features->headers && $this->features->headers->cors?str_replace("// ", "", $matches[0]):"");
                     break;
                 case "LocalizationListener":
                     return ($this->features->internationalization?str_replace("// ", "", $matches[0]):"");
                     break;
                 case "HttpCachingListener":
-                    return ($this->features->headers->caching?str_replace("// ", "", $matches[0]):"");
+                    return ($this->features->headers && $this->features->headers->caching?str_replace("// ", "", $matches[0]):"");
                     break;
             }
         }, $contents);

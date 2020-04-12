@@ -10,9 +10,9 @@ class IndexController extends Controller
      * {@inheritDoc}
      * @see \Lucinda\STDOUT\Runnable::run()
      */
-    public function run()
+    public function run(): void
     {
-        $this->response->view["features"] = json_decode('{FEATURES}', true);
-        $this->response->view["status"] = $this->request->parameters("status");
+        $this->response->view()["features"] = json_decode('{FEATURES}', true);
+        $this->response->view()["status"] = $this->request->parameters("status");
     }
 }

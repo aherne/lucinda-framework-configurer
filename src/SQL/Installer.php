@@ -22,16 +22,12 @@ class Installer
      * @throws \Exception If installation fails.
      */
     public function __construct(Features $features)
-    {
+    {        
+        $this->features = $features;
+        
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
-        
-        if ($this->features->sqlServer->driver!="mysql") {
-            throw new \Exception("Currently, SQL installer only works with mysql vendor");
-        }
-        
-        $this->features = $features;
         
         $pdo = new \PDO($this->features->sqlServer->driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
         $this->pdo = $pdo;
@@ -174,7 +170,7 @@ class Installer
             id smallint unsigned not null auto_increment,
             url varchar(255) not null,
             is_public boolean not null default false,
-            primary key(id),
+            PRIMARY KEY(id),
             unique(url)
             ) Engine=INNODB
             ");
@@ -195,7 +191,7 @@ class Installer
         (
         id tinyint unsigned not null auto_increment,
         name varchar(255) not null,
-        primary key(id),
+        PRIMARY KEY(id),
         unique(name)
         ) Engine=INNODB
         ");
@@ -218,7 +214,7 @@ class Installer
         id int unsigned not null auto_increment,
         user_id int unsigned not null,
         role_id tinyint unsigned not null,
-        primary key(id),
+        PRIMARY KEY(id),
         foreign key(user_id) references users(id) on delete cascade,
         foreign key(role_id) references roles(id) on delete cascade
         ) Engine=INNODB
@@ -245,7 +241,7 @@ class Installer
         id int unsigned not null auto_increment,
         role_id tinyint unsigned not null,
         resource_id smallint unsigned not null,
-        primary key(id),
+        PRIMARY KEY(id),
         foreign key(role_id) references roles(id) on delete cascade,
         foreign key(resource_id) references resources(id) on delete cascade
         ) Engine=INNODB
@@ -274,7 +270,7 @@ class Installer
         id int unsigned not null auto_increment,
         user_id int unsigned not null,
         resource_id smallint unsigned not null,
-        primary key(id),
+        PRIMARY KEY(id),
         foreign key(user_id) references users(id) on delete cascade,
         foreign key(resource_id) references resources(id) on delete cascade
         ) Engine=INNODB
@@ -311,7 +307,7 @@ class Installer
         (
         id tinyint unsigned not null auto_increment,
         name varchar(255) not null,
-        primary key(id),
+        PRIMARY KEY(id),
         unique(name)
         ) Engine=INNODB
         ");
@@ -342,7 +338,7 @@ class Installer
         remote_user_id varchar(32) not null,
         driver_id tinyint unsigned not null,
         access_token varchar(255) not null,
-        primary key(id),
+        PRIMARY KEY(id),
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
         UNIQUE(remote_user_id, driver_id)
         ) Engine=INNODB
@@ -361,7 +357,7 @@ class Installer
         user_id int unsigned not null,
         username varchar(255) not null,
         password char(60) not null,
-        primary key(id),
+        PRIMARY KEY(id),
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
         UNIQUE(username),
         UNIQUE(user_id)

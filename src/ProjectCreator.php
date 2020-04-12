@@ -28,7 +28,7 @@ class ProjectCreator
     private function getSelectedFeatures(): Features
     {
         $selection = new FeaturesSelector();
-        $features = $selection->getChoices();
+        $features = $selection->getFeatures();
         new FeaturesValidator($features);
         return $features;
     }

@@ -12,7 +12,7 @@ class StdoutInstaller extends Installer
      * {@inheritDoc}
      * @see Installer::generateXML()
      */
-    protected function generateXML()
+    protected function generateXML(): void
     {
         $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
         $this->setApplicationTag();
@@ -31,7 +31,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <application> tag @ stdout.xml
      */
-    private function setApplicationTag()
+    private function setApplicationTag(): void
     {
         $application = $this->xml->addChild("application");
         $application->addAttribute("version", "0.0.1");
@@ -48,7 +48,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <formats> tag @ stdout.xml
      */
-    private function setFormatsTag()
+    private function setFormatsTag(): void
     {
         $application = $this->xml->addChild("formats");
         
@@ -71,7 +71,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <templating> tag @ stdout.xml
      */
-    private function setTemplatingTag()
+    private function setTemplatingTag(): void
     {
         if ($this->features->isREST) {
             return;
@@ -88,7 +88,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <loggers> tag @ stdout.xml
      */
-    private function setLoggersTag()
+    private function setLoggersTag(): void
     {
         $loggers = $this->xml->addChild("loggers");
         $loggers->addAttribute("path", "application/loggers");
@@ -102,7 +102,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <internationalization> tag @ stdout.xml
      */
-    private function setInternationalizationTag()
+    private function setInternationalizationTag(): void
     {
         if (!$this->features->internationalization) {
             return;
@@ -118,7 +118,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <http_caching> tag @ stdout.xml
      */
-    private function setHeadersTag()
+    private function setHeadersTag(): void
     {
         if (!$this->features->headers) {
             return;
@@ -141,7 +141,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <sql> tag @ stdout.xml
      */
-    private function setSqlTag()
+    private function setSqlTag(): void
     {
         if (!$this->features->sqlServer) {
             return;
@@ -162,7 +162,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <nosql> tag @ stdout.xml
      */
-    private function setNoSqlTag()
+    private function setNoSqlTag(): void
     {
         if (!$this->features->nosqlServer) {
             return;
@@ -189,7 +189,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <security> tag @ stdout.xml
      */
-    private function setSecurityTag()
+    private function setSecurityTag(): void
     {
         if (!$this->features->security) {
             return;
@@ -255,7 +255,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <routes> tag @ stdout.xml
      */
-    private function setRoutes()
+    private function setRoutes(): void
     {        
         $routes = $this->xml->addChild("routes");
         if ($this->features->routes->default_roles) {
@@ -289,7 +289,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <users> tag @ stdout.xml
      */
-    private function setUsers()
+    private function setUsers(): void
     {
         if (!$this->features->users) {
             return;
@@ -306,7 +306,7 @@ class StdoutInstaller extends Installer
         }        
     }
     
-    private function generateSecret()
+    private function generateSecret(): string
     {
         $saltGenerator = new \Lucinda\WebSecurity\Token\SaltGenerator(self::SALT_LENGTH);
         return $saltGenerator->getSalt();

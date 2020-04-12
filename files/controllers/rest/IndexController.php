@@ -10,7 +10,7 @@ class IndexController extends Lucinda\Framework\RestController
      */
     protected function GET()
     {
-        $this->response->view["features"] = json_decode('{FEATURES}', true);
-        $this->response->view["status"] = $this->request->parameters("status");
+        $this->response->view()["features"] = json_decode('{FEATURES}', true);
+        $this->response->view()["status"] = $this->request->parameters("status");
     }
 }

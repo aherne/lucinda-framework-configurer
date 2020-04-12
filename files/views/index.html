@@ -48,7 +48,7 @@
 	    <tr>
 	        <td>HTTP Headers Validation</td>
 	        <td>
-	           <site:feature name="http headers validation" status="${(!empty(${data.features.headers})?1:0)}" url_failure="#" url_success="#"/>
+	           <site:feature name="http headers validation" status="(!empty(${data.features.headers})?1:0)" url_failure="#" url_success="#"/>
 	           <table>
 				    <thead>
 				    <tr>
@@ -60,13 +60,13 @@
 					    <tr>
 					        <td>HTTP Caching Validation</td>
 					        <td>
-	           					<site:feature name="http caching validation" status="${(!empty(${data.features.headers.caching})?1:0)}" url_failure="#" url_success="#"/>
+	           					<site:feature name="http caching validation" status="(!empty(${data.features.headers.caching})?1:0)" url_failure="#" url_success="#"/>
 					        </td>
 					    </tr>
 					    <tr>
 					        <td>HTTP CORS Validation</td>
 					        <td>
-	           					<site:feature name="http cors validation" status="${(!empty(${data.features.headers.caching})?1:0)}" url_failure="#" url_success="#"/>
+	           					<site:feature name="http cors validation" status="(!empty(${data.features.headers.caching})?1:0)" url_failure="#" url_success="#"/>
 					        </td>
 					    </tr>
 				    </tbody>
@@ -76,25 +76,25 @@
 	    <tr>
 	        <td>Internationalization & Localization</td>
 	        <td>
-	           <site:feature name="internationalization" status="${(!empty(${data.features.internationalization})?1:0)}" url_failure="#" url_success="#"/>
+	           <site:feature name="internationalization" status="(!empty(${data.features.internationalization})?1:0)" url_failure="#" url_success="#"/>
 	        </td>
 	    </tr>
 	    <tr>
 	        <td>SQL Servers Support</td>
 	        <td>
-	           <site:feature name="sql database support" status="${(!empty(${data.features.sqlServer})?1:0)}" url_failure="#" url_success="#"/>
+	           <site:feature name="sql database support" status="(!empty(${data.features.sqlServer})?1:0)" url_failure="#" url_success="#"/>
 	        </td>
 	    </tr>
 	    <tr>
 	        <td>NoSQL Servers Support</td>
 	        <td>
-	           <site:feature name="nosql database support" status="${(!empty(${data.features.nosqlServer})?1:0)}" url_failure="#" url_success="#"/>
+	           <site:feature name="nosql database support" status="(!empty(${data.features.nosqlServer})?1:0)" url_failure="#" url_success="#"/>
 	        </td>
 	    </tr>
 	    <tr>
 	        <td>Authentication & Authorization</td>
 	        <td>
-	           <site:feature name="web security" status="${(!empty(${data.features.security})?1:0)}" url_failure="#" url_success="#"/>
+	           <site:feature name="web security" status="(!empty(${data.features.security})?1:0)" url_failure="#" url_success="#"/>
 	        </td>
 	    </tr>
     </tbody>

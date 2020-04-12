@@ -10,19 +10,20 @@ class StderrInstaller extends Installer
      * {@inheritDoc}
      * @see Installer::generateXML()
      */
-    protected function generateXML()
+    protected function generateXML(): void
     {
         $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
         $this->setApplicationTag();
         $this->setResolversTag();
         $this->setReportersTag();
+        $this->setTemplatingTag();
         $this->setExceptionsTag();
     }
     
     /**
      * Populates <application> tag @ stderr.xml
      */
-    private function setApplicationTag()
+    private function setApplicationTag(): void
     {
         $application = $this->xml->addChild("application");
         $application->addAttribute("version", "0.0.1");
@@ -43,20 +44,20 @@ class StderrInstaller extends Installer
     /**
      * Populates <resolvers> tag @ stderr.xml
      */
-    private function setResolversTag()
+    private function setResolversTag(): void
     {
         $application = $this->xml->addChild("resolvers");
         
         if (!$this->features->isREST) {
             $html = $application->addChild("resolver");
-            $html->addAttribute("name", "html");
+            $html->addAttribute("format", "html");
             $html->addAttribute("content_type", "text/html");
             $html->addAttribute("class", "HtmlRenderer");
             $html->addAttribute("charset", "UTF-8");
         }
         
-        $json = $application->addChild("format");
-        $json->addAttribute("name", "json");
+        $json = $application->addChild("resolver");
+        $json->addAttribute("format", "json");
         $json->addAttribute("content_type", "application/json");
         $json->addAttribute("class", "JsonRenderer");
         $json->addAttribute("charset", "UTF-8");
@@ -65,7 +66,7 @@ class StderrInstaller extends Installer
     /**
      * Populates <reporters> tag @ stderr.xml
      */
-    private function setReportersTag()
+    private function setReportersTag(): void
     {
         $reporter = $this->xml->addChild("reporters")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("reporter");
         $reporter->addAttribute("class", "FileReporter");
@@ -74,9 +75,26 @@ class StderrInstaller extends Installer
     }
     
     /**
+     * Populates <templating> tag @ stdout.xml
+     */
+    private function setTemplatingTag(): void
+    {
+        if ($this->features->isREST) {
+            return;
+        }
+        
+        $templating = $this->xml->addChild("templating");
+        $templating->addAttribute("compilations_path", "compilations");
+        $templating->addAttribute("tags_path", "application/tags");
+        $templating->addAttribute("templates_path", "application/views");
+        $templating->addAttribute("templates_extension", "html");
+        
+    }
+    
+    /**
      * Populates <exceptions> tag @ stderr.xml
      */
-    private function setExceptionsTag()
+    private function setExceptionsTag(): void
     {
         $routes = $this->xml->addChild("exceptions");
         $routes->addAttribute("controller", "ErrorsController");
