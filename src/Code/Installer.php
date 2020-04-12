@@ -191,32 +191,32 @@ class Installer
         $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
         
         $contents = file_get_contents($sourceFile);
-        $contents = preg_replace_callback('/\\n\/\/\s+\$object->addEventListener\([^"]+"([^"]+)"\);/', function($matches){
-            switch($matches[1]) {
-                case "SQLDataSourceInjector":
-                    return ($this->features->sqlServer?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "NoSQLDataSourceInjector":
-                    return ($this->features->nosqlServer?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "SecurityListener":
-                    return ($this->features->security?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "HttpHeadersListener":
-                    return ($this->features->headers?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "HttpCorsListener":
-                    return ($this->features->headers && $this->features->headers->cors?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "LocalizationListener":
-                    return ($this->features->internationalization?str_replace("// ", "", $matches[0]):"");
-                    break;
-                case "HttpCachingListener":
-                    return ($this->features->headers && $this->features->headers->caching?str_replace("// ", "", $matches[0]):"");
-                    break;
+        $position = strrpos($contents, '$object->run();');
+        $addition = "";
+        $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "LoggingListener");'."\n";
+        if ($this->features->sqlServer) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "SQLDataSourceInjector");'."\n";
+        }
+        if ($this->features->nosqlServer) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "NoSQLDataSourceInjector");'."\n";
+        }
+        $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "ErrorListener");'."\n";
+        if ($this->features->security) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "SecurityListener");."\n"';
+        }
+        if ($this->features->internationalization) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "LocalizationListener");'."\n";
+        }
+        if ($this->features->headers) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "HttpHeadersListener");'."\n";
+            if ($this->features->headers->cors) {
+                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "HttpCorsListener");'."\n";
             }
-        }, $contents);
-        file_put_contents($destinationFile, $contents);
+            if ($this->features->headers->caching) {
+                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::RESPONSE, "HttpCachingListener");'."\n";                
+            }
+        }
+        file_put_contents($destinationFile, substr($contents, 0, $position)."\n".$addition.'$object->run();');
     }
     
     /**

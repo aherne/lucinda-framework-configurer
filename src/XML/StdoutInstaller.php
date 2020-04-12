@@ -94,7 +94,7 @@ class StdoutInstaller extends Installer
         $loggers->addAttribute("path", "application/loggers");
         
         $logger = $loggers->addChild(self::DEFAULT_ENVIRONMENT)->addChild("logger");
-        $logger->addAttribute("class", "FileLoggerWrapper");
+        $logger->addAttribute("class", "FileLogger");
         $logger->addAttribute("path", "messages");
         $logger->addAttribute("format", "%d %f %l %m");
     }
@@ -108,9 +108,22 @@ class StdoutInstaller extends Installer
             return;
         }
         
+        $detectionMethod = "";
+        switch ($this->features->internationalization->detectionMethod) {
+            case "0":
+                $detectionMethod = "header";
+                break;
+            case "1":
+                $detectionMethod = "request";
+                break;
+            case "2":
+                $detectionMethod = "session";
+                break;
+        }
+        
         $internationalization = $this->xml->addChild("internationalization");
         $internationalization->addAttribute("locale", $this->features->internationalization->defaultLocale);
-        $internationalization->addAttribute("method", $this->features->internationalization->detectionMethod);
+        $internationalization->addAttribute("method", $detectionMethod);
         $internationalization->addAttribute("folder", "locale");
         $internationalization->addAttribute("domain", "messages");
     }
@@ -168,14 +181,36 @@ class StdoutInstaller extends Installer
             return;
         }
         
+        $driver = "";
+        switch ($this->features->nosqlServer->driver) {
+            case "0":
+                $driver = "redis";
+                break;
+            case "1":
+                $driver = "memcache";
+                break;
+            case "2":
+                $driver = "memcached";
+                break;
+            case "3":
+                $driver = "couchbase";
+                break;
+            case "4":
+                $driver = "apc";
+                break;
+            case "5":
+                $driver = "apcu";
+                break;
+        }
+        
         $server = $this->xml->addChild("nosql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
-        $server->addAttribute("driver", $this->features->nosqlServer->driver);
-        if (in_array($this->features->nosqlServer->driver, ["redis", "memcache", "memcached", "couchbase"])) {
+        $server->addAttribute("driver", $driver);
+        if (in_array($driver, ["redis", "memcache", "memcached", "couchbase"])) {
             $server->addAttribute("host", $this->features->nosqlServer->host);
             if ($this->features->nosqlServer->port) {
                 $server->addAttribute("port", $this->features->nosqlServer->port);
             }
-            if ($this->features->nosqlServer->driver == "couchbase") {
+            if ($driver == "couchbase") {
                 $server->addAttribute("username", $this->features->nosqlServer->user);
                 $server->addAttribute("password", $this->features->nosqlServer->password);
                 $server->addAttribute("bucket_name", $this->features->nosqlServer->bucket);
