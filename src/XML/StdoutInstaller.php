@@ -24,8 +24,9 @@ class StdoutInstaller extends Installer
         $this->setSqlTag();
         $this->setNoSqlTag();
         $this->setSecurityTag();
-        $this->setRoutes();
-        $this->setUsers();
+        $this->setRoutesTag();
+        $this->setUsersTag();
+        $this->setSessionTag();
     }    
     
     /**
@@ -290,7 +291,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <routes> tag @ stdout.xml
      */
-    private function setRoutes(): void
+    private function setRoutesTag(): void
     {        
         $routes = $this->xml->addChild("routes");
         if ($this->features->routes->default_roles) {
@@ -324,7 +325,7 @@ class StdoutInstaller extends Installer
     /**
      * Populates <users> tag @ stdout.xml
      */
-    private function setUsers(): void
+    private function setUsersTag(): void
     {
         if (!$this->features->users) {
             return;
@@ -341,6 +342,22 @@ class StdoutInstaller extends Installer
         }        
     }
     
+    /**
+     * Populates <session> tag @ stdout.xml
+     */
+    private function setSessionTag(): void
+    {
+        if (($this->features->internationalization && $this->features->internationalization->detectionMethod==2) || ($this->features->security && in_array($this->features->security->persistenceDrivers, [0,1]))) {
+            $session = $this->xml->addChild("session");
+            $session->addAttribute("auto_start", 1);
+        }
+    }
+    
+    /**
+     * Generates cryptographically secure key
+     * 
+     * @return string
+     */
     private function generateSecret(): string
     {
         $saltGenerator = new \Lucinda\WebSecurity\Token\SaltGenerator(self::SALT_LENGTH);
