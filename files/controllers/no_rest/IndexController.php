@@ -12,7 +12,7 @@ class IndexController extends Controller
      */
     public function run(): void
     {
-        $this->response->view()["features"] = json_decode('{FEATURES}', true);
+        $this->response->view()["features"] = json_decode(file_get_contents("features.json"), true);
         $this->response->view()["status"] = $this->request->parameters("status");
     }
 }

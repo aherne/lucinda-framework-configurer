@@ -13,7 +13,7 @@ class RestrictedController extends Lucinda\STDOUT\Controller
      * {@inheritDoc}
      * @see \Lucinda\STDOUT\Runnable::run()
      */
-    public function run()
+    public function run(): void
     {
         $this->response->view()["csrf"] = $this->attributes->getCsrfToken();
         $this->response->view()["status"] = $this->request->parameters("status");

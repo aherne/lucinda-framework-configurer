@@ -13,8 +13,8 @@ class MembersController extends Lucinda\STDOUT\Controller
      * {@inheritDoc}
      * @see \Lucinda\STDOUT\Runnable::run()
      */
-    public function run()
+    public function run(): void
     {
-        $this->response->attributes("uid", $this->attributes->getUserId());
+        $this->response->view()["uid"] = $this->attributes->getUserId();
     }
 }

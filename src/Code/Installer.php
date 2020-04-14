@@ -24,6 +24,7 @@ class Installer
         $this->createViews();
         $this->createPublic();
         $this->createBootstrap();
+        $this->saveFeatures();
     }
     
     /**
@@ -63,11 +64,7 @@ class Installer
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
         
         copy($sourceFolder.DIRECTORY_SEPARATOR."ErrorsController.php", $destinationFolder.DIRECTORY_SEPARATOR."ErrorsController.php");
-        
-        $controllerBody = file_get_contents($sourceFolder.DIRECTORY_SEPARATOR."IndexController.php");
-        $controllerBody = str_replace("{FEATURES}", json_encode($this->features), $controllerBody);
-        file_put_contents($destinationFolder.DIRECTORY_SEPARATOR."IndexController.php", $controllerBody);
-        
+        copy($sourceFolder.DIRECTORY_SEPARATOR."IndexController.php", $destinationFolder.DIRECTORY_SEPARATOR."IndexController.php");
         if ($this->features->security) {
             copy($sourceFolder.DIRECTORY_SEPARATOR."LoginController.php", $destinationFolder.DIRECTORY_SEPARATOR."LoginController.php");
             copy($sourceFolder.DIRECTORY_SEPARATOR."MembersController.php", $destinationFolder.DIRECTORY_SEPARATOR."MembersController.php");
@@ -127,6 +124,20 @@ class Installer
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization".$increment.".php",
                 $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization.php"
                 );
+        }
+        
+        if ($this->features->security->authenticationMethod!=2) {
+            if ($this->features->nosqlServer) {
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
+                    );
+            } else {
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
+                    );
+            }
         }
     }
     
@@ -202,7 +213,7 @@ class Installer
         }
         $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "ErrorListener");'."\n";
         if ($this->features->security) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "SecurityListener");."\n"';
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "SecurityListener");'."\n";
         }
         if ($this->features->internationalization) {
             $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "LocalizationListener");'."\n";
@@ -216,7 +227,16 @@ class Installer
                 $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::RESPONSE, "HttpCachingListener");'."\n";                
             }
         }
-        file_put_contents($destinationFile, substr($contents, 0, $position)."\n".$addition.'$object->run();');
+        file_put_contents($destinationFile, substr($contents, 0, $position).$addition.'$object->run();');
+    }
+    
+    /**
+     * Saves features to disk
+     */
+    private function saveFeatures(): void
+    {
+        $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."features.json";
+        file_put_contents($destinationFile, json_encode($this->features));
     }
     
     /**

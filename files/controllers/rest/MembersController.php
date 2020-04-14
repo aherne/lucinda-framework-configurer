@@ -15,6 +15,6 @@ class MembersController extends Lucinda\Framework\RestController
      */
     protected function GET()
     {
-        $this->response->attributes("uid", $this->attributes->getUserId());
+        $this->response->view()["uid"] = $this->attributes->getUserId();
     }
 }

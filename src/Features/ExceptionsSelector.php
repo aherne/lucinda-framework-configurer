@@ -77,6 +77,9 @@ class ExceptionsSelector
             case 'Lucinda\STDOUT\ValidationFailedException':
             case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':
             case 'Lucinda\WebSecurity\Token\Exception':
+                break;
+            case 'Lucinda\WebSecurity\SecurityPacket':
+                $exception->controller = "SecurityPacketController";
                 break;            
             default:
                 $exception->controller = "ErrorsController";
@@ -160,7 +163,8 @@ class ExceptionsSelector
             case 'Lucinda\WebSecurity\SecurityPacket':    // none
                 $exception->error_type = "NONE";
                 break;
-        }        
+        }
+        $this->exceptions->exceptions[] = $exception;
     }
     
     /**

@@ -61,7 +61,7 @@ class SecurityPacketController extends Lucinda\STDERR\Controller
             } elseif ($penalty = $this->request->getException()->getTimePenalty()) {
                 $location .= "&wait=".$penalty;
             }
-            $this->response::redirect($location);
+            $this->response::redirect($location, false, true);
         } else {
             switch ($status) {
                 case "unauthorized":

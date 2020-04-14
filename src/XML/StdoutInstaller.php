@@ -260,9 +260,9 @@ class StdoutInstaller extends Installer
         $authentication = $security->addChild("authentication");
         $form = $authentication->addChild("form");
         if ($this->features->nosqlServer) {
-            $form->addAttribute("throttler", "application/throttlers/NoSqlLoginThrottler");
+            $form->addAttribute("throttler", "NoSqlLoginThrottler");
         } elseif ($this->features->sqlServer) {
-            $form->addAttribute("throttler", "application/throttlers/SqlLoginThrottler");
+            $form->addAttribute("throttler", "SqlLoginThrottler");
         }
         switch ($this->features->security->authenticationMethod) {
             case 0:
@@ -327,12 +327,12 @@ class StdoutInstaller extends Installer
      */
     private function setUsersTag(): void
     {
-        if (!$this->features->users) {
+        if (!$this->features->users || !$this->features->security || $this->features->security->authenticationMethod!=2) {
             return;
         }
         
         $users = $this->xml->addChild("users");
-        foreach ($this->features->users as $info) {
+        foreach ($this->features->users->users as $info) {
             $user = $users->addChild("user");
             $user->addAttribute("id", $info->id);
             $user->addAttribute("name", $info->name);
