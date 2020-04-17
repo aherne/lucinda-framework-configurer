@@ -8,7 +8,7 @@ use \Lucinda\Configurer\Features\DocBlockParser;
  * Wrapper of Features object, able to interpret its fields into a console installer
  */
 class FeaturesSelector
-{    
+{
     private $features;
     
     /**
@@ -23,7 +23,7 @@ class FeaturesSelector
     
     /**
      * Instances and reads class fields documentation and sets up a prompter for users to set them
-     * 
+     *
      * @param int $i
      * @param string $className
      * @param object $object
@@ -33,7 +33,7 @@ class FeaturesSelector
         // compile properties
         $properties = [];
         $rc = new \ReflectionClass($className);
-        foreach($rc->getProperties() as $property) {
+        foreach ($rc->getProperties() as $property) {
             $properties[$property->getName()] = new DocBlockParser($property->getDocComment());
         }
         
@@ -49,7 +49,7 @@ class FeaturesSelector
                 if ($condition && !$this->validateCondition($object, $condition)) {
                     continue;
                 }
-                if($className=='\Lucinda\Configurer\Features\Security') {
+                if ($className=='\Lucinda\Configurer\Features\Security') {
                     if ($name=="persistenceDrivers") {
                         $object->$name = ($this->features->isREST?1:0);
                         continue;
@@ -67,13 +67,13 @@ class FeaturesSelector
                 } else {
                     $object->$name = $result;
                 }
-            }            
+            }
         }
     }
     
     /**
      * Prompts user to set respective class field and runs regex validation on values prompted by user
-     * 
+     *
      * @param int $k
      * @param string $index
      * @param string $className
@@ -97,13 +97,13 @@ class FeaturesSelector
             $message = $indent.$index." ".$info->getMessage().($defaultOption!==""?" or hit enter to confirm '".$defaultOption."'":($info->getOptional()?" or hit enter for default":"")).": ";
         }
         $result = \readline($message);
-        if($result==="") {
+        if ($result==="") {
             $result = $defaultOption;
         }
-        if($info->getOptional() && !$result){
+        if ($info->getOptional() && !$result) {
             return $result;
         }
-        if(!$this->validateValue($className, $parameterName, $info->getValidator(), $result)) {
+        if (!$this->validateValue($className, $parameterName, $info->getValidator(), $result)) {
             echo $indent."ERROR: value entered is invalid!\n";
             return $this->prompt($k, $index, $className, $parameterName, $info);
         }
@@ -112,7 +112,7 @@ class FeaturesSelector
     
     /**
      * Performs automatic regex-based validation of value prompted by user based on @validator annotation, allowing also to fine grain validation for certain fields
-     * 
+     *
      * @param string $className
      * @param string $parameterName
      * @param string $regex
@@ -122,7 +122,7 @@ class FeaturesSelector
      */
     private function validateValue(string $className, string $parameterName, string $regex, string $result): bool
     {
-        if($regex) {
+        if ($regex) {
             return preg_match("/^".$regex."$/", $result)>0;
         } else {
             throw new \Exception($className."#".$parameterName." misses validator");
@@ -131,7 +131,7 @@ class FeaturesSelector
     
     /**
      * Validates whether or not to display field prompt based on @if annotation
-     * 
+     *
      * @param object $object
      * @param array $condition
      * @return bool
@@ -139,7 +139,7 @@ class FeaturesSelector
     private function validateCondition($object, array $condition): bool
     {
         foreach ($condition as $name=>$values) {
-            if(in_array($object->$name, $values)) {
+            if (in_array($object->$name, $values)) {
                 return true;
             }
         }
@@ -148,7 +148,7 @@ class FeaturesSelector
     
     /**
      * Gets features set by user
-     * 
+     *
      * @return \Lucinda\Configurer\Features\Features
      */
     public function getFeatures()

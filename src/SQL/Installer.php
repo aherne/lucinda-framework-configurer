@@ -22,7 +22,7 @@ class Installer
      * @throws \Exception If installation fails.
      */
     public function __construct(Features $features)
-    {        
+    {
         $this->features = $features;
         
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
@@ -44,7 +44,7 @@ class Installer
             $this->setUsersTable2();
             $this->setUsersOauth2Table();
             $this->setUsersFormTable();
-        } else if ($this->features->security->authenticationMethod == 0) {
+        } elseif ($this->features->security->authenticationMethod == 0) {
             $this->setUsersTable1();
         }
         
@@ -178,7 +178,7 @@ class Installer
         foreach ($this->features->routes->routes as $route) {
             $this->pdo->exec("
             INSERT INTO resources (id, url, is_public) VALUES
-            (".$route->id.", '".$route->url."', ".(strpos($route->roles,"GUESTS")!==false?1:0).")");
+            (".$route->id.", '".$route->url."', ".(strpos($route->roles, "GUESTS")!==false?1:0).")");
         }
     }
 
@@ -286,7 +286,7 @@ class Installer
         }
         foreach ($userRoles as $userID=>$roles1) {
             foreach ($resourceRoles as $resourceID=>$roles2) {
-                foreach($roles1 as $role) {
+                foreach ($roles1 as $role) {
                     if (in_array($role, $roles2)) {
                         $this->pdo->exec("
                         INSERT INTO users_resources (resource_id, user_id) VALUES

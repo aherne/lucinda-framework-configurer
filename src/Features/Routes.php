@@ -4,7 +4,8 @@ namespace Lucinda\Configurer\Features;
 /**
  * Struct encapsulating options to configure STDOUT MVC API / WEB SECURITY API / HTTP HEADERS API routes
  */
-class Routes {
+class Routes
+{
     /**
      * @var string
      */
@@ -13,5 +14,5 @@ class Routes {
     /**
      * @var \Lucinda\Configurer\Features\Routes[]
      */
-    public $routes = [];    
+    public $routes = [];
 }

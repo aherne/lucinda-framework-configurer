@@ -22,19 +22,19 @@ class UsersSelector
         $this->features = $features;
         $this->users = new Users();
         $this->addUser("John Doe");
-        $this->addUser("Jane Doe");        
+        $this->addUser("Jane Doe");
     }
     
     /**
      * Adds user based on name
-     * 
+     *
      * @param string $name
      */
     private function addUser(string $name): void
     {
         $user = new User();
         $user->name = $name;
-        switch($name) {
+        switch ($name) {
             case "John Doe":
                 $user->id = 1;
                 $user->username = "john";
@@ -55,7 +55,7 @@ class UsersSelector
     
     /**
      * Gets all users added
-     * 
+     *
      * @return Users|NULL
      */
     public function getResults(): ?Users
@@ -63,4 +63,3 @@ class UsersSelector
         return $this->users;
     }
 }
-

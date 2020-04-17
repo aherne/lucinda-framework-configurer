@@ -27,7 +27,7 @@ class StdoutInstaller extends Installer
         $this->setRoutesTag();
         $this->setUsersTag();
         $this->setSessionTag();
-    }    
+    }
     
     /**
      * Populates <application> tag @ stdout.xml
@@ -37,14 +37,14 @@ class StdoutInstaller extends Installer
         $application = $this->xml->addChild("application");
         $application->addAttribute("version", "0.0.1");
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
-        $application->addAttribute("default_page", "index");        
+        $application->addAttribute("default_page", "index");
         $paths = $application->addChild("paths");
         $paths->addAttribute("controllers", "application/controllers");
         $paths->addAttribute("resolvers", "application/resolvers");
         if (!$this->features->isREST) {
             $paths->addAttribute("views", "application/views");
         }
-    }    
+    }
     
     /**
      * Populates <formats> tag @ stdout.xml
@@ -83,7 +83,6 @@ class StdoutInstaller extends Installer
         $templating->addAttribute("tags_path", "application/tags");
         $templating->addAttribute("templates_path", "application/views");
         $templating->addAttribute("templates_extension", "html");
-        
     }
     
     /**
@@ -267,7 +266,7 @@ class StdoutInstaller extends Installer
      * Populates <routes> tag @ stdout.xml
      */
     private function setRoutesTag(): void
-    {        
+    {
         $routes = $this->xml->addChild("routes");
         if ($this->features->routes->default_roles) {
             $routes->addAttribute("roles", $this->features->routes->default_roles);
@@ -314,7 +313,7 @@ class StdoutInstaller extends Installer
             $user->addAttribute("email", $info->email);
             $user->addAttribute("password", $info->password);
             $user->addAttribute("roles", $info->roles);
-        }        
+        }
     }
     
     /**
@@ -330,7 +329,7 @@ class StdoutInstaller extends Installer
     
     /**
      * Generates cryptographically secure key
-     * 
+     *
      * @return string
      */
     private function generateSecret(): string

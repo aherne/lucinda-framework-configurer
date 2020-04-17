@@ -5,7 +5,7 @@ namespace Lucinda\Configurer\Features;
  * Struct containing features available for installation
  */
 class Features
-{    
+{
     /**
      * @var boolean
      * @message Will your project be a REST-ful web service

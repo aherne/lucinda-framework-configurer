@@ -4,7 +4,8 @@ namespace Lucinda\Configurer\Features\Users;
 /**
  * Struct encapsulating options to configure site user
  */
-class User {
+class User
+{
     /**
      * @var integer
      */

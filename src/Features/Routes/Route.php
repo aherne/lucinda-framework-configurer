@@ -4,7 +4,8 @@ namespace Lucinda\Configurer\Features\Routes;
 /**
  * Struct encapsulating options to configure STDOUT MVC API / WEB SECURITY API / HTTP HEADERS API route
  */
-class Route {
+class Route
+{
     /**
      * @var integer
      */

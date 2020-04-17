@@ -88,7 +88,6 @@ class StderrInstaller extends Installer
         $templating->addAttribute("tags_path", "application/tags");
         $templating->addAttribute("templates_path", "application/views");
         $templating->addAttribute("templates_extension", "html");
-        
     }
     
     /**

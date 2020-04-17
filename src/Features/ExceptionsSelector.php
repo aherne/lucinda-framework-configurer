@@ -71,7 +71,7 @@ class ExceptionsSelector
     {
         $exception = new Exception();
         $exception->class = $className;
-        switch($className) {
+        switch ($className) {
             case 'Lucinda\STDOUT\MethodNotAllowedException':
             case 'Lucinda\STDOUT\PathNotFoundException':
             case 'Lucinda\STDOUT\ValidationFailedException':
@@ -80,13 +80,13 @@ class ExceptionsSelector
                 break;
             case 'Lucinda\WebSecurity\SecurityPacket':
                 $exception->controller = "SecurityPacketController";
-                break;            
+                break;
             default:
                 $exception->controller = "ErrorsController";
                 break;
         }
         if (!$this->features->isREST) {
-            switch($className) {
+            switch ($className) {
                 case 'Lucinda\STDOUT\MethodNotAllowedException':
                     $exception->view = 405;
                     break;
@@ -102,7 +102,7 @@ class ExceptionsSelector
                     break;
             }
         }
-        switch($className) {
+        switch ($className) {
             case 'Lucinda\STDOUT\MethodNotAllowedException':
                 $exception->http_status = 405;
                 break;
@@ -118,7 +118,7 @@ class ExceptionsSelector
                 $exception->http_status = 500;
                 break;
         }
-        switch($className) {
+        switch ($className) {
             case 'Lucinda\STDERR\ConfigurationException':   // logical
             case 'Lucinda\Headers\ConfigurationException':   // logical
             case 'Lucinda\Internationalization\ConfigurationException':   // logical
@@ -177,4 +177,3 @@ class ExceptionsSelector
         return $this->exceptions;
     }
 }
-

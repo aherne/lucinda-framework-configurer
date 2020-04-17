@@ -32,7 +32,7 @@ class DocBlockParser
     
     /**
      * Detects class that handles the field based on @handler annotation
-     * 
+     *
      * @param string $documentation
      */
     private function setHandler(string $documentation): void
@@ -46,7 +46,7 @@ class DocBlockParser
     
     /**
      * Gets class that handles the field based on @handler annotation
-     * 
+     *
      * @return string|NULL
      */
     public function getHandler(): ?string
@@ -56,7 +56,7 @@ class DocBlockParser
     
     /**
      * Detects field type based on @var annotation
-     * 
+     *
      * @param string $documentation
      */
     private function setType(string $documentation): void
@@ -74,7 +74,7 @@ class DocBlockParser
     public function getType(): string
     {
         return $this->type;
-    }    
+    }
     
     /**
      * Detects message to prompt client based on @message annotation
@@ -108,7 +108,7 @@ class DocBlockParser
         $matches = [];
         preg_match_all("/@option\s([^\\n]+)/", $documentation, $matches);
         $this->options = $matches[1];
-        if($this->type == "boolean" || strpos($this->type, "\\")===0) {
+        if ($this->type == "boolean" || strpos($this->type, "\\")===0) {
             $this->options = ["No","Yes"];
         }
     }
@@ -177,9 +177,9 @@ class DocBlockParser
         preg_match("/@validator\s([^\\n]+)/", $documentation, $matches);
         $validator = !empty($matches[1])?trim($matches[1]):"";
         if (!$validator) {
-            if(!empty($this->options)) {
+            if (!empty($this->options)) {
                 $this->validator = "([0-".(sizeof($this->options)-1)."]{1})";
-            } else if($this->type == "string") {
+            } elseif ($this->type == "string") {
                 $this->validator = "([\s\S]{1,})";
             } else {
                 $this->validator = "";
@@ -201,7 +201,7 @@ class DocBlockParser
     
     /**
      * Detects whether or not field should be displayed based on previous selections
-     * 
+     *
      * @param string $documentation
      */
     private function setCondition(string $documentation): void
@@ -215,7 +215,7 @@ class DocBlockParser
     
     /**
      * Gets whether or not field should be displayed based on previous selections
-     * 
+     *
      * @return array
      */
     public function getCondition(): array

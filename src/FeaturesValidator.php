@@ -36,7 +36,7 @@ class FeaturesValidator
     
     /**
      * Validates SQL server selected by opening a connection and running a query on it
-     * 
+     *
      * @param SQLServer $server
      */
     private function validateSQLServer(SQLServer $server): void
@@ -54,7 +54,7 @@ class FeaturesValidator
     
     /**
      * Validates nosql server selected by opening a connection
-     * 
+     *
      * @param NoSQLServer $server
      * @throws \Exception
      */
@@ -83,7 +83,7 @@ class FeaturesValidator
                     }
                     $memcached->delete("test");
                     $driver = "memcached";
-                } else if (class_exists("\Memcache")) {
+                } elseif (class_exists("\Memcache")) {
                     $memcache = new \Memcache();
                     $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
                     if (!$result) {
@@ -114,7 +114,7 @@ class FeaturesValidator
             case 3:
                 if (function_exists("\apcu_store")) {
                     $driver = "apcu";
-                } else if (function_exists("apc_store")) {
+                } elseif (function_exists("apc_store")) {
                     $driver = "apc";
                 } else {
                     throw new \Exception("Extension not installed: apcu");
@@ -124,6 +124,12 @@ class FeaturesValidator
         $server->driver = $driver;
     }
     
+    /**
+     * Validates security settings by matching them with sql and nosql servers chosen
+     *
+     * @param Features $features
+     * @throws \Exception
+     */
     protected function validateSecurity(Features $features): void
     {
         if (!$features->sqlServer && !($features->security->authenticationMethod==2 && $features->security->authorizationMethod==1)) {
@@ -134,6 +140,12 @@ class FeaturesValidator
         }
     }
     
+    /**
+     * Validates internationalization settings
+     *
+     * @param Features $features
+     * @throws \Exception
+     */
     protected function validateInternationalization(Features $features): void
     {
         if ($features->isREST && $features->internationalization && $features->internationalization->detectionMethod==2) {
@@ -141,4 +153,3 @@ class FeaturesValidator
         }
     }
 }
-

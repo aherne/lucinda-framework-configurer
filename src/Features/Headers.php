@@ -20,4 +20,3 @@ class Headers
      */
     public $cors;
 }
-

@@ -19,5 +19,5 @@ class Caching
      * @default 0
      * @validator ([0-9]+)
      */
-    public $expiration = 0;    
+    public $expiration = 0;
 }

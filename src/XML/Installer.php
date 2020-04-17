@@ -27,7 +27,7 @@ abstract class Installer
     
     /**
      * Sets up XML to write
-     * 
+     *
      * @param Features $features
      * @param string $xmlFilePath
      */

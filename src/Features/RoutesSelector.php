@@ -34,7 +34,7 @@ class RoutesSelector
     
     /**
      * Adds route based on uri
-     * 
+     *
      * @param string $url
      */
     private function addRoute(string $url): void
@@ -42,7 +42,7 @@ class RoutesSelector
         $route = new Route();
         $route->url = $url;
         // set controller & id
-        switch($url) {
+        switch ($url) {
             case "index":
                 $route->controller = "IndexController";
                 $route->id = 1;
@@ -65,7 +65,7 @@ class RoutesSelector
         }
         // set view
         if (!$this->features->isREST) {
-            switch($url) {
+            switch ($url) {
                 case "index":
                     $route->view = "index";
                     break;
@@ -84,7 +84,7 @@ class RoutesSelector
         }
         // set roles
         if ($this->features->security) {
-            switch($url) {
+            switch ($url) {
                 case "index":
                     $route->roles = ($this->features->security->isCMS?"MEMBERS,ADMINISTRATORS":"GUESTS,MEMBERS");
                     break;
@@ -104,7 +104,7 @@ class RoutesSelector
         }
         if ($this->features->headers) {
             if ($this->features->headers->caching) {
-                switch($url) {
+                switch ($url) {
                     case "index":
                         $route->no_cache = 0;
                         $route->cache_expiration = 10;
@@ -118,7 +118,7 @@ class RoutesSelector
                 }
             }
             if ($this->features->headers->cors) {
-                switch($url) {
+                switch ($url) {
                     case "index":
                         $route->allowed_methods = "GET";
                         break;
@@ -142,7 +142,7 @@ class RoutesSelector
     
     /**
      * Gets all routes added
-     * 
+     *
      * @return Routes
      */
     public function getResults(): Routes
@@ -150,4 +150,3 @@ class RoutesSelector
         return $this->routes;
     }
 }
-

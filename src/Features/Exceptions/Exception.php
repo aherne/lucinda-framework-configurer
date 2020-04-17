@@ -4,7 +4,8 @@ namespace Lucinda\Configurer\Features\Exceptions;
 /**
  * Struct encapsulating options to configure STDERR MVC API route
  */
-class Exception {
+class Exception
+{
     /**
      * @var string
      */
