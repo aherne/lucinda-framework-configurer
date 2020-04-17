@@ -172,7 +172,7 @@ class ExceptionsSelector
      *
      * @return Exceptions
      */
-    public function getExceptions(): Exceptions
+    public function getResults(): Exceptions
     {
         return $this->exceptions;
     }

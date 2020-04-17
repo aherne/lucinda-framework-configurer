@@ -7,17 +7,22 @@ namespace Lucinda\Configurer\Features;
 class Features
 {    
     /**
-     * @var integer
-     * @message Choose content types your site will support
-     * @option HTML + JSON (normal site)
-     * @option JSON (REST-ful web service site)
+     * @var boolean
+     * @message Will your project be a REST-ful web service
      * @default 0
      */
-    public $isREST;  
+    public $isREST;
+    
+    /**
+     * @var boolean
+     * @message Do you want to enable logging abilities
+     * @default 1
+     */
+    public $logging;
     
     /**
      * @var \Lucinda\Configurer\Features\Headers
-     * @message Do you want to be able to read request headers and write response headers for caching purposes (RECOMMENDED)
+     * @message Do you want to be able to use HTTP caching or CORS validation (RECOMMENDED)
      * @default 1
      */
     public $headers;
@@ -53,18 +58,21 @@ class Features
     /**
      * @var \Lucinda\Configurer\Features\Routes
      * @message -
+     * @handler \Lucinda\Configurer\Features\RoutesSelector
      */
     public $routes;
     
     /**
      * @var \Lucinda\Configurer\Features\Users
      * @message -
+     * @handler \Lucinda\Configurer\Features\UsersSelector
      */
     public $users;
     
     /**
      * @var \Lucinda\Configurer\Features\Exceptions
      * @message -
+     * @handler \Lucinda\Configurer\Features\ExceptionsSelector
      */
     public $exceptions;
 }

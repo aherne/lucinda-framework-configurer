@@ -25,7 +25,6 @@ class RoutesSelector
             $this->addRoute("login");
             $this->addRoute("logout");
             if ($features->security->isCMS) {
-                $this->addRoute("members");
                 $this->addRoute("restricted");
             } else {
                 $this->addRoute("members");
@@ -146,7 +145,7 @@ class RoutesSelector
      * 
      * @return Routes
      */
-    public function getRoutes(): Routes
+    public function getResults(): Routes
     {
         return $this->routes;
     }

@@ -31,14 +31,14 @@ class SqlLoginThrottler extends \Lucinda\Framework\AbstractLoginThrottler
     {
         if (!$this->found) {
             SQL("INSERT INTO user_logins (ip, username, attempts, penalty_expiration) VALUES (:ip, :username, :attempts, :penalty_expiration)", array(
-                ":ip"=>$this->ipAddress,
+                ":ip"=>$this->request->getIpAddress(),
                 ":username"=>$this->userName,
                 ":attempts"=>$this->attempts,
                 ":penalty_expiration"=>$this->penaltyExpiration
             ));
         } else {
             SQL("UPDATE user_logins SET attempts=:attempts, penalty_expiration=:penalty_expiration WHERE ip=:ip AND username=:username", array(
-                ":ip"=>$this->ipAddress,
+                ":ip"=>$this->request->getIpAddress(),
                 ":username"=>$this->userName,
                 ":attempts"=>$this->attempts,
                 ":penalty_expiration"=>$this->penaltyExpiration

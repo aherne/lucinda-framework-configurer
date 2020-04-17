@@ -21,15 +21,16 @@ class FeaturesValidator
     {
         $this->features = $features;
         if ($features->sqlServer) {
-            if ($features->sqlServer->driver!="mysql") {
-                throw new \Exception("Currently, SQL installer only works with mysql vendor");
-            }
             $this->validateSQLServer($features->sqlServer);
-        } else if($features->security && !($features->security->authenticationMethod==1 && $features->security->authorizationMethod==1)) {
-            throw new \Exception("A SQL server is required if you need DB authentication/authorization");
         }
         if ($features->nosqlServer) {
             $this->validateNoSQLServer($features->nosqlServer);
+        }
+        if ($features->security) {
+            $this->validateSecurity($features);
+        }
+        if ($features->internationalization) {
+            $this->validateInternationalization($features);
         }
     }
     
@@ -38,10 +39,17 @@ class FeaturesValidator
      * 
      * @param SQLServer $server
      */
-    private function validateSQLServer(SQLServer $server)
+    private function validateSQLServer(SQLServer $server): void
     {
-        $pdo = new \PDO($server->driver.":dbname=".$server->schema.";host=".$server->host, $server->user, $server->password);
-        $pdo->exec("SHOW TABLES");
+        $driver = "";
+        switch ($server->driver) {
+            case 0: // mysql
+                $driver = "mysql";
+                $pdo = new \PDO($driver.":dbname=".$server->schema.";host=".$server->host, $server->user, $server->password);
+                $pdo->exec("SHOW TABLES");
+                break;
+        }
+        $server->driver = $driver;
     }
     
     /**
@@ -50,20 +58,11 @@ class FeaturesValidator
      * @param NoSQLServer $server
      * @throws \Exception
      */
-    private function validateNoSQLServer(NoSQLServer $server)
+    private function validateNoSQLServer(NoSQLServer $server): void
     {
+        $driver = "";
         switch ($server->driver) {
-            case "apc":
-                if (!function_exists("\apc_store")) {
-                    throw new \Exception("Extension not installed: apc");
-                }
-                break;
-            case "apcu":
-                if (!function_exists("\apcu_store")) {
-                    throw new \Exception("Extension not installed: apcu");
-                }
-                break;
-            case "redis":
+            case 0:
                 if (!class_exists("\Redis")) {
                     throw new \Exception("Extension not installed: redis");
                 }
@@ -72,30 +71,30 @@ class FeaturesValidator
                 if (!$result) {
                     throw new \Exception("Connection to server failed: redis");
                 }
+                $driver = "redis";
                 break;
-            case "memcache":
-                if (!class_exists("\Memcache")) {
-                    throw new \Exception("Extension not installed: memcache");
-                }
-                $memcache = new \Memcache();
-                $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
-                if (!$result) {
-                    throw new \Exception("Connection to server failed: memcache");
+            case 1:
+                if (class_exists("\Memcached")) {
+                    $memcache = new \Memcached();
+                    $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
+                    $result = $memcached->set("test", 1);
+                    if (!$result) {
+                        throw new \Exception("Connection to server failed: memcached");
+                    }
+                    $memcached->delete("test");
+                    $driver = "memcached";
+                } else if (class_exists("\Memcache")) {
+                    $memcache = new \Memcache();
+                    $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
+                    if (!$result) {
+                        throw new \Exception("Connection to server failed: memcache");
+                    }
+                    $driver = "memcache";
+                } else {
+                    throw new \Exception("Extension not installed: memcache or memcached");
                 }
                 break;
-            case "memcached":
-                if (!class_exists("\Memcached")) {
-                    throw new \Exception("Extension not installed: memcached");
-                }
-                $memcached = new \Memcached();
-                $memcached->addServer($server->host, ($server->port?$server->port:11211));
-                $result = $memcached->set("test", 1);
-                if (!$result) {
-                    throw new \Exception("Connection to server failed: memcached");
-                }
-                $memcached->delete("test");
-                break;
-            case "couchbase":
+            case 2:
                 if (!class_exists("\Couchbase\PasswordAuthenticator")) {
                     throw new \Exception("Extension not installed: couchbase");
                 }
@@ -110,7 +109,35 @@ class FeaturesValidator
                 } catch (\CouchbaseException $e) {
                     throw new \Exception("Connection to server failed: couchbase");
                 }
+                $driver = "couchbase";
                 break;
+            case 3:
+                if (function_exists("\apcu_store")) {
+                    $driver = "apcu";
+                } else if (function_exists("apc_store")) {
+                    $driver = "apc";
+                } else {
+                    throw new \Exception("Extension not installed: apcu");
+                }
+                break;
+        }
+        $server->driver = $driver;
+    }
+    
+    protected function validateSecurity(Features $features): void
+    {
+        if (!$features->sqlServer && !($features->security->authenticationMethod==2 && $features->security->authorizationMethod==1)) {
+            throw new \Exception("A SQL server is required if you need DB authentication/authorization");
+        }
+        if (!$features->sqlServer && !$features->nosqlServer) {
+            throw new \Exception("Form authentication requires a SQL or NoSQL server for login throttling");
+        }
+    }
+    
+    protected function validateInternationalization(Features $features): void
+    {
+        if ($features->isREST && $features->internationalization && $features->internationalization->detectionMethod==2) {
+            throw new \Exception("Session detection of locale is not supported for RESTful sites!");
         }
     }
 }

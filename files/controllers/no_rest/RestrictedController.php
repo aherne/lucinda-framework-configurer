@@ -15,8 +15,6 @@ class RestrictedController extends Lucinda\STDOUT\Controller
      */
     public function run(): void
     {
-        $this->response->view()["csrf"] = $this->attributes->getCsrfToken();
-        $this->response->view()["status"] = $this->request->parameters("status");
-        $this->response->view()["wait"] = (string) $this->request->parameters("wait");
+        $this->response->view()["uid"] = $this->attributes->getUserId();
     }
 }

@@ -16,10 +16,8 @@ class Security
     /**
      * @var integer
      * @message Choose mediums login state will be persisted into
-     * @option SESSION + REMEMBER ME COOKIE (available if site IS NOT a REST API) 
-     * @option SESSION (available if site IS NOT a REST API)
-     * @option SYNCHRONIZER TOKEN  (available if site IS a REST API)
-     * @option JSON WEB TOKEN  (available if site IS a REST API)
+     * @option SESSION + REMEMBER ME COOKIE
+     * @option SYNCHRONIZER TOKEN
      */
     public $persistenceDrivers;
     
@@ -28,7 +26,7 @@ class Security
      * @message Choose authentication method
      * @option Using LOGIN FORM, checked in DATABASE
      * @option Using LOGIN FORM, checked in DATABASE + OAUTH2 PROVIDERS
-     * @option Using LOGIN FORM, checked in XML (use this if your site will always have same users)
+     * @option Using LOGIN FORM, checked in XML (use only if users will always be predefined)
      * @default 0
      */
     public $authenticationMethod;
@@ -36,8 +34,8 @@ class Security
     /**
      * @var integer
      * @message Choose authorization method
-     * @option Using DATABASE (recommended if site IS a CMS)
-     * @option Using XML (recommended if site IS NOT a CMS)
+     * @option Using DATABASE
+     * @option Using XML
      */
     public $authorizationMethod;
 }

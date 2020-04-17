@@ -6,24 +6,52 @@ namespace Lucinda\Configurer\Features;
  */
 class DocBlockParser
 {
+    private $handler;
     private $type;
     private $message;
     private $options = [];
     private $default;
     private $optional = false;
     private $validator;
+    private $condition = [];
     
     /**
      * @param string $documentation
      */
     public function __construct(string $documentation)
     {
+        $this->setHandler($documentation);
         $this->setType($documentation);
         $this->setMessage($documentation);
         $this->setOptions($documentation);
         $this->setDefaultOption($documentation);
         $this->setOptional($documentation);
         $this->setValidator($documentation);
+        $this->setCondition($documentation);
+    }
+    
+    /**
+     * Detects class that handles the field based on @handler annotation
+     * 
+     * @param string $documentation
+     */
+    private function setHandler(string $documentation): void
+    {
+        $matches = [];
+        preg_match("/@handler\s([^\\n]+)/", $documentation, $matches);
+        if (!empty($matches)) {
+            $this->handler = trim($matches[1]);
+        }
+    }
+    
+    /**
+     * Gets class that handles the field based on @handler annotation
+     * 
+     * @return string|NULL
+     */
+    public function getHandler(): ?string
+    {
+        return $this->handler;
     }
     
     /**
@@ -169,5 +197,29 @@ class DocBlockParser
     public function getValidator(): string
     {
         return $this->validator;
+    }
+    
+    /**
+     * Detects whether or not field should be displayed based on previous selections
+     * 
+     * @param string $documentation
+     */
+    private function setCondition(string $documentation): void
+    {
+        $matches = [];
+        preg_match("/@if\s([^=]+)=([a-zA-Z0-9',]+)/", $documentation, $matches);
+        if (!empty($matches)) {
+            $this->condition = [$matches[1]=>explode(",", $matches[2])];
+        }
+    }
+    
+    /**
+     * Gets whether or not field should be displayed based on previous selections
+     * 
+     * @return array
+     */
+    public function getCondition(): array
+    {
+        return $this->condition;
     }
 }

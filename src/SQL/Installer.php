@@ -30,6 +30,7 @@ class Installer
         }
         
         $pdo = new \PDO($this->features->sqlServer->driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo = $pdo;
         
         $this->cleanUp();
@@ -67,7 +68,7 @@ class Installer
      */
     private function cleanUp()
     {
-        $tables = array("users_form", "users_oauth2", "oauth2_providers", "users_resources", "roles_resources", "users_roles", "roles", "resources", "users");
+        $tables = array("users__form", "users__oauth2", "oauth2_providers", "users_resources", "roles_resources", "users_roles", "roles", "resources", "users", "user_logins");
         foreach ($tables as $table) {
             $this->pdo->exec("DROP TABLE IF EXISTS ".$table);
         }
@@ -195,7 +196,7 @@ class Installer
         unique(name)
         ) Engine=INNODB
         ");
-        foreach (self::ROLES as $id=>$name) {
+        foreach (self::ROLES as $name=>$id) {
             $this->pdo->exec("
             INSERT INTO roles (id, name) VALUES
             (".$id.", '".$name."')
@@ -246,7 +247,7 @@ class Installer
         foreign key(resource_id) references resources(id) on delete cascade
         ) Engine=INNODB
         ");
-        foreach ($this->features->routes->route as $route) {
+        foreach ($this->features->routes->routes as $route) {
             $routeRoles = explode(",", $route->roles);
             foreach ($routeRoles as $role) {
                 if (isset(self::ROLES[$role])) {
@@ -360,7 +361,7 @@ class Installer
         PRIMARY KEY(id),
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
         UNIQUE(username),
-        UNIQUE(user_id)
+        UNIQUE(user_id),
         KEY(username, password)
         ) Engine=INNODB
         ");

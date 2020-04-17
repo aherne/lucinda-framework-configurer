@@ -58,7 +58,7 @@ class UsersSelector
      * 
      * @return Users|NULL
      */
-    public function getUsers(): ?Users
+    public function getResults(): ?Users
     {
         return $this->users;
     }

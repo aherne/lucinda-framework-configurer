@@ -67,10 +67,11 @@ class Installer
         copy($sourceFolder.DIRECTORY_SEPARATOR."IndexController.php", $destinationFolder.DIRECTORY_SEPARATOR."IndexController.php");
         if ($this->features->security) {
             copy($sourceFolder.DIRECTORY_SEPARATOR."LoginController.php", $destinationFolder.DIRECTORY_SEPARATOR."LoginController.php");
-            copy($sourceFolder.DIRECTORY_SEPARATOR."MembersController.php", $destinationFolder.DIRECTORY_SEPARATOR."MembersController.php");
             copy($sourceFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php", $destinationFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php");
             if ($this->features->security->isCMS) {
                 copy($sourceFolder.DIRECTORY_SEPARATOR."RestrictedController.php", $destinationFolder.DIRECTORY_SEPARATOR."RestrictedController.php");
+            } else {                
+                copy($sourceFolder.DIRECTORY_SEPARATOR."MembersController.php", $destinationFolder.DIRECTORY_SEPARATOR."MembersController.php");
             }
         }
     }
@@ -162,9 +163,10 @@ class Installer
             $subfolder = ($this->features->security->isCMS?"cms":"no_cms");
             copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."index.html", $destinationFolder.DIRECTORY_SEPARATOR."index.html");
             copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."login.html", $destinationFolder.DIRECTORY_SEPARATOR."login.html");
-            copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."members.html", $destinationFolder.DIRECTORY_SEPARATOR."members.html");
             if ($this->features->security->isCMS) {
                 copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."restricted.html", $destinationFolder.DIRECTORY_SEPARATOR."restricted.html");
+            } else {
+                copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."members.html", $destinationFolder.DIRECTORY_SEPARATOR."members.html");
             }
             copy($sourceFolder.DIRECTORY_SEPARATOR."400.html", $destinationFolder.DIRECTORY_SEPARATOR."400.html");
             copy($sourceFolder.DIRECTORY_SEPARATOR."401.html", $destinationFolder.DIRECTORY_SEPARATOR."401.html");
@@ -204,7 +206,9 @@ class Installer
         $contents = file_get_contents($sourceFile);
         $position = strrpos($contents, '$object->run();');
         $addition = "";
-        $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "LoggingListener");'."\n";
+        if ($this->features->logging) {
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "LoggingListener");'."\n";
+        }
         if ($this->features->sqlServer) {
             $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "SQLDataSourceInjector");'."\n";
         }

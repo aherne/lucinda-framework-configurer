@@ -2,7 +2,6 @@
 namespace Lucinda\Configurer;
 
 use Lucinda\Configurer\Features\Features;
-use Lucinda\Configurer\Features\FeaturesSelector;
 use Lucinda\Configurer\XML\StdoutInstaller;
 use Lucinda\Configurer\XML\StderrInstaller;
 use Lucinda\Configurer\Code\Installer as CodeInstaller;

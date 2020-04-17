@@ -91,6 +91,10 @@ class StdoutInstaller extends Installer
      */
     private function setLoggersTag(): void
     {
+        if (!$this->features->logging) {
+            return;
+        }
+        
         $loggers = $this->xml->addChild("loggers");
         $loggers->addAttribute("path", "application/loggers");
         
@@ -182,36 +186,14 @@ class StdoutInstaller extends Installer
             return;
         }
         
-        $driver = "";
-        switch ($this->features->nosqlServer->driver) {
-            case "0":
-                $driver = "redis";
-                break;
-            case "1":
-                $driver = "memcache";
-                break;
-            case "2":
-                $driver = "memcached";
-                break;
-            case "3":
-                $driver = "couchbase";
-                break;
-            case "4":
-                $driver = "apc";
-                break;
-            case "5":
-                $driver = "apcu";
-                break;
-        }
-        
         $server = $this->xml->addChild("nosql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
-        $server->addAttribute("driver", $driver);
-        if (in_array($driver, ["redis", "memcache", "memcached", "couchbase"])) {
+        $server->addAttribute("driver", $this->features->nosqlServer->driver);
+        if (!in_array($this->features->nosqlServer->driver, ["apc","apcu"])) {
             $server->addAttribute("host", $this->features->nosqlServer->host);
             if ($this->features->nosqlServer->port) {
                 $server->addAttribute("port", $this->features->nosqlServer->port);
             }
-            if ($driver == "couchbase") {
+            if ($this->features->nosqlServer->driver == "couchbase") {
                 $server->addAttribute("username", $this->features->nosqlServer->user);
                 $server->addAttribute("password", $this->features->nosqlServer->password);
                 $server->addAttribute("bucket_name", $this->features->nosqlServer->bucket);
@@ -245,15 +227,8 @@ class StdoutInstaller extends Installer
                 $rememberMe->addAttribute("secret", $this->generateSecret());
                 break;
             case 1:
-                $persistenceDrivers->addChild("session");
-                break;
-            case 2:
                 $synchronizerToken =$persistenceDrivers->addChild("synchronizer_token");
                 $synchronizerToken->addAttribute("secret", $this->generateSecret());
-                break;
-            case 3:
-                $jsonWebToken =$persistenceDrivers->addChild("json_web_token");
-                $jsonWebToken->addAttribute("secret", $this->generateSecret());
                 break;
         }
         
@@ -347,7 +322,7 @@ class StdoutInstaller extends Installer
      */
     private function setSessionTag(): void
     {
-        if (($this->features->internationalization && $this->features->internationalization->detectionMethod==2) || ($this->features->security && in_array($this->features->security->persistenceDrivers, [0,1]))) {
+        if (!$this->features->isREST && (($this->features->internationalization && $this->features->internationalization->detectionMethod==2) || ($this->features->security && $this->features->security->persistenceDrivers==0))) {
             $session = $this->xml->addChild("session");
             $session->addAttribute("auto_start", 1);
         }

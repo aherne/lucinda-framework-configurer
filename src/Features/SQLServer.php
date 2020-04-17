@@ -7,10 +7,10 @@ namespace Lucinda\Configurer\Features;
 class SQLServer
 {
     /**
-     * @var string
-     * @message Write PDO name of SQL driver (see: https://www.php.net/manual/en/pdo.drivers.php)
-     * @default mysql
-     * @validator ([a-zA-Z0-9_\-]+)
+     * @var integer
+     * @message Choose SQL driver
+     * @option MySQL
+     * @default 0
      */
     public $driver;
     
