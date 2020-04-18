@@ -48,7 +48,7 @@ class Installer
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale);
         }
         
-        if ($this->features->security && ($this->features->security->authenticationMethod!=2 || $this->features->security->authorizationMethod!=1)) {
+        if ($this->features->security) {
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."dao");
         }
         
@@ -89,6 +89,20 @@ class Installer
             $destinationFolder.DIRECTORY_SEPARATOR."EmergencyHandler.php"
         );
         
+        if ($this->features->security) {
+            if ($this->features->nosqlServer) {
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
+                    );
+            } else {
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
+                    );
+            }
+        }
+        
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
@@ -125,20 +139,6 @@ class Installer
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization".$increment.".php",
                 $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization.php"
             );
-        }
-        
-        if ($this->features->security->authenticationMethod!=2) {
-            if ($this->features->nosqlServer) {
-                copy(
-                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
-                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
-                );
-            } else {
-                copy(
-                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
-                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
-                );
-            }
         }
     }
     

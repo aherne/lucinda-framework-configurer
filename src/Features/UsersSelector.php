@@ -21,6 +21,7 @@ class UsersSelector
         }
         $this->features = $features;
         $this->users = new Users();
+        $this->users->default_roles = "GUESTS";
         $this->addUser("John Doe");
         $this->addUser("Jane Doe");
     }

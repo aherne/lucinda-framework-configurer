@@ -306,11 +306,13 @@ class StdoutInstaller extends Installer
         }
         
         $users = $this->xml->addChild("users");
+        $users->addAttribute("roles", $this->features->users->default_roles);
         foreach ($this->features->users->users as $info) {
             $user = $users->addChild("user");
             $user->addAttribute("id", $info->id);
             $user->addAttribute("name", $info->name);
             $user->addAttribute("email", $info->email);
+            $user->addAttribute("username", $info->username);
             $user->addAttribute("password", $info->password);
             $user->addAttribute("roles", $info->roles);
         }
