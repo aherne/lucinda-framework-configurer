@@ -32,11 +32,9 @@ class Installer
      */
     private function createFolders(): void
     {
-        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers");
         $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."validators");
                 
         if (!$this->features->isREST) {
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."views");
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags");
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."header");
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
@@ -46,10 +44,6 @@ class Installer
         if ($this->features->internationalization) {
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale");
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale);
-        }
-        
-        if ($this->features->security) {
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models".DIRECTORY_SEPARATOR."dao");
         }
         
         $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."public");
@@ -63,11 +57,9 @@ class Installer
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."controllers".DIRECTORY_SEPARATOR.($this->features->isREST?"rest":"no_rest");
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
         
-        copy($sourceFolder.DIRECTORY_SEPARATOR."ErrorsController.php", $destinationFolder.DIRECTORY_SEPARATOR."ErrorsController.php");
         copy($sourceFolder.DIRECTORY_SEPARATOR."IndexController.php", $destinationFolder.DIRECTORY_SEPARATOR."IndexController.php");
         if ($this->features->security) {
             copy($sourceFolder.DIRECTORY_SEPARATOR."LoginController.php", $destinationFolder.DIRECTORY_SEPARATOR."LoginController.php");
-            copy($sourceFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php", $destinationFolder.DIRECTORY_SEPARATOR."SecurityPacketController.php");
             if ($this->features->security->isCMS) {
                 copy($sourceFolder.DIRECTORY_SEPARATOR."RestrictedController.php", $destinationFolder.DIRECTORY_SEPARATOR."RestrictedController.php");
             } else {
@@ -83,26 +75,7 @@ class Installer
     {
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."models";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models";
-        
-        copy(
-            $sourceFolder.DIRECTORY_SEPARATOR."EmergencyHandler".($this->features->isREST?"2":"1").".php",
-            $destinationFolder.DIRECTORY_SEPARATOR."EmergencyHandler.php"
-        );
-        
-        if ($this->features->security) {
-            if ($this->features->nosqlServer) {
-                copy(
-                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
-                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
-                    );
-            } else {
-                copy(
-                    $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."throttlers".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
-                    $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
-                    );
-            }
-        }
-        
+                        
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
@@ -153,10 +126,6 @@ class Installer
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."views";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."views";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."debug.html", $destinationFolder.DIRECTORY_SEPARATOR."debug.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."404.html", $destinationFolder.DIRECTORY_SEPARATOR."404.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."405.html", $destinationFolder.DIRECTORY_SEPARATOR."405.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."500.html", $destinationFolder.DIRECTORY_SEPARATOR."500.html");
         if (!$this->features->security) {
             copy($sourceFolder.DIRECTORY_SEPARATOR."index.html", $destinationFolder.DIRECTORY_SEPARATOR."index.html");
         } else {
@@ -168,9 +137,6 @@ class Installer
             } else {
                 copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."members.html", $destinationFolder.DIRECTORY_SEPARATOR."members.html");
             }
-            copy($sourceFolder.DIRECTORY_SEPARATOR."400.html", $destinationFolder.DIRECTORY_SEPARATOR."400.html");
-            copy($sourceFolder.DIRECTORY_SEPARATOR."401.html", $destinationFolder.DIRECTORY_SEPARATOR."401.html");
-            copy($sourceFolder.DIRECTORY_SEPARATOR."403.html", $destinationFolder.DIRECTORY_SEPARATOR."403.html");
         }
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."tags";
@@ -200,10 +166,9 @@ class Installer
      */
     private function createBootstrap(): void
     {
-        $sourceFile = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."index.php";
         $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
         
-        $contents = file_get_contents($sourceFile);
+        $contents = file_get_contents($destinationFile);
         $position = strrpos($contents, '$object->run();');
         $addition = "";
         if ($this->features->logging) {
@@ -215,7 +180,6 @@ class Installer
         if ($this->features->nosqlServer) {
             $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "NoSQLDataSourceInjector");'."\n";
         }
-        $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "ErrorListener");'."\n";
         if ($this->features->security) {
             $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "SecurityListener");'."\n";
         }

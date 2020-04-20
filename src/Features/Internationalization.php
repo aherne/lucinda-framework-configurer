@@ -20,7 +20,6 @@ class Internationalization
      * @option Based on request header 'Accept-Language'
      * @option By value of request parameter 'locale'
      * @option By value of session parameter 'locale'
-     * @default 2
      */
     public $detectionMethod;
 }

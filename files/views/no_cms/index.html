@@ -31,13 +31,7 @@
 	        	Error handling abilities are always <strong class="enabled">enabled</strong>! To learn more how errors are logged automatically into a file able to rotate, follow <a href="#" target="_blank">this guide</a>!
 	        </td>
 	    </tr>
-	    <tr>
-	        <td>Logging</td>
-	        <td>
-	        	Logging abilities are always <strong class="enabled">enabled</strong>! To learn more how to log messages, follow <a href="#" target="_blank">this guide</a>!
-	        </td>
-	    </tr>
-	    <:if test="!empty(${data.features.isREST})">
+	    <:if test="!${data.features.isREST}">
 	    <tr>
 	        <td>Templating</td>
 	        <td>
@@ -45,6 +39,12 @@
 	        </td>
 	    </tr>
 	    </:if>
+	    <tr>
+	        <td>Logging</td>
+	        <td>
+	           <site:feature name="logging" status="(!empty(${data.features.logging})?1:0)" url_failure="#" url_success="#"/>
+	        </td>
+	    </tr>
 	    <tr>
 	        <td>HTTP Headers Validation</td>
 	        <td>
