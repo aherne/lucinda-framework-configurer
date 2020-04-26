@@ -4,7 +4,7 @@
 <site:status value="${data.status}"/>
 </:if>
 <p class="panel">
-<:if test="!empty(${data.features.user_id})">
+<:if test="!empty(${data.user_id})">
 <strong>You are now logged in!</strong> To access members area, go to <a href="/members">members</a> page. [<a href="/logout">LOGOUT</a>].
 <:else/>
 To access user area, go to <a href="/login">login</a> page.
