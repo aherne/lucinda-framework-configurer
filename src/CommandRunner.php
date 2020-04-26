@@ -21,10 +21,6 @@ class CommandRunner
                 new ProjectCreator($installationFolder);
                 echo "Project installed successfully at: ".$installationFolder."\n";
                 break;
-            case "vhost":
-                $configurer = new HostCreator($installationFolder);
-                echo "Host created successfully! Open your browser and go to: http://".$configurer->getHostCreated()."\n";
-                break;
             default:
                 throw new \Exception("Invalid option: ".$command."!");
                 break;

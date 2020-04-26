@@ -13,5 +13,6 @@ class IndexController extends Lucinda\Framework\RestController
         $this->response->view()["token"] = $this->attributes->getAccessToken();
         $this->response->view()["features"] = json_decode(file_get_contents("features.json"), true);
         $this->response->view()["status"] = $this->request->parameters("status");
+        $this->response->view()["user_id"] = $this->attributes->getUserId();
     }
 }

@@ -1,9 +1,11 @@
-<site:top title="Login"/>
-<p>
+<site:header title="Login Page"/>
+
 <:if test="isset(${data.status})">
-<header:status value="${data.status}"/>
+<site:status value="${data.status}"/>
 </:if>
-</p>
+
+<p class="panel">To return to homepage, go <a href="/">here</a>.</p>
+
 <form action="" method="POST">
     Username: <input type="text" name="username" required/><br/>
     Password: <input type="password" name="password" required/><br/>
@@ -14,19 +16,7 @@
     <strong>Please wait for ${data.wait} seconds until next login!</strong>
     </:if>
 </form>
-<p>
-    Use username '<i>john</i>' and password '<i>doe</i>' to login! To see throttling in action, try to login many times with same username and wrong password...
-</p>
 
-<p><a href="/">Back to HOME!</a></p>
-<hr/>
-<small>
-	Details for this page:
-	<ul>
-		<li><strong>controller</strong>: application/controllers/LoginController.php</li>
-		<li><strong>model</strong>: application/listeners/SecurityListener.php</li>
-		<li><strong>view</strong>: application/views/login.html</li>
-		<li><strong>route @ stdout.xml</strong>: &lt;route url="login" controller="LoginController" view="login" ... /&gt;</li>
-	</ul>
-</small>
-<site:bottom/>
+<p class="panel">Use username '<i>john</i>' and password '<i>doe</i>' or username '<i>jane</i>' and password '<i>doe</i>'! To see throttling in action, try to login many times with same username and wrong password...</p>
+
+<site:footer/>

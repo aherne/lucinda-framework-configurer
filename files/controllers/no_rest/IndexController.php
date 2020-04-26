@@ -7,6 +7,11 @@ use Lucinda\STDOUT\Controller;
 class IndexController extends Controller
 {
     /**
+     * @var Attributes
+     */
+    protected $attributes;
+    
+    /**
      * {@inheritDoc}
      * @see \Lucinda\STDOUT\Runnable::run()
      */
@@ -14,5 +19,6 @@ class IndexController extends Controller
     {
         $this->response->view()["features"] = json_decode(file_get_contents("features.json"), true);
         $this->response->view()["status"] = $this->request->parameters("status");
+        $this->response->view()["user_id"] = $this->attributes->getUserId();
     }
 }

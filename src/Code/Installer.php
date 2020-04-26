@@ -22,7 +22,6 @@ class Installer
         $this->createControllers();
         $this->createModels();
         $this->createViews();
-        $this->createPublic();
         $this->createBootstrap();
         $this->saveFeatures();
     }
@@ -36,9 +35,7 @@ class Installer
                 
         if (!$this->features->isREST) {
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags");
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."header");
             $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."compilations");
         }
         
         if ($this->features->internationalization) {
@@ -141,24 +138,9 @@ class Installer
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."tags";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."header".DIRECTORY_SEPARATOR."status.html", $destinationFolder.DIRECTORY_SEPARATOR."header".DIRECTORY_SEPARATOR."status.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."bottom.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."bottom.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."feature.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."feature.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."top.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."top.html");
-    }
-    
-    /**
-     * Creates project public files according to features selected
-     */
-    private function createPublic(): void
-    {
-        if ($this->features->isREST) {
-            return;
-        }
-        
-        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."public";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."public";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."default.css", $destinationFolder.DIRECTORY_SEPARATOR."default.css");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html");
     }
     
     /**
