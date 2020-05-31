@@ -9,9 +9,29 @@
             "email": "lucian.gabriel.popescu@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "autoload": {
+    	"psr-4": {
+        	"Lucinda\\Configurer\\": "src/"
+    	}
+    },
     "require": {
-        "ext-simplexml": "*",
-        "ext-xml": "*"  
+        "php": "^7.1",
+        "ext-simplexml": "*",    
+        "ext-xml": "*",    
+        "ext-readline": "*",    
+        "lucinda/framework-engine": "~2.0",       	
+        "lucinda/logging": "~3.0",
+        "lucinda/nosql-data-access": "~3.0",
+        "lucinda/oauth2-client": "~2.0",
+        "lucinda/security": "~3.0",
+        "lucinda/mvc": "~3.0",
+        "lucinda/sql-data-access": "~3.0",
+        "lucinda/view-language": "~3.0",
+        "lucinda/internationalization": "~3.0",
+        "lucinda/errors-mvc": "~2.0",
+        "lucinda/headers": "~1.0"
+    },
+    "require-dev": {
+        "lucinda/unit-testing": "^1.0"
     }
 }
