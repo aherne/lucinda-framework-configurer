@@ -1,6 +1,7 @@
 {
     "name": "lucinda/framework-configurer",
-    "description": "Console step by step configurer for Lucinda Framework 2.0",
+    "description": "Console step by step configurer for Lucinda Framework 3.0",
+    "homepage": "https://github.com/aherne/lucinda-framework-configurer",
     "type": "library",
     "license": "MIT",
     "authors": [
