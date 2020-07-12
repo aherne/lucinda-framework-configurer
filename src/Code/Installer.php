@@ -72,11 +72,36 @@ class Installer
     {
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."models";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models";
-                        
-        if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
+               
+        // if security is not enabled, do nothing
+        if (!$this->features->security) {
             return;
         }
         
+        // create dao subfolder, if not exists
+        if (!file_exists($destinationFolder.DIRECTORY_SEPARATOR."dao")) {
+            mkdir($destinationFolder.DIRECTORY_SEPARATOR."dao");
+        }
+        
+        // install login throttlers
+        if ($this->features->nosqlServer) {
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
+                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
+                );
+        } elseif ($this->features->sqlServer) {
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
+                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
+                );
+        }
+        
+        // if authentication & authorization are done based on ACL, do nothing
+        if ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1) {
+            return;
+        }
+        
+        // install data access objects based on user selections
         $increment = 0;
         if ($this->features->security->authenticationMethod==0) {
             $increment = ($this->features->security->authorizationMethod==0?1:($this->features->security->isCMS?3:5));
@@ -90,15 +115,13 @@ class Installer
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersFormAuthentication".$increment.".php",
                 $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersFormAuthentication.php"
             );
-        }
-        
+        }        
         if ($this->features->security->authenticationMethod==1) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php",
                 $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php"
             );
-        }
-        
+        }        
         if ($this->features->security->authorizationMethod==0) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."PagesAuthorization.php",
