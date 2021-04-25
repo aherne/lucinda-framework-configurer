@@ -7,7 +7,7 @@ use Lucinda\STDOUT\Controller;
 class IndexController extends Controller
 {
     /**
-     * @var Attributes
+     * @var \Lucinda\Framework\Attributes
      */
     protected $attributes;
     
