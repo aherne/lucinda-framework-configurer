@@ -36,7 +36,7 @@ class StdoutInstaller extends Installer
     private function setApplicationTag(): void
     {
         $application = $this->xml->addChild("application");
-        $application->addAttribute("version", "0.0.1");
+        $application->addAttribute("version", self::DEFAULT_VERSION);
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
         $application->addAttribute("default_route", "index");
         $paths = $application->addChild("paths");
