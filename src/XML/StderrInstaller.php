@@ -6,6 +6,8 @@ namespace Lucinda\Configurer\XML;
  */
 class StderrInstaller extends Installer
 {
+    const DEFAULT_ROUTE = "default";
+    
     /**
      * {@inheritDoc}
      * @see Installer::generateXML()
@@ -14,10 +16,11 @@ class StderrInstaller extends Installer
     {
         $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
         $this->setApplicationTag();
+        $this->setDisplayErrorsTag();
         $this->setResolversTag();
         $this->setReportersTag();
         $this->setTemplatingTag();
-        $this->setExceptionsTag();
+        $this->setRoutesTag();
     }
     
     /**
@@ -26,19 +29,28 @@ class StderrInstaller extends Installer
     private function setApplicationTag(): void
     {
         $application = $this->xml->addChild("application");
-        $application->addAttribute("version", "0.0.1");
+        $application->addAttribute("version", self::DEFAULT_VERSION);
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
+        $application->addAttribute("default_route", self::DEFAULT_ROUTE);
         if ($this->features->security) {
             $application->addAttribute("redirect", "1");
         }
         $paths = $application->addChild("paths");
         $paths->addAttribute("controllers", "application/controllers");
-        $paths->addAttribute("resolvers", "application/renderers");
+        $paths->addAttribute("resolvers", "application/resolvers");
         $paths->addAttribute("reporters", "application/reporters");
         if (!$this->features->isREST) {
             $paths->addAttribute("views", "application/views");
         }
-        $application->display_errors->local = 1;
+    }
+    
+    /**
+     * Populates <display_errors> tag @ stderr.xml
+     */
+    private function setDisplayErrorsTag(): void
+    {
+        $application = $this->xml->addChild("display_errors");
+        $application->addChild(self::DEFAULT_ENVIRONMENT, 1);
     }
     
     /**
@@ -52,14 +64,14 @@ class StderrInstaller extends Installer
             $html = $application->addChild("resolver");
             $html->addAttribute("format", "html");
             $html->addAttribute("content_type", "text/html");
-            $html->addAttribute("class", "HtmlRenderer");
+            $html->addAttribute("class", "HtmlResolver");
             $html->addAttribute("charset", "UTF-8");
         }
         
         $json = $application->addChild("resolver");
         $json->addAttribute("format", "json");
         $json->addAttribute("content_type", "application/json");
-        $json->addAttribute("class", "JsonRenderer");
+        $json->addAttribute("class", "JsonResolver");
         $json->addAttribute("charset", "UTF-8");
     }
 
@@ -93,15 +105,19 @@ class StderrInstaller extends Installer
     /**
      * Populates <exceptions> tag @ stderr.xml
      */
-    private function setExceptionsTag(): void
+    private function setRoutesTag(): void
     {
-        $routes = $this->xml->addChild("exceptions");
-        $routes->addAttribute("controller", "ErrorsController");
-        $routes->addAttribute("error_type", "LOGICAL");
-        $routes->addAttribute("http_status", "500");
+        $routes = $this->xml->addChild("routes");
+        
+        $route = $routes->addChild("route");
+        $route->addAttribute("id", self::DEFAULT_ROUTE);
+        $route->addAttribute("controller", "ErrorsController");
+        $route->addAttribute("error_type", "LOGICAL");
+        $route->addAttribute("http_status", "500");
+        
         foreach ($this->features->exceptions->exceptions as $info) {
-            $route = $routes->addChild("exception");
-            $route->addAttribute("class", $info->class);
+            $route = $routes->addChild("route");
+            $route->addAttribute("id", $info->class);
             $route->addAttribute("error_type", $info->error_type);
             if ($info->controller!==null) {
                 $route->addAttribute("controller", $info->controller);

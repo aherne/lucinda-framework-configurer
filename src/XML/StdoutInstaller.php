@@ -6,6 +6,7 @@ namespace Lucinda\Configurer\XML;
  */
 class StdoutInstaller extends Installer
 {
+    const DEFAULT_ROUTE = "index";
     const SALT_LENGTH=128;
     
     /**
@@ -16,7 +17,7 @@ class StdoutInstaller extends Installer
     {
         $this->xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><!DOCTYPE xml><xml></xml>');
         $this->setApplicationTag();
-        $this->setFormatsTag();
+        $this->setResolversTag();
         $this->setTemplatingTag();
         $this->setLoggersTag();
         $this->setInternationalizationTag();
@@ -35,9 +36,9 @@ class StdoutInstaller extends Installer
     private function setApplicationTag(): void
     {
         $application = $this->xml->addChild("application");
-        $application->addAttribute("version", "0.0.1");
+        $application->addAttribute("version", self::DEFAULT_VERSION);
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
-        $application->addAttribute("default_page", "index");
+        $application->addAttribute("default_route", "index");
         $paths = $application->addChild("paths");
         $paths->addAttribute("controllers", "application/controllers");
         $paths->addAttribute("resolvers", "application/resolvers");
@@ -47,22 +48,22 @@ class StdoutInstaller extends Installer
     }
     
     /**
-     * Populates <formats> tag @ stdout.xml
+     * Populates <resolvers> tag @ stdout.xml
      */
-    private function setFormatsTag(): void
+    private function setResolversTag(): void
     {
-        $application = $this->xml->addChild("formats");
+        $application = $this->xml->addChild("resolvers");
         
         if (!$this->features->isREST) {
-            $html = $application->addChild("format");
-            $html->addAttribute("name", "html");
+            $html = $application->addChild("resolver");
+            $html->addAttribute("format", "html");
             $html->addAttribute("content_type", "text/html");
             $html->addAttribute("class", "HtmlResolver");
             $html->addAttribute("charset", "UTF-8");
         }
         
-        $json = $application->addChild("format");
-        $json->addAttribute("name", "json");
+        $json = $application->addChild("resolver");
+        $json->addAttribute("format", "json");
         $json->addAttribute("content_type", "application/json");
         $json->addAttribute("class", "JsonResolver");
         $json->addAttribute("charset", "UTF-8");
@@ -273,7 +274,7 @@ class StdoutInstaller extends Installer
         }
         foreach ($this->features->routes->routes as $info) {
             $route = $routes->addChild("route");
-            $route->addAttribute("url", $info->url);
+            $route->addAttribute("id", $info->url);
             if ($info->controller!==null) {
                 $route->addAttribute("controller", $info->controller);
             }

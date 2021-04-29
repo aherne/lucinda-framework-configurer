@@ -9,6 +9,7 @@ use Lucinda\Configurer\Features\Features;
 abstract class Installer
 {
     const DEFAULT_ENVIRONMENT = "local";
+    const DEFAULT_VERSION = "0.0.1";
     
     /**
      * @var \SimpleXMLElement
