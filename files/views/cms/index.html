@@ -11,23 +11,23 @@
 <h2>Files Created or Changed</h2>
 <p>Following mock files were created:</p>
 <ul>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/classes#controllers" target="_blank">src/Controllers</a></strong>: holds mock controllers created depending on your choices
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/classes#controllers" target="_blank">src/Controllers</a></strong>: holds mock controllers created depending on your choices
 		<ul>
 			<li><em>Index.php</em></li>
 		</ul>
 	</li>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/templates" target="_blank">templates/tags</a></strong>: mock tags are added depending on your choices
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/templates" target="_blank">templates/tags</a></strong>: mock tags are added depending on your choices
 		<ul>
 			<li><em>site/header.html</em></li>
 			<li><em>site/footer.html</em></li>
 		</ul>
 	</li>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/templates" target="_blank">templates/views</a></strong>: mock views are added depending on your choices
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/templates" target="_blank">templates/views</a></strong>: mock views are added depending on your choices
 		<ul>
 			<li><em>index.html</em></li>
 		</ul>
 	</li>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/bootstrap" target="_blank">index.php</a></strong>: following <a href="https://www.lucinda-framework.com/documentation/classes#event-listeners" target="_blank">event listeners</a> were added:<br/>
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/bootstrap" target="_blank">index.php</a></strong>: following <a href="https://www.lucinda-framework.com/documentation/classes#event-listeners" target="_blank">event listeners</a> were added:<br/>
 		<ul>
 			<:if test="!empty(${data.features.logging})">
 			<li>Lucinda\Project\EventListeners\Logging</li>
@@ -55,7 +55,7 @@
 			</:if>
 		</ul>
 	</li>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/stdout-xml" target="_blank">stdout.xml</a></strong>: file was rewritten to fit your choices, setting following tags<br/>
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/stdout-xml" target="_blank">stdout.xml</a></strong>: file was rewritten to fit your choices, setting following tags<br/>
 		<ul>
 			<li>application</li>
 			<li>routes</li>
@@ -87,7 +87,7 @@
 			</:if>
 		</ul>
 	</li>
-	<li><strong><a href="http://www.lucinda-framework.local/documentation/stderr-xml" target="_blank">stderr.xml</a></strong>: file was rewritten to fit your choices, setting following tags<br/>
+	<li><strong><a href="https://www.lucinda-framework.com/documentation/stderr-xml" target="_blank">stderr.xml</a></strong>: file was rewritten to fit your choices, setting following tags<br/>
 		<ul>
 			<li>application</li>
 			<li>display_errors</li>
@@ -97,7 +97,7 @@
 		</ul>
 	</li>
 <:if test="!(${data.features.security.authenticationMethod}==2 && ${data.features.security.authorizationMethod}==1)">
-	<li><strong><strong><a href="http://www.lucinda-framework.local/documentation/classes#dao" target="_blank">src/DAO</a></strong></strong>: following data access object classes are created according to your choices:<br/>
+	<li><strong><strong><a href="https://www.lucinda-framework.com/documentation/classes#dao" target="_blank">src/DAO</a></strong></strong>: following data access object classes are created according to your choices:<br/>
 		<ul>
 			<:if test="${data.features.security.authorizationMethod}==0">
 			<li><em>PagesAuthorization</em>: stores the logic by which routes are checked in database for rights</li>
@@ -124,7 +124,7 @@
 	<li><em>users_oauth2</em>: stores list of users logging in by oauth2 providers</li>
 	</:if>
 	<:if test="${data.features.security.authorizationMethod}==0">
-	<li><em>resources</em>: stores list of site resources (all values of <i class="red">url</i> attribute in routes @ <strong><a href="http://www.lucinda-framework.local/documentation/stdout-xml" target="_blank">stdout.xml</a></strong> must be present here)</li>
+	<li><em>resources</em>: stores list of site resources (all values of <i class="red">url</i> attribute in routes @ <strong><a href="https://www.lucinda-framework.com/documentation/stdout-xml" target="_blank">stdout.xml</a></strong> must be present here)</li>
 	<li><em>roles</em>: stores list of roles for your site</li>
 	<li><em>users_roles</em>: stores roles users belong to</li>
 	<li><em>roles_resources</em>: stores resources allowed per role</li>		
