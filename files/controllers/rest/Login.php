@@ -1,19 +1,18 @@
 <?php
+namespace Lucinda\Project\Controllers;
+
+use Lucinda\Framework\RestController;
+
 /**
  * Mock controller for login page
  */
-class LoginController extends Lucinda\STDOUT\Controller
+class Login extends RestController
 {
     /**
-     * @var \Lucinda\Framework\Attributes
-     */
-    protected $attributes;
-    
-    /**
      * {@inheritDoc}
-     * @see \Lucinda\STDOUT\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
-    public function run(): void
+    protected function GET()
     {
         $this->response->view()["csrf"] = $this->attributes->getCsrfToken();
         $this->response->view()["status"] = $this->request->parameters("status");

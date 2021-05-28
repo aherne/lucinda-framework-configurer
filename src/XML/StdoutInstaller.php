@@ -40,8 +40,6 @@ class StdoutInstaller extends Installer
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
         $application->addAttribute("default_route", "index");
         $paths = $application->addChild("paths");
-        $paths->addAttribute("controllers", "application/controllers");
-        $paths->addAttribute("resolvers", "application/resolvers");
         if (!$this->features->isREST) {
             $paths->addAttribute("views", "application/views");
         }
@@ -58,14 +56,14 @@ class StdoutInstaller extends Installer
             $html = $application->addChild("resolver");
             $html->addAttribute("format", "html");
             $html->addAttribute("content_type", "text/html");
-            $html->addAttribute("class", "HtmlResolver");
+            $html->addAttribute("class", "Lucinda\Project\ViewResolvers\Html");
             $html->addAttribute("charset", "UTF-8");
         }
         
         $json = $application->addChild("resolver");
         $json->addAttribute("format", "json");
         $json->addAttribute("content_type", "application/json");
-        $json->addAttribute("class", "JsonResolver");
+        $json->addAttribute("class", "Lucinda\Project\ViewResolvers\Json");
         $json->addAttribute("charset", "UTF-8");
     }
     
@@ -81,8 +79,8 @@ class StdoutInstaller extends Installer
         
         $templating = $this->xml->addChild("templating");
         $templating->addAttribute("compilations_path", "compilations");
-        $templating->addAttribute("tags_path", "application/tags");
-        $templating->addAttribute("templates_path", "application/views");
+        $templating->addAttribute("tags_path", "templates/tags");
+        $templating->addAttribute("templates_path", "templates/views");
         $templating->addAttribute("templates_extension", "html");
     }
     
@@ -96,10 +94,9 @@ class StdoutInstaller extends Installer
         }
         
         $loggers = $this->xml->addChild("loggers");
-        $loggers->addAttribute("path", "application/loggers");
         
         $logger = $loggers->addChild(self::DEFAULT_ENVIRONMENT)->addChild("logger");
-        $logger->addAttribute("class", "FileLogger");
+        $logger->addAttribute("class", "Lucinda\Project\Loggers\File");
         $logger->addAttribute("path", "messages");
         $logger->addAttribute("format", "%d %f %l %m");
     }
@@ -214,7 +211,6 @@ class StdoutInstaller extends Installer
         }
         
         $security = $this->xml->addChild("security");
-        $security->addAttribute("dao_path", "application/models/dao");
         
         $csrf = $security->addChild("csrf");
         $csrf->addAttribute("secret", $this->generateSecret());
@@ -235,18 +231,18 @@ class StdoutInstaller extends Installer
         $authentication = $security->addChild("authentication");
         $form = $authentication->addChild("form");
         if ($this->features->nosqlServer) {
-            $form->addAttribute("throttler", "NoSqlLoginThrottler");
+            $form->addAttribute("throttler", "Lucinda\Project\DAO\NoSqlLoginThrottler");
         } elseif ($this->features->sqlServer) {
-            $form->addAttribute("throttler", "SqlLoginThrottler");
+            $form->addAttribute("throttler", "Lucinda\Project\DAO\SqlLoginThrottler");
         }
         switch ($this->features->security->authenticationMethod) {
             case 0:
-                $form->addAttribute("dao", "UsersFormAuthentication");
+                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
                 break;
             case 1:
-                $form->addAttribute("dao", "UsersFormAuthentication");
+                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
                 $oauth2 = $authentication->addChild("oauth2");
-                $oauth2->addAttribute("dao", "UsersOAuth2Authentication");
+                $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
                 break;
         }
         
@@ -254,8 +250,8 @@ class StdoutInstaller extends Installer
         switch ($this->features->security->authorizationMethod) {
             case 0:
                 $dao = $authorization->addChild("by_dao");
-                $dao->addAttribute("page_dao", "PagesAuthorization");
-                $dao->addAttribute("user_dao", "UsersAuthorization");
+                $dao->addAttribute("page_dao", "Lucinda\Project\DAO\PagesAuthorization");
+                $dao->addAttribute("user_dao", "Lucinda\Project\DAO\UsersAuthorization");
                 break;
             case 1:
                 $authorization->addChild("by_route");

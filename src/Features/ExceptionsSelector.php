@@ -79,10 +79,10 @@ class ExceptionsSelector
             case 'Lucinda\WebSecurity\Token\Exception':
                 break;
             case 'Lucinda\WebSecurity\SecurityPacket':
-                $exception->controller = "SecurityPacketController";
+                $exception->controller = "Lucinda\Project\Controllers\SecurityPacket";
                 break;
             default:
-                $exception->controller = "ErrorsController";
+                $exception->controller = "Lucinda\Project\Controllers\Error";
                 break;
         }
         if (!$this->features->isREST) {

@@ -1,8 +1,12 @@
 <?php
+namespace Lucinda\Project\DAO;
+
+use Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO;
+
 /**
  * DAO to use if user authentication is performed via forms
  */
-class UsersFormAuthentication implements Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO
+class UsersFormAuthentication implements UserAuthenticationDAO
 {
     /**
      * {@inheritDoc}

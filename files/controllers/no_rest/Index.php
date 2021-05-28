@@ -1,16 +1,19 @@
 <?php
+namespace Lucinda\Project\Controllers;
+
+use Lucinda\STDOUT\Controller;
+
 /**
  * Mock controller for homepage after successful framework installation
  */
-class IndexController extends Lucinda\Framework\RestController
+class Index extends Controller
 {
     /**
      * {@inheritDoc}
-     * @see \Lucinda\STDOUT\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
-    protected function GET()
-    {        
-        $this->response->view()["token"] = $this->attributes->getAccessToken();
+    public function run(): void
+    {
         $this->response->view()["features"] = json_decode(file_get_contents("features.json"), true);
         $this->response->view()["status"] = $this->request->parameters("status");
         $this->response->view()["user_id"] = $this->attributes->getUserId();

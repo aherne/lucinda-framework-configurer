@@ -1,10 +1,13 @@
 <?php
+namespace Lucinda\Project\DAO;
+
 use Lucinda\WebSecurity\Request;
+use Lucinda\Framework\AbstractLoginThrottler;
 
 /**
  * Extension of BasicLoginThrottler that uses a NoSQL database as storage medium
  */
-class NoSqlLoginThrottler extends \Lucinda\Framework\AbstractLoginThrottler
+class NoSqlLoginThrottler extends AbstractLoginThrottler
 {
     const EXPIRATION = 3600;
     private $key;

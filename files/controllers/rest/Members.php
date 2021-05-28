@@ -1,12 +1,16 @@
 <?php
+namespace Lucinda\Project\Controllers;
+
+use Lucinda\Framework\RestController;
+
 /**
- * Mock controller for a page accessed only by privileged users
+ * Mock controller for a page accessible to all logged in users
  */
-class RestrictedController extends Lucinda\Framework\RestController
-{    
+class Members extends RestController
+{
     /**
      * {@inheritDoc}
-     * @see \Lucinda\STDOUT\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
     protected function GET()
     {

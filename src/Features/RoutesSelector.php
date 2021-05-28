@@ -44,22 +44,22 @@ class RoutesSelector
         // set controller & id
         switch ($url) {
             case "index":
-                $route->controller = "IndexController";
+                $route->controller = "Lucinda\Project\Controllers\Index";
                 $route->id = 1;
                 break;
             case "login":
-                $route->controller = "LoginController";
+                $route->controller = "Lucinda\Project\Controllers\Login";
                 $route->id = 2;
                 break;
             case "logout":
                 $route->id = 3;
                 break;
             case "members":
-                $route->controller = "MembersController";
+                $route->controller = "Lucinda\Project\Controllers\Members";
                 $route->id = 4;
                 break;
             case "restricted":
-                $route->controller = "RestrictedController";
+                $route->controller = "Lucinda\Project\Controllers\Restricted";
                 $route->id = 5;
                 break;
         }

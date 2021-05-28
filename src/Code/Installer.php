@@ -31,11 +31,11 @@ class Installer
      */
     private function createFolders(): void
     {
-        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."validators");
+        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."Validators");
                 
         if (!$this->features->isREST) {
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags");
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags");
+            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
         }
         
         if ($this->features->internationalization) {
@@ -52,15 +52,15 @@ class Installer
     private function createControllers(): void
     {
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."controllers".DIRECTORY_SEPARATOR.($this->features->isREST?"rest":"no_rest");
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."controllers";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."Controllers";
         
-        copy($sourceFolder.DIRECTORY_SEPARATOR."IndexController.php", $destinationFolder.DIRECTORY_SEPARATOR."IndexController.php");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."Index.php", $destinationFolder.DIRECTORY_SEPARATOR."Index.php");
         if ($this->features->security) {
-            copy($sourceFolder.DIRECTORY_SEPARATOR."LoginController.php", $destinationFolder.DIRECTORY_SEPARATOR."LoginController.php");
+            copy($sourceFolder.DIRECTORY_SEPARATOR."Login.php", $destinationFolder.DIRECTORY_SEPARATOR."Login.php");
             if ($this->features->security->isCMS) {
-                copy($sourceFolder.DIRECTORY_SEPARATOR."RestrictedController.php", $destinationFolder.DIRECTORY_SEPARATOR."RestrictedController.php");
+                copy($sourceFolder.DIRECTORY_SEPARATOR."Restricted.php", $destinationFolder.DIRECTORY_SEPARATOR."Restricted.php");
             } else {
-                copy($sourceFolder.DIRECTORY_SEPARATOR."MembersController.php", $destinationFolder.DIRECTORY_SEPARATOR."MembersController.php");
+                copy($sourceFolder.DIRECTORY_SEPARATOR."Members.php", $destinationFolder.DIRECTORY_SEPARATOR."Members.php");
             }
         }
     }
@@ -71,29 +71,24 @@ class Installer
     private function createModels(): void
     {
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."models";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."models";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."src";
                
         // if security is not enabled, do nothing
         if (!$this->features->security) {
             return;
         }
         
-        // create dao subfolder, if not exists
-        if (!file_exists($destinationFolder.DIRECTORY_SEPARATOR."dao")) {
-            mkdir($destinationFolder.DIRECTORY_SEPARATOR."dao");
-        }
-        
         // install login throttlers
         if ($this->features->nosqlServer) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
-                );
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
+            );
         } elseif ($this->features->sqlServer) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
-                );
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
+            );
         }
         
         // if authentication & authorization are done based on ACL, do nothing
@@ -113,24 +108,24 @@ class Installer
         if ($increment) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersFormAuthentication".$increment.".php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersFormAuthentication.php"
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersFormAuthentication.php"
             );
-        }        
+        }
         if ($this->features->security->authenticationMethod==1) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php"
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php"
             );
-        }        
+        }
         if ($this->features->security->authorizationMethod==0) {
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."PagesAuthorization.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."PagesAuthorization.php"
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."PagesAuthorization.php"
             );
             $increment = ($this->features->security->isCMS?1:2);
             copy(
                 $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization".$increment.".php",
-                $destinationFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization.php"
+                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersAuthorization.php"
             );
         }
     }
@@ -145,7 +140,7 @@ class Installer
         }
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."views";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."views";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."views";
         if (!$this->features->security) {
             copy($sourceFolder.DIRECTORY_SEPARATOR."index.html", $destinationFolder.DIRECTORY_SEPARATOR."index.html");
         } else {
@@ -160,7 +155,7 @@ class Installer
         }
         
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."tags";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."application".DIRECTORY_SEPARATOR."tags";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags";
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html");
@@ -177,27 +172,27 @@ class Installer
         $position = strrpos($contents, '$object->run();');
         $addition = "";
         if ($this->features->logging) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "LoggingListener");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\Logging::class);'."\n";
         }
         if ($this->features->sqlServer) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "SQLDataSourceInjector");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\SQLDataSource::class);'."\n";
         }
         if ($this->features->nosqlServer) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, "NoSQLDataSourceInjector");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\NoSQLDataSource::class);'."\n";
         }
         if ($this->features->security) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "SecurityListener");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\Security::class);'."\n";
         }
         if ($this->features->internationalization) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "LocalizationListener");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\Localization::class);'."\n";
         }
         if ($this->features->headers) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "HttpHeadersListener");'."\n";
+            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\HttpHeaders::class);'."\n";
             if ($this->features->headers->cors) {
-                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, "HttpCorsListener");'."\n";
+                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\HttpCors::class);'."\n";
             }
             if ($this->features->headers->caching) {
-                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::RESPONSE, "HttpCachingListener");'."\n";
+                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::RESPONSE, Lucinda\Project\EventListeners\HttpCaching::class);'."\n";
             }
         }
         file_put_contents($destinationFile, substr($contents, 0, $position).$addition.'$object->run();');
