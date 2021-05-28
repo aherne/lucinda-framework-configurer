@@ -159,6 +159,7 @@ class Installer
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html");
+        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html");
     }
     
     /**

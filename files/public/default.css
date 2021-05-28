@@ -1,27 +1,6 @@
 body {
 	font-family: Courier New;
 }
-table {
-    border: 0px;
-    padding: 0px;
-    background-color:#DDDDDD;
-    width: 100%;
-}
-table > thead {
-    background-color:#CCCCCC;
-}
-table > tbody > tr:nth-child(odd) {
-    background-color:#EEEEEE;
-}
-table > tbody > tr:nth-child(even) {
-    background-color:#FFFFFF;
-}
-strong.enabled {
-	color:blue;
-}
-strong.disabled {
-	color:red;
-}
 
 .status {
 	color: red;
@@ -30,4 +9,8 @@ strong.disabled {
 
 img {
 	width: 500px;
+}
+
+.panel {
+	color: blue;
 }
