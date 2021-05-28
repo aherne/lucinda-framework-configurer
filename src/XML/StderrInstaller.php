@@ -35,10 +35,6 @@ class StderrInstaller extends Installer
         if ($this->features->security) {
             $application->addAttribute("redirect", "1");
         }
-        $paths = $application->addChild("paths");
-        if (!$this->features->isREST) {
-            $paths->addAttribute("views", "application/views");
-        }
     }
     
     /**

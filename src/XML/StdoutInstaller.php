@@ -39,10 +39,6 @@ class StdoutInstaller extends Installer
         $application->addAttribute("version", self::DEFAULT_VERSION);
         $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
         $application->addAttribute("default_route", "index");
-        $paths = $application->addChild("paths");
-        if (!$this->features->isREST) {
-            $paths->addAttribute("views", "application/views");
-        }
     }
     
     /**
