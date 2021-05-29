@@ -1,10 +1,10 @@
-<site:header title="Login Page"/>
+<site:header title="Login Page" version="${data.version}"/>
 
 <:if test="isset(${data.status})">
 <site:status value="${data.status}"/>
 </:if>
 
-<p class="panel">To return to homepage, go <a href="">here</a>.</p>
+<p class="panel">To return to homepage, go <a href="/">here</a>.</p>
 
 <form action="" method="POST">
     Username: <input type="text" name="username" required/><br/>

@@ -15,5 +15,6 @@ class Restricted extends Controller
     public function run(): void
     {
         $this->response->view()["uid"] = $this->attributes->getUserId();
+        $this->response->view()["version"] = $this->application->getVersion();
     }
 }

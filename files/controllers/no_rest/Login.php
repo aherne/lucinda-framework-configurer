@@ -17,5 +17,6 @@ class Login extends Controller
         $this->response->view()["csrf"] = $this->attributes->getCsrfToken();
         $this->response->view()["status"] = $this->request->parameters("status");
         $this->response->view()["wait"] = (string) $this->request->parameters("wait");
+        $this->response->view()["version"] = $this->application->getVersion();
     }
 }

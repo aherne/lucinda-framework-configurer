@@ -17,5 +17,6 @@ class Index extends Controller
         $this->response->view()["features"] = json_decode(file_get_contents("features.json"), true);
         $this->response->view()["status"] = $this->request->parameters("status");
         $this->response->view()["user_id"] = $this->attributes->getUserId();
+        $this->response->view()["version"] = $this->application->getVersion();
     }
 }
