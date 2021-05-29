@@ -160,6 +160,10 @@ class Installer
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html");
         copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html");
+        
+        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."public";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."public";
+        copy($sourceFolder.DIRECTORY_SEPARATOR."default.css", $destinationFolder.DIRECTORY_SEPARATOR."default.css");
     }
     
     /**

@@ -139,7 +139,7 @@ class StdoutInstaller extends Installer
         if ($this->features->headers->caching) {
             $headers->addAttribute("no_cache", $this->features->headers->caching->no_cache);
             $headers->addAttribute("expiration", $this->features->headers->caching->expiration);
-            $headers->addAttribute("cacheable", "application/cacheables/EtagCacheable");
+            $headers->addAttribute("cacheable", "Lucinda\Project\Cacheables\Etag");
         }
         if ($this->features->headers->cors) {
             $headers->addAttribute("allow_credentials", $this->features->headers->cors->allow_credentials);
