@@ -1,14 +1,20 @@
 <?php
+namespace Lucinda\Project\DAO;
+
+use Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO;
+use Lucinda\WebSecurity\Authentication\OAuth2\UserInformation;
+use Lucinda\Framework\OAuth2\UserDAO;
+
 /**
  * DAO to use if user authentication is performed via OAuth2 providers
  */
-class UsersOAuth2Authentication implements Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO, Lucinda\Framework\OAuth2\UserDAO
+class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
 {
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO::login()
      */
-    public function login(Lucinda\WebSecurity\Authentication\OAuth2\UserInformation $userInformation, string $vendorName, string $accessToken)
+    public function login(UserInformation $userInformation, string $vendorName, string $accessToken)
     {
         // email is mandatory
         if (!$userInformation->getEmail()) {
@@ -19,7 +25,7 @@ class UsersOAuth2Authentication implements Lucinda\WebSecurity\Authentication\OA
         $driverID = SQL(
             "SELECT id FROM oauth2_providers WHERE name=:driver",
             [":driver"=>$vendorName]
-            )->toValue();
+        )->toValue();
         
         // driver must exist
         if (!$driverID) {
@@ -30,12 +36,12 @@ class UsersOAuth2Authentication implements Lucinda\WebSecurity\Authentication\OA
         $userID = SQL(
             "SELECT user_id FROM users__oauth2 WHERE driver_id=:driver AND remote_user_id=:remote_user",
             [":driver"=>$driverID, ":remote_user"=>$userInformation->getId()]
-            )->toValue();
+        )->toValue();
         if ($userID) {
             SQL(
                 "UPDATE users__oauth2 SET access_token=:access_token WHERE driver_id=:driver AND remote_user_id=:remote_user",
                 [":driver"=>$driverID, ":remote_user"=>$userInformation->getId(), ":access_token"=>$accessToken]
-                );
+            );
             return $userID;
         }
         
@@ -45,7 +51,7 @@ class UsersOAuth2Authentication implements Lucinda\WebSecurity\Authentication\OA
             SQL(
                 "INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) VALUES (:user_id, :remote_user,  :driver, :access_token)",
                 [":user_id"=>$userID, ":remote_user"=>$userInformation->getId(), ":driver"=>$driverID, ":access_token"=>$accessToken]
-                );
+            );
             return $userID;
         }
         
@@ -53,11 +59,11 @@ class UsersOAuth2Authentication implements Lucinda\WebSecurity\Authentication\OA
         $userID = SQL(
             "INSERT INTO users (name, email) VALUES (:name, :email)",
             [":name"=>$userInformation->getName(), ":email"=>$userInformation->getEmail()]
-            )->getInsertId();
+        )->getInsertId();
         SQL(
             "INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) VALUES (:user_id, :remote_user,  :driver, :access_token)",
             [":user_id"=>$userID, ":remote_user"=>$userInformation->getId(), ":driver"=>$driverID, ":access_token"=>$accessToken]
-            );
+        );
         return $userID;
     }
     

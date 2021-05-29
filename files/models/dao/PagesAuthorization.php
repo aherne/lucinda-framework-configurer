@@ -1,8 +1,12 @@
 <?php
+namespace Lucinda\Project\DAO;
+
+use Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO;
+
 /**
  * DAO to use when route rights are to be checked in database
  */
-class PagesAuthorization extends Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO
+class PagesAuthorization extends PageAuthorizationDAO
 {
     /**
      * {@inheritDoc}

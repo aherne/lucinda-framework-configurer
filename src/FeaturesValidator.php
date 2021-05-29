@@ -75,8 +75,8 @@ class FeaturesValidator
                 break;
             case 1:
                 if (class_exists("\Memcached")) {
-                    $memcache = new \Memcached();
-                    $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
+                    $memcached = new \Memcached();
+                    $result = $memcached->connect($server->host, ($server->port?$server->port:11211));
                     $result = $memcached->set("test", 1);
                     if (!$result) {
                         throw new \Exception("Connection to server failed: memcached");

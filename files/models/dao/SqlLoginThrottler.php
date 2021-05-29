@@ -1,7 +1,11 @@
 <?php
+namespace Lucinda\Project\DAO;
+
+use Lucinda\Framework\AbstractLoginThrottler;
+
 /**
  * Login throttler that uses an SQL table to check logins history
- * 
+ *
  * Table structure:
  *      CREATE TABLE user_logins (
  *           id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -14,7 +18,7 @@
  *           UNIQUE(ip, username)
  *      ) Engine=InnoDB;
  */
-class SqlLoginThrottler extends \Lucinda\Framework\AbstractLoginThrottler
+class SqlLoginThrottler extends AbstractLoginThrottler
 {
     private $found;
     

@@ -1,17 +1,16 @@
 <?php
+namespace Lucinda\Project\Controllers;
+
+use Lucinda\STDOUT\Controller;
+
 /**
  * Mock controller for a page accessible to all logged in users
  */
-class MembersController extends Lucinda\STDOUT\Controller
+class Members extends Controller
 {
     /**
-     * @var \Lucinda\Framework\Attributes
-     */
-    protected $attributes;
-    
-    /**
      * {@inheritDoc}
-     * @see \Lucinda\STDOUT\Runnable::run()
+     * @see \Lucinda\MVC\Runnable::run()
      */
     public function run(): void
     {
