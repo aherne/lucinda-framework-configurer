@@ -9,7 +9,7 @@ use Lucinda\Configurer\Features\Exceptions\Exception;
 class ExceptionsSelector
 {
     const CLASSES = [
-        'Lucinda\STDERR\ConfigurationException',
+        'Lucinda\MVC\ConfigurationException',
         'Lucinda\STDERR\PHPException',
         'Lucinda\Framework\Json\Exception',
         'Lucinda\Headers\ConfigurationException',
@@ -18,7 +18,6 @@ class ExceptionsSelector
         'Lucinda\Internationalization\DomainNotFoundException',
         'Lucinda\Internationalization\TranslationInvalidException',
         'Lucinda\Logging\ConfigurationException',
-        'Lucinda\STDOUT\ConfigurationException',
         'Lucinda\STDOUT\MethodNotAllowedException',
         'Lucinda\STDOUT\PathNotFoundException',
         'Lucinda\STDOUT\Request\UploadedFiles\Exception',

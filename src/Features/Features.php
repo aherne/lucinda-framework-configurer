@@ -15,6 +15,13 @@ class Features
     
     /**
      * @var boolean
+     * @message Will your project be load balanced on multiple web servers
+     * @default 0
+     */
+    public $isLoadBalanced;
+    
+    /**
+     * @var boolean
      * @message Do you want to enable logging abilities
      * @default 1
      */
@@ -29,24 +36,31 @@ class Features
     
     /**
      * @var \Lucinda\Configurer\Features\Internationalization
-     * @message Is your site expected to display in multiple languages
+     * @message Is your project expected to display in multiple languages
      * @default 0
      */
     public $internationalization;
     
     /**
      * @var \Lucinda\Configurer\Features\SQLServer
-     * @message Will you use SQL databases (eg: MySQL) in your site
+     * @message Will you use SQL databases (eg: MySQL) in your project
      * @default 1
      */
     public $sqlServer;
     
     /**
      * @var \Lucinda\Configurer\Features\NoSQLServer
-     * @message Will you use NoSQL key-value store databases (eg: Redis) in your site
+     * @message Will you use NoSQL key-value store databases (eg: Redis) in your project
      * @default 0
      */
     public $nosqlServer;
+    
+    /**
+     * @var \Lucinda\Configurer\Features\Migrations
+     * @message Will you require DB migrations in your project
+     * @default 0
+     */
+    public $migrations;
     
     /**
      * @var \Lucinda\Configurer\Features\Security

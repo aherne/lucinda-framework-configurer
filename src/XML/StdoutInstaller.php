@@ -227,9 +227,9 @@ class StdoutInstaller extends Installer
         $authentication = $security->addChild("authentication");
         $form = $authentication->addChild("form");
         if ($this->features->nosqlServer) {
-            $form->addAttribute("throttler", "Lucinda\Project\DAO\NoSqlLoginThrottler");
+            $form->addAttribute("throttler", "Lucinda\Project\DAO\NoSQLLoginThrottler");
         } elseif ($this->features->sqlServer) {
-            $form->addAttribute("throttler", "Lucinda\Project\DAO\SqlLoginThrottler");
+            $form->addAttribute("throttler", "Lucinda\Project\DAO\SQLLoginThrottler");
         }
         switch ($this->features->security->authenticationMethod) {
             case 0:
@@ -319,6 +319,13 @@ class StdoutInstaller extends Installer
         if (!$this->features->isREST && (($this->features->internationalization && $this->features->internationalization->detectionMethod==2) || ($this->features->security && $this->features->security->persistenceDrivers==0))) {
             $session = $this->xml->addChild("session");
             $session->addAttribute("auto_start", 1);
+            if ($this->features->isLoadBalanced) {
+                if ($this->features->nosqlServer) {
+                    $session->addAttribute("handler", "Lucinda\Project\DAO\NoSQLSessionHandler");
+                } elseif ($this->features->sqlServer) {
+                    $session->addAttribute("handler", "Lucinda\Project\DAO\SQLSessionHandler");
+                }                
+            }
         }
     }
     

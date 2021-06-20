@@ -26,6 +26,9 @@ class FeaturesValidator
         if ($features->nosqlServer) {
             $this->validateNoSQLServer($features->nosqlServer);
         }
+        if ($features->migrations) {
+            $this->validateMigrations($features);
+        }
         if ($features->security) {
             $this->validateSecurity($features);
         }
@@ -122,6 +125,25 @@ class FeaturesValidator
                 break;
         }
         $server->driver = $driver;
+    }
+    
+    /**
+     * Validates migrations settings to check if associated server was configured
+     * 
+     * @param Features $features
+     * @throws \Exception
+     */
+    protected function validateMigrations(Features $features): void
+    {
+        if ($features->migrations->storageMethod == 0) {
+            if (!$features->sqlServer) {
+                throw new \Exception("A SQL server is required if you need to store migrations progress in a SQL table");
+            }
+        } else {
+            if (!$features->nosqlServer) {
+                throw new \Exception("A NoSQL server is required if you need to store migrations progress by a NoSQL key");
+            }
+        }
     }
     
     /**

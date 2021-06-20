@@ -78,19 +78,6 @@ class Installer
             return;
         }
         
-        // install login throttlers
-        if ($this->features->nosqlServer) {
-            copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."NoSqlLoginThrottler.php"
-            );
-        } elseif ($this->features->sqlServer) {
-            copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."SqlLoginThrottler.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."SqlLoginThrottler.php"
-            );
-        }
-        
         // if authentication & authorization are done based on ACL, do nothing
         if ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1) {
             return;
