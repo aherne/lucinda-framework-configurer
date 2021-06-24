@@ -25,6 +25,14 @@ class Installer
     {
         $this->features = $features;
         
+        if ($this->features->migrations && $this->features->migrations->storageMethod==0) {
+            $this->setMigrationsTable();
+        }
+        
+        if ($this->features->isLoadBalanced && $this->features->sqlServer) {
+            $this->setSessionsTable();
+        }
+        
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
@@ -157,6 +165,42 @@ class Installer
              PRIMARY KEY(id),
              UNIQUE(ip, username)
              ) Engine=InnoDB;
+            ");
+    }
+    
+    /**
+     * Sets table that stores migrations
+     */
+    private function setMigrationsTable()
+    {
+        $this->pdo->exec("
+            CREATE TABLE migrations
+            (
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            class_name VARCHAR(255) NOT NULL,
+            is_successful BOOLEAN NOT NULL DEFAULT TRUE,
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY(id),
+            UNIQUE(class_name)
+            ) Engine=INNODB
+            ");
+    }
+    
+    /**
+     * Sets table that stores sessions
+     */
+    private function setSessionsTable()
+    {
+        $this->pdo->exec("
+            CREATE TABLE sessions
+            (
+            id VARCHAR(50) NOT NULL,
+            value BLOB NOT NULL,
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            expires INT UNSIGNED NOT NULL DEFAULT 0,
+            PRIMARY KEY(id),
+            UNIQUE(class_name)
+            ) Engine=INNODB
             ");
     }
 
