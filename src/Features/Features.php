@@ -8,6 +8,13 @@ class Features
 {
     /**
      * @var boolean
+     * @message Will your project have console/terminal MVC abilities
+     * @default 0
+     */
+    public $isConsoleMVC;
+    
+    /**
+     * @var boolean
      * @message Will your project be a REST-ful web service
      * @default 0
      */

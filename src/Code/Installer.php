@@ -7,7 +7,7 @@ use Lucinda\Configurer\Features\Features;
  * Sets up PHP files and dependencies based on selected features.
  */
 class Installer
-{
+{    
     private $rootFolder;
     private $features;
 
@@ -160,34 +160,44 @@ class Installer
     {
         $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
         
-        $contents = file_get_contents($destinationFile);
-        $position = strrpos($contents, '$object->run();');
-        $addition = "";
+        // detects event listeners to add based on user selections
+        $eventListeners = [];
         if ($this->features->logging) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\Logging::class);'."\n";
+            $eventListeners["Logging"] = "APPLICATION";
         }
         if ($this->features->sqlServer) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\SQLDataSource::class);'."\n";
+            $eventListeners["SQLDataSource"] = "APPLICATION";
         }
         if ($this->features->nosqlServer) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::APPLICATION, Lucinda\Project\EventListeners\NoSQLDataSource::class);'."\n";
+            $eventListeners["NoSQLDataSource"] = "APPLICATION";
         }
+        $eventListeners["Error"] = "REQUEST";
         if ($this->features->security) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\Security::class);'."\n";
+            $eventListeners["Security"] = "REQUEST";
         }
         if ($this->features->internationalization) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\Localization::class);'."\n";
+            $eventListeners["Localization"] = "REQUEST";
         }
         if ($this->features->headers) {
-            $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\HttpHeaders::class);'."\n";
+            $eventListeners["HttpHeaders"] = "REQUEST";
             if ($this->features->headers->cors) {
-                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::REQUEST, Lucinda\Project\EventListeners\HttpCors::class);'."\n";
+                $eventListeners["HttpCors"] = "REQUEST";
             }
             if ($this->features->headers->caching) {
-                $addition .= '$object->addEventListener(Lucinda\STDOUT\EventType::RESPONSE, Lucinda\Project\EventListeners\HttpCaching::class);'."\n";
+                $eventListeners["HttpCaching"] = "RESPONSE";
             }
         }
-        file_put_contents($destinationFile, substr($contents, 0, $position).$addition.'$object->run();');
+        
+        // composes bootstrap body
+        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."bootstrap";
+        $bootstrap = file_get_contents($sourceFolder.DIRECTORY_SEPARATOR."top.tpl");
+        $bootstrap .= file_get_contents($sourceFolder.DIRECTORY_SEPARATOR."bottom".((int) $this->features->isConsoleMVC).".tpl");
+        $events = "";
+        $indent = ($this->features->isConsoleMVC?4:0);
+        foreach ($eventListeners as $name=>$type) {
+            $events .= str_repeat(" ", $indent).'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);\n';
+        }
+        file_put_contents($destinationFile, str_replace("(EVENTS)", substr($events, 0, -1), $bootstrap));
     }
     
     /**
