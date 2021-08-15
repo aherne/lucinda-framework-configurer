@@ -195,7 +195,7 @@ class Installer
         $events = "";
         $indent = ($this->features->isConsoleMVC?4:0);
         foreach ($eventListeners as $name=>$type) {
-            $events .= str_repeat(" ", $indent).'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);\n';
+            $events .= str_repeat(" ", $indent).'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);'."\n";
         }
         file_put_contents($destinationFile, str_replace("(EVENTS)", substr($events, 0, -1), $bootstrap));
     }
