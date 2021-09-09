@@ -12,3 +12,12 @@ define("ENVIRONMENT", $environment);
 new Lucinda\STDERR\FrontController("stderr.xml", ENVIRONMENT, __DIR__, new Lucinda\Project\EmergencyHandler());
 
 // handles STDOUT flow
+if (!empty($argv)) {
+    $object = new Lucinda\ConsoleSTDOUT\FrontController("stdout.xml", new Lucinda\Project\ConsoleAttributes());
+(EVENTS_CONSOLE)
+    $object->run();
+} else {
+    $object = new Lucinda\STDOUT\FrontController("stdout.xml", new Lucinda\Project\Attributes());
+(EVENTS_HTTP)
+    $object->run();
+}

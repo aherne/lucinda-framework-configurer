@@ -62,13 +62,11 @@ class StdoutInstaller extends Installer
         $json->addAttribute("class", "Lucinda\Project\ViewResolvers\Json");
         $json->addAttribute("charset", "UTF-8");
         
-        if ($this->features->isConsoleMVC) {
-            $html = $application->addChild("resolver");
-            $html->addAttribute("format", "console");
-            $html->addAttribute("content_type", "text/plain");
-            $html->addAttribute("class", "Lucinda\Project\ViewResolvers\Console");
-            $html->addAttribute("charset", "UTF-8");
-        }
+        $console = $application->addChild("resolver");
+        $console->addAttribute("format", "console");
+        $console->addAttribute("content_type", "text/plain");
+        $console->addAttribute("class", "Lucinda\Project\ViewResolvers\Console");
+        $console->addAttribute("charset", "UTF-8");
     }
     
     

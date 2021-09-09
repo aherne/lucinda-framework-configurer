@@ -162,41 +162,48 @@ class Installer
         
         // detects event listeners to add based on user selections
         $eventListeners = [];
+        $eventListeners["CONSOLE"]["Error"] = "APPLICATION";
         if ($this->features->logging) {
-            $eventListeners["Logging"] = "APPLICATION";
+            $eventListeners["HTTP"]["Logging"] = "APPLICATION";
+            $eventListeners["CONSOLE"]["Logging"] = "APPLICATION";
         }
         if ($this->features->sqlServer) {
-            $eventListeners["SQLDataSource"] = "APPLICATION";
+            $eventListeners["HTTP"]["SQLDataSource"] = "APPLICATION";
+            $eventListeners["CONSOLE"]["SQLDataSource"] = "APPLICATION";
         }
         if ($this->features->nosqlServer) {
-            $eventListeners["NoSQLDataSource"] = "APPLICATION";
+            $eventListeners["HTTP"]["NoSQLDataSource"] = "APPLICATION";
+            $eventListeners["CONSOLE"]["NoSQLDataSource"] = "APPLICATION";
         }
-        $eventListeners["Error"] = "REQUEST";
+        $eventListeners["HTTP"]["Error"] = "REQUEST";
         if ($this->features->security) {
-            $eventListeners["Security"] = "REQUEST";
+            $eventListeners["HTTP"]["Security"] = "REQUEST";
         }
         if ($this->features->internationalization) {
-            $eventListeners["Localization"] = "REQUEST";
+            $eventListeners["HTTP"]["Localization"] = "REQUEST";
         }
         if ($this->features->headers) {
-            $eventListeners["HttpHeaders"] = "REQUEST";
+            $eventListeners["HTTP"]["HttpHeaders"] = "REQUEST";
             if ($this->features->headers->cors) {
-                $eventListeners["HttpCors"] = "REQUEST";
+                $eventListeners["HTTP"]["HttpCors"] = "REQUEST";
             }
             if ($this->features->headers->caching) {
-                $eventListeners["HttpCaching"] = "RESPONSE";
+                $eventListeners["HTTP"]["HttpCaching"] = "RESPONSE";
             }
         }
         
         // composes bootstrap body
-        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."bootstrap";
-        $bootstrap = file_get_contents($sourceFolder.DIRECTORY_SEPARATOR."top.tpl");
-        $bootstrap .= file_get_contents($sourceFolder.DIRECTORY_SEPARATOR."bottom".((int) $this->features->isConsoleMVC).".tpl");
+        $bootstrap = file_get_contents(dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."index.tpl");
         $events = "";
-        $indent = ($this->features->isConsoleMVC?4:0);
-        foreach ($eventListeners as $name=>$type) {
-            $events .= str_repeat(" ", $indent).'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);'."\n";
+        foreach ($eventListeners["HTTP"] as $name=>$type) {
+            $events .= "    ".'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);'."\n";
         }
+        $bootstrap = str_replace("(EVENTS_HTTP)", substr($events, 0, -1), $bootstrap);
+        $events = "";
+        foreach ($eventListeners["CONSOLE"] as $name=>$type) {
+            $events .= "    ".'$object->addEventListener(Lucinda\ConsoleSTDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\Console\\'.$name.'::class);'."\n";
+        }
+        $bootstrap = str_replace("(EVENTS_CONSOLE)", substr($events, 0, -1), $bootstrap);
         file_put_contents($destinationFile, str_replace("(EVENTS)", substr($events, 0, -1), $bootstrap));
     }
     
