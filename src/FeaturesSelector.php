@@ -9,7 +9,7 @@ use \Lucinda\Configurer\Features\DocBlockParser;
  */
 class FeaturesSelector
 {
-    private $features;
+    private Features $features;
     
     /**
      * Begins selector
@@ -28,7 +28,7 @@ class FeaturesSelector
      * @param string $className
      * @param object $object
      */
-    private function run(int $i, string $className, $object): void
+    private function run(int $i, string $className, object $object): void
     {
         // compile properties
         $properties = [];
@@ -60,7 +60,7 @@ class FeaturesSelector
                     }
                 }
                 $result = $this->prompt($i, "[".$j."/".($i==0?sizeof($properties)-3:sizeof($properties))."]", $className, $name, $info);
-                if (strpos($info->getType(), "\\")===0 && $result==="1") {
+                if (str_starts_with($info->getType(), "\\") && $result==="1") {
                     $childClassName = $info->getType();
                     $object->$name = new $childClassName();
                     $this->run($i+1, $childClassName, $object->$name);
@@ -70,7 +70,7 @@ class FeaturesSelector
             }
         }
     }
-    
+
     /**
      * Prompts user to set respective class field and runs regex validation on values prompted by user
      *
@@ -80,6 +80,7 @@ class FeaturesSelector
      * @param string $parameterName
      * @param DocBlockParser $info
      * @return string
+     * @throws \Exception
      */
     private function prompt(int $k, string $index, string $className, string $parameterName, DocBlockParser $info): string
     {
@@ -130,13 +131,13 @@ class FeaturesSelector
     }
     
     /**
-     * Validates whether or not to display field prompt based on @if annotation
+     * Validates whether to display field prompt based on @if annotation
      *
      * @param object $object
      * @param array $condition
      * @return bool
      */
-    private function validateCondition($object, array $condition): bool
+    private function validateCondition(object $object, array $condition): bool
     {
         foreach ($condition as $name=>$values) {
             if (in_array($object->$name, $values)) {
@@ -149,9 +150,9 @@ class FeaturesSelector
     /**
      * Gets features set by user
      *
-     * @return \Lucinda\Configurer\Features\Features
+     * @return Features
      */
-    public function getFeatures()
+    public function getFeatures(): Features
     {
         return $this->features;
     }

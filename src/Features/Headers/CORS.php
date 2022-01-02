@@ -11,7 +11,7 @@ class CORS
      * @message Choose whether or not credentials are allowed in CORS requests
      * @default 1
      */
-    public $allow_credentials;
+    public bool $allow_credentials;
     
     /**
      * @var integer
@@ -19,19 +19,19 @@ class CORS
      * @default 0
      * @validator ([0-9]+)
      */
-    public $max_age;
+    public int $max_age;
     
     /**
      * @var string
      * @message Request headers that are by default allowed in your site, separated by comma
      * @optional
      */
-    public $allowed_request_headers;
+    public ?string $allowed_request_headers = null;
     
     /**
      * @var string
      * @message Response headers that are by default exposed by your site, separated by comma
      * @optional
      */
-    public $allowed_response_headers;
+    public ?string $allowed_response_headers = null;
 }

@@ -13,5 +13,5 @@ class Migrations
      * @option NoSQL key 'migrations'
      * @default 0
      */
-    public $storageMethod;
+    public int $storageMethod;
 }

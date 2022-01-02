@@ -1,6 +1,6 @@
 # lucinda-framework-configurer
 
-This API configures a freshly installed Lucinda Framework 3.0 project via run method of CommandRunner class:
+This API configures a freshly installed Lucinda Framework 4.0 project via run method of CommandRunner class:
 
 ```php
 $commandRunner = new Lucinda\Configurer\CommandRunner();

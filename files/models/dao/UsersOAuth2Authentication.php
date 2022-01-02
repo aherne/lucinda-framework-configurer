@@ -14,11 +14,11 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO::login()
      */
-    public function login(UserInformation $userInformation, string $vendorName, string $accessToken)
+    public function login(UserInformation $userInformation, string $vendorName, string $accessToken): int|string|null
     {
         // email is mandatory
         if (!$userInformation->getEmail()) {
-            return;
+            return null;
         }
         
         // get driver ID
@@ -29,7 +29,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
         
         // driver must exist
         if (!$driverID) {
-            return;
+            return null;
         }
         
         // detects user based on driver and remote id
@@ -71,7 +71,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO::logout()
      */
-    public function logout($userID): void
+    public function logout(int|string $userID): void
     {
         SQL("UPDATE users__oauth2 SET access_token = '' WHERE user_id = :user_id", [":user_id"=>$userID]);
     }
@@ -80,7 +80,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      * {@inheritDoc}
      * @see \Lucinda\Framework\OAuth2\UserDAO::getVendor()
      */
-    public function getVendor($userID): ?string
+    public function getVendor(int|string $userID): ?string
     {
         return SQL("
             SELECT t2.name FROM users__oauth2 AS t1
@@ -93,7 +93,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      * {@inheritDoc}
      * @see \Lucinda\Framework\OAuth2\UserDAO::getAccessToken()
      */
-    public function getAccessToken($userID): ?string
+    public function getAccessToken(int|string $userID): ?string
     {
         return SQL("SELECT access_token FROM users__oauth2 WHERE user_id=:user_id", [":user_id"=>$userID])->toValue();
     }

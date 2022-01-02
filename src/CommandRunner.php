@@ -13,7 +13,7 @@ class CommandRunner
      * @param string[] $parameters Optional parameters
      * @throws \Exception
      */
-    public function run($command, $parameters)
+    public function run(string $command, array $parameters): void
     {
         $installationFolder = dirname(dirname(dirname(dirname(__DIR__))));
         switch ($command) {

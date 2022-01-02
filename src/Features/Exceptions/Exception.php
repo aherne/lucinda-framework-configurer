@@ -9,25 +9,25 @@ class Exception
     /**
      * @var string
      */
-    public $class;
+    public string $class;
     
     /**
      * @var string
      */
-    public $controller;
+    public string $controller;
     
     /**
      * @var string
      */
-    public $view;
+    public string $view;
     
     /**
      * @var string
      */
-    public $error_type;
+    public string $error_type;
     
     /**
      * @var boolean
      */
-    public $http_status;
+    public bool $http_status;
 }

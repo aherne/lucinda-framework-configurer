@@ -11,7 +11,7 @@ class ExceptionsSelector
     const CLASSES = [
         'Lucinda\MVC\ConfigurationException',
         'Lucinda\STDERR\PHPException',
-        'Lucinda\Framework\Json\Exception',
+        '\JsonException',
         'Lucinda\Headers\ConfigurationException',
         'Lucinda\Headers\UserException',
         'Lucinda\Internationalization\ConfigurationException',
@@ -45,8 +45,8 @@ class ExceptionsSelector
         'Lucinda\Templating\ViewException'
     ];
     
-    private $exceptions;
-    private $features;
+    private Exceptions $exceptions;
+    private Features $features;
     
     /**
      * @param Features $features
@@ -134,7 +134,7 @@ class ExceptionsSelector
                 $exception->error_type = "LOGICAL";
                 break;
             case 'Lucinda\STDERR\PHPException': // syntax
-            case 'Lucinda\Framework\Json\Exception': // syntax
+            case '\JsonException': // syntax
             case 'Lucinda\Headers\UserException': // syntax
             case 'Lucinda\Internationalization\TranslationInvalidException': // syntax
             case 'Lucinda\Templating\ViewException':   // syntax

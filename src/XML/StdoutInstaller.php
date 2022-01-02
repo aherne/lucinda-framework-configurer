@@ -42,35 +42,6 @@ class StdoutInstaller extends Installer
     }
     
     /**
-     * Populates <resolvers> tag @ stdout.xml
-     */
-    private function setResolversTag(): void
-    {
-        $application = $this->xml->addChild("resolvers");
-        
-        if (!$this->features->isREST) {
-            $html = $application->addChild("resolver");
-            $html->addAttribute("format", "html");
-            $html->addAttribute("content_type", "text/html");
-            $html->addAttribute("class", "Lucinda\Project\ViewResolvers\Html");
-            $html->addAttribute("charset", "UTF-8");
-        }
-        
-        $json = $application->addChild("resolver");
-        $json->addAttribute("format", "json");
-        $json->addAttribute("content_type", "application/json");
-        $json->addAttribute("class", "Lucinda\Project\ViewResolvers\Json");
-        $json->addAttribute("charset", "UTF-8");
-        
-        $console = $application->addChild("resolver");
-        $console->addAttribute("format", "console");
-        $console->addAttribute("content_type", "text/plain");
-        $console->addAttribute("class", "Lucinda\Project\ViewResolvers\Console");
-        $console->addAttribute("charset", "UTF-8");
-    }
-    
-    
-    /**
      * Populates <templating> tag @ stdout.xml
      */
     private function setTemplatingTag(): void

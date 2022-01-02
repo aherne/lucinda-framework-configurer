@@ -9,40 +9,40 @@ class Route
     /**
      * @var integer
      */
-    public $id;
+    public int $id;
     
     /**
      * @var string
      */
-    public $url;
+    public string $url;
     
     /**
      * @var string
      */
-    public $controller;
+    public string $controller;
     
     /**
      * @var string
      */
-    public $view;
+    public string $view;
     
     /**
      * @var string
      */
-    public $roles;
+    public string $roles;
     
     /**
      * @var boolean
      */
-    public $no_cache;
+    public bool $no_cache;
     
     /**
      * @var integer
      */
-    public $cache_expiration;
+    public int $cache_expiration;
     
     /**
      * @var string
      */
-    public $allowed_methods;
+    public string $allowed_methods;
 }

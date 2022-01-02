@@ -12,7 +12,7 @@ class Internationalization
      * @default en_US
      * @validator ([a-z]{2}_[A-Z]{2})
      */
-    public $defaultLocale;
+    public string $defaultLocale;
     
     /**
      * @var integer
@@ -21,5 +21,5 @@ class Internationalization
      * @option By value of request parameter 'locale'
      * @option By value of session parameter 'locale'
      */
-    public $detectionMethod;
+    public int $detectionMethod;
 }

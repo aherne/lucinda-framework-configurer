@@ -8,8 +8,8 @@ use Lucinda\Configurer\Features\Routes\Route;
  */
 class RoutesSelector
 {
-    private $routes;
-    private $features;
+    private Routes $routes;
+    private Features $features;
     
     /**
      * @param Features $features
@@ -92,8 +92,6 @@ class RoutesSelector
                     $route->roles = "GUESTS";
                     break;
                 case "logout":
-                    $route->roles = "MEMBERS,ADMINISTRATORS";
-                    break;
                 case "members":
                     $route->roles = "MEMBERS,ADMINISTRATORS";
                     break;
@@ -110,8 +108,6 @@ class RoutesSelector
                         $route->cache_expiration = 10;
                         break;
                     case "login":
-                        $route->no_cache = 1;
-                        break;
                     case "logout":
                         $route->no_cache = 1;
                         break;
@@ -119,18 +115,12 @@ class RoutesSelector
             }
             if ($this->features->headers->cors) {
                 switch ($url) {
-                    case "index":
-                        $route->allowed_methods = "GET";
-                        break;
                     case "login":
                         $route->allowed_methods = "GET,POST";
                         break;
+                    case "index":
                     case "logout":
-                        $route->allowed_methods = "GET";
-                        break;
                     case "members":
-                        $route->allowed_methods = "GET";
-                        break;
                     case "restricted":
                         $route->allowed_methods = "GET";
                         break;

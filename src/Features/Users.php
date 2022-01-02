@@ -9,10 +9,10 @@ class Users
     /**
      * @var \Lucinda\Configurer\Features\Users\User[]
      */
-    public $users = [];
+    public array $users = [];
     
     /**
      * @var string
      */
-    public $default_roles;
+    public string $default_roles;
 }

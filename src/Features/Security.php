@@ -11,7 +11,7 @@ class Security
      * @message Will your site be a CMS where all pages except login require authentication
      * @default 0
      */
-    public $isCMS;
+    public bool $isCMS;
     
     /**
      * @var integer
@@ -19,7 +19,7 @@ class Security
      * @option SESSION + REMEMBER ME COOKIE
      * @option SYNCHRONIZER TOKEN
      */
-    public $persistenceDrivers;
+    public int $persistenceDrivers;
     
     /**
      * @var integer
@@ -29,7 +29,7 @@ class Security
      * @option Using LOGIN FORM, checked in XML (use only if users will always be predefined)
      * @default 0
      */
-    public $authenticationMethod;
+    public int $authenticationMethod;
     
     /**
      * @var integer
@@ -37,5 +37,5 @@ class Security
      * @option Using DATABASE
      * @option Using XML
      */
-    public $authorizationMethod;
+    public int $authorizationMethod;
 }

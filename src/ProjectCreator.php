@@ -7,10 +7,16 @@ use Lucinda\Configurer\XML\StderrInstaller;
 use Lucinda\Configurer\Code\Installer as CodeInstaller;
 use Lucinda\Configurer\SQL\Installer as SqlInstaller;
 
+/**
+ * Creates new Lucinda Framework 4.0 project on disk
+ */
 class ProjectCreator
 {
     /**
+     * Creates project
+     *
      * @param string $installationFolder
+     * @throws \Exception
      */
     public function __construct(string $installationFolder)
     {
@@ -19,7 +25,7 @@ class ProjectCreator
     }
 
     /**
-     * Gets user selected install features and validates them in the process
+     * Gets user selected installation features and validates them in the process
      *
      * @return Features
      * @throws \Exception If process fails
@@ -36,8 +42,10 @@ class ProjectCreator
      * Creates project on disk based on features selected by user
      *
      * @param string $installationFolder
+     * @param Features $features
+     * @throws \Exception
      */
-    private function writeFiles(string $installationFolder, Features $features)
+    private function writeFiles(string $installationFolder, Features $features): void
     {
         chmod($installationFolder, 0777);
         chdir($installationFolder);

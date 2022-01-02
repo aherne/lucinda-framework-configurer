@@ -13,7 +13,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::login()
      */
-    public function login(string $username, string $password)
+    public function login(string $username, string $password): int|string|null
     {
         $result = SQL("SELECT id AS user_id, password FROM users WHERE username=:user", array(":user"=>$username))->toRow();
         if (empty($result) || !password_verify($password, $result["password"])) {
@@ -26,7 +26,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::logout()
      */
-    public function logout($userID): void
+    public function logout(int|string $userID): void
     {
     }
     
@@ -34,7 +34,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authorization\UserRoles::getRoles()
      */
-    public function getRoles($userID): array
+    public function getRoles(int|string|null $userID): array
     {
         return ($userID?["MEMBERS"]:["GUESTS"]);
     }

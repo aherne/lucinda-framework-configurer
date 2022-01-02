@@ -12,7 +12,7 @@ class SQLServer
      * @option MySQL
      * @default 0
      */
-    public $driver;
+    public int $driver;
     
     /**
      * @var string
@@ -20,7 +20,7 @@ class SQLServer
      * @default 127.0.0.1
      * @validator (([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])
      */
-    public $host;
+    public string $host;
     
     /**
      * @var integer
@@ -28,24 +28,24 @@ class SQLServer
      * @validator ([0-9]+)
      * @optional
      */
-    public $port;
+    public int $port;
     
     /**
      * @var string
      * @message Write username
      */
-    public $user;
+    public string $user;
     
     /**
      * @var string
      * @message Write password
      */
-    public $password;
+    public string $password;
     
     /**
      * @var string
      * @message Write schema your app will be installed into
      * @validator ([0-9a-zA-Z_]+)
      */
-    public $schema;
+    public string $schema;
 }

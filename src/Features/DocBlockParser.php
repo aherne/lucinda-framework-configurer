@@ -6,14 +6,14 @@ namespace Lucinda\Configurer\Features;
  */
 class DocBlockParser
 {
-    private $handler;
-    private $type;
-    private $message;
-    private $options = [];
-    private $default;
-    private $optional = false;
-    private $validator;
-    private $condition = [];
+    private ?string $handler = null;
+    private string $type;
+    private string $message;
+    private array $options = [];
+    private string $default;
+    private bool $optional = false;
+    private string $validator;
+    private array $condition = [];
     
     /**
      * @param string $documentation
@@ -53,7 +53,7 @@ class DocBlockParser
     {
         return $this->handler;
     }
-    
+
     /**
      * Detects field type based on @var annotation
      *
@@ -152,12 +152,12 @@ class DocBlockParser
      */
     private function setOptional(string $documentation): void
     {
-        $this->optional = strpos($documentation, "@optional")!==false;
+        $this->optional = str_contains($documentation, "@optional");
     }
     
     
     /**
-     * Gets whether or not field will be optional for client
+     * Gets whether field will be optional for client
      *
      * @return boolean
      */
@@ -200,7 +200,7 @@ class DocBlockParser
     }
     
     /**
-     * Detects whether or not field should be displayed based on previous selections
+     * Detects whether field should be displayed based on previous selections
      *
      * @param string $documentation
      */
@@ -214,7 +214,7 @@ class DocBlockParser
     }
     
     /**
-     * Gets whether or not field should be displayed based on previous selections
+     * Gets whether field should be displayed based on previous selections
      *
      * @return array
      */

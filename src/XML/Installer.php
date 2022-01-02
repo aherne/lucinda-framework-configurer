@@ -10,21 +10,10 @@ abstract class Installer
 {
     const DEFAULT_ENVIRONMENT = "local";
     const DEFAULT_VERSION = "0.0.2";
-    
-    /**
-     * @var \SimpleXMLElement
-     */
-    protected $xml;
-    
-    /**
-     * @var Features
-     */
-    protected $features;
-    
-    /**
-     * @var string
-     */
-    protected $xmlFilePath;
+
+    protected \SimpleXMLElement $xml;
+    protected Features $features;
+    protected string $xmlFilePath;
     
     /**
      * Sets up XML to write
@@ -38,6 +27,34 @@ abstract class Installer
         $this->features = $features;
         $this->generateXML();
         $this->saveFile();
+    }
+
+    /**
+     * Populates <resolvers> tag @ stderr.xml/stdout.xml
+     */
+    protected function setResolversTag(): void
+    {
+        $application = $this->xml->addChild("resolvers");
+
+        if (!$this->features->isREST) {
+            $html = $application->addChild("resolver");
+            $html->addAttribute("format", "html");
+            $html->addAttribute("content_type", "text/html");
+            $html->addAttribute("class", "Lucinda\Project\ViewResolvers\Html");
+            $html->addAttribute("charset", "UTF-8");
+        }
+
+        $json = $application->addChild("resolver");
+        $json->addAttribute("format", "json");
+        $json->addAttribute("content_type", "application/json");
+        $json->addAttribute("class", "Lucinda\Project\ViewResolvers\Json");
+        $json->addAttribute("charset", "UTF-8");
+
+        $console = $application->addChild("resolver");
+        $console->addAttribute("format", "console");
+        $console->addAttribute("content_type", "text/plain");
+        $console->addAttribute("class", "Lucinda\Project\ViewResolvers\Console");
+        $console->addAttribute("charset", "UTF-8");
     }
     
     /**

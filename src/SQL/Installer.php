@@ -10,11 +10,8 @@ class Installer
 {
     const ROLES = ["MEMBERS"=>1, "ADMINISTRATORS"=>2];
     
-    private $features;
-    /**
-     * @var \PDO
-     */
-    private $pdo;
+    private Features$features;
+    private \PDO $pdo;
     
     /**
      * SQLInstallation constructor.
@@ -85,7 +82,7 @@ class Installer
     /**
      * Creates and fills table: users (used to identify users)
      */
-    private function setUsersTable1()
+    private function setUsersTable1(): void
     {
         $this->pdo->exec("
             CREATE TABLE users (
@@ -108,7 +105,7 @@ class Installer
         }
     }
     
-    private function setUsersTable2()
+    private function setUsersTable2(): void
     {
         $this->pdo->exec("
             CREATE TABLE users
@@ -129,7 +126,7 @@ class Installer
         }
     }
     
-    private function setUsersTable3()
+    private function setUsersTable3(): void
     {
         $this->pdo->exec("
             CREATE TABLE users
@@ -152,7 +149,7 @@ class Installer
     /**
      * Sets table that stores login attempts and penalties
      */
-    private function setThrottlerTable()
+    private function setThrottlerTable(): void
     {
         $this->pdo->exec("
              CREATE TABLE user_logins (
@@ -171,7 +168,7 @@ class Installer
     /**
      * Sets table that stores migrations
      */
-    private function setMigrationsTable()
+    private function setMigrationsTable(): void
     {
         $this->pdo->exec("
             CREATE TABLE migrations
@@ -189,7 +186,7 @@ class Installer
     /**
      * Sets table that stores sessions
      */
-    private function setSessionsTable()
+    private function setSessionsTable(): void
     {
         $this->pdo->exec("
             CREATE TABLE sessions
@@ -207,7 +204,7 @@ class Installer
     /**
      * Creates and fills table: resources (used to identify resources to apply authorization later on)
      */
-    private function setResourcesTable()
+    private function setResourcesTable(): void
     {
         $this->pdo->exec("
             CREATE TABLE resources
@@ -222,14 +219,14 @@ class Installer
         foreach ($this->features->routes->routes as $route) {
             $this->pdo->exec("
             INSERT INTO resources (id, url, is_public) VALUES
-            (".$route->id.", '".$route->url."', ".(strpos($route->roles, "GUESTS")!==false?1:0).")");
+            (".$route->id.", '".$route->url."', ".(str_contains($route->roles, "GUESTS") ?1:0).")");
         }
     }
 
     /**
      * Creates and fills table: roles (use to identify resource access levels)
      */
-    public function setRolesTable()
+    public function setRolesTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE roles
@@ -251,7 +248,7 @@ class Installer
     /**
      * Creates and fills table: users_roles (used to identify roles users belong to)
      */
-    public function setUsersRolesTable()
+    public function setUsersRolesTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE users_roles
@@ -278,7 +275,7 @@ class Installer
     /**
      * Creates and fills table: roles_resources (used for role authorization to requested resource)
      */
-    public function setRolesResourcesTable()
+    public function setRolesResourcesTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE roles_resources
@@ -307,7 +304,7 @@ class Installer
     /**
      * Creates and fills table: users_resources (used for user authorization to requested resource)
      */
-    public function setUsersResourcesTable()
+    public function setUsersResourcesTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE users_resources
@@ -345,7 +342,7 @@ class Installer
     /**
      * Creates and fills table: oauth2_providers (used to identify oauth2 providers supported by framework)
      */
-    public function setOauth2ProvidersTable()
+    public function setOauth2ProvidersTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE oauth2_providers
@@ -373,7 +370,7 @@ class Installer
     /**
      * Creates and fills table: users_oauth2 (used for oauth2 authentication)
      */
-    public function setUsersOauth2Table()
+    public function setUsersOauth2Table(): void
     {
         $this->pdo->exec("
         CREATE TABLE users__oauth2
@@ -393,7 +390,7 @@ class Installer
     /**
      * Creates and fills table: users_form (used for form authentication)
      */
-    public function setUsersFormTable()
+    public function setUsersFormTable(): void
     {
         $this->pdo->exec("
         CREATE TABLE users__form

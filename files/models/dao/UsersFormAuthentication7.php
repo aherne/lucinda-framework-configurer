@@ -12,7 +12,7 @@ class UsersFormAuthentication implements UserRoles
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authorization\UserRoles::getRoles()
      */
-    public function getRoles($userID): array
+    public function getRoles(int|string|null $userID): array
     {
         if ($userID) {
             return SQL("SELECT t2.name FROM user_roles AS t1

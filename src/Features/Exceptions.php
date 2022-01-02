@@ -9,5 +9,5 @@ class Exceptions
     /**
      * @var \Lucinda\Configurer\Features\Exceptions\Exception[]
      */
-    public $exceptions = [];
+    public array $exceptions = [];
 }

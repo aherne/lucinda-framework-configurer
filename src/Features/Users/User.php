@@ -9,30 +9,30 @@ class User
     /**
      * @var integer
      */
-    public $id;
+    public int $id;
     
     /**
      * @var string
      */
-    public $name;
+    public string $name;
     
     /**
      * @var string
      */
-    public $email;
+    public string $email;
     
     /**
      * @var string
      */
-    public $username;
+    public string $username;
     
     /**
      * @var string
      */
-    public $password;
+    public string $password;
     
     /**
      * @var string
      */
-    public $roles;
+    public string $roles;
 }

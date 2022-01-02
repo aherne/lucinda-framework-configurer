@@ -8,11 +8,14 @@ use Lucinda\Configurer\Features\Features;
  */
 class Installer
 {    
-    private $rootFolder;
-    private $features;
+    private string $rootFolder;
+    private Features $features;
 
     /**
+     * Kick-starts setup procedure
+     *
      * @param Features $features
+     * @param string $installationFolder
      */
     public function __construct(Features $features, string $installationFolder)
     {
