@@ -11,7 +11,7 @@ class Caching
      * @message Do you want HTTP caching to be disabled by default and allowed on a route basis only
      * @default 0
      */
-    public int|bool $no_cache = 0;
+    public bool $no_cache = false;
     
     /**
      * @var integer

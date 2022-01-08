@@ -11,7 +11,7 @@ class Security
      * @message Will your site be a CMS where all pages except login require authentication
      * @default 0
      */
-    public bool $isCMS;
+    public bool $isCMS = false;
     
     /**
      * @var integer

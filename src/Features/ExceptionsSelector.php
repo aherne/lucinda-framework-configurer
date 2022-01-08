@@ -118,48 +118,50 @@ class ExceptionsSelector
                 break;
         }
         switch ($className) {
-            case 'Lucinda\STDERR\ConfigurationException':   // logical
-            case 'Lucinda\Headers\ConfigurationException':   // logical
-            case 'Lucinda\Internationalization\ConfigurationException':   // logical
-            case 'Lucinda\Internationalization\DomainNotFoundException':   // logical
-            case 'Lucinda\Logging\ConfigurationException':   // logical
-            case 'Lucinda\STDOUT\ConfigurationException':   // logical
-            case 'Lucinda\NoSQL\ConfigurationException':   // logical
-            case 'Lucinda\NoSQL\KeyNotFoundException':  // logical
-            case 'Lucinda\OAuth2\Client\Exception':  // logical
-            case 'Lucinda\WebSecurity\ConfigurationException':  // logical
-            case 'Lucinda\SQL\ConfigurationException':   // logical
-            case 'Lucinda\SQL\Exception': //logical
-            case 'Lucinda\Templating\ConfigurationException':   // logical
+            case 'Lucinda\STDERR\ConfigurationException': 
+            case 'Lucinda\Headers\ConfigurationException': 
+            case 'Lucinda\Internationalization\ConfigurationException': 
+            case 'Lucinda\Internationalization\DomainNotFoundException': 
+            case 'Lucinda\Logging\ConfigurationException': 
+            case 'Lucinda\STDOUT\ConfigurationException': 
+            case 'Lucinda\NoSQL\ConfigurationException': 
+            case 'Lucinda\NoSQL\KeyNotFoundException':
+            case 'Lucinda\OAuth2\Client\Exception':
+            case 'Lucinda\WebSecurity\ConfigurationException':
+            case 'Lucinda\SQL\ConfigurationException': 
+            case 'Lucinda\SQL\Exception':
+            case 'Lucinda\Templating\ConfigurationException': 
+            case 'Lucinda\MVC\ConfigurationException':
                 $exception->error_type = "LOGICAL";
                 break;
-            case 'Lucinda\STDERR\PHPException': // syntax
-            case '\JsonException': // syntax
-            case 'Lucinda\Headers\UserException': // syntax
-            case 'Lucinda\Internationalization\TranslationInvalidException': // syntax
-            case 'Lucinda\Templating\ViewException':   // syntax
+            case 'Lucinda\STDERR\PHPException': 
+            case '\JsonException': 
+            case 'Lucinda\Headers\UserException': 
+            case 'Lucinda\Internationalization\TranslationInvalidException': 
+            case 'Lucinda\Templating\ViewException':   
                 $exception->error_type = "SYNTAX";
                 break;
-            case 'Lucinda\NoSQL\ConnectionException':   // server
-            case 'Lucinda\NoSQL\OperationFailedException':  // server
-            case 'Lucinda\OAuth2\Server\Exception':  // server
-            case 'Lucinda\SQL\ConnectionException': // server
-            case 'Lucinda\SQL\StatementException':  // server
+            case 'Lucinda\NoSQL\ConnectionException':   
+            case 'Lucinda\NoSQL\OperationFailedException':  
+            case 'Lucinda\OAuth2\Server\Exception':  
+            case 'Lucinda\SQL\ConnectionException': 
+            case 'Lucinda\SQL\StatementException':  
                 $exception->error_type = "SERVER";
                 break;
-            case 'Lucinda\STDOUT\MethodNotAllowedException':    // client
-            case 'Lucinda\STDOUT\PathNotFoundException':    // client
-            case 'Lucinda\STDOUT\Request\UploadedFiles\Exception':    // client
-            case 'Lucinda\STDOUT\ValidationFailedException':    // client
-            case 'Lucinda\WebSecurity\Authentication\Form\Exception':   // client
-            case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':    // client
-            case 'Lucinda\WebSecurity\Token\EncryptionException':    // client
-            case 'Lucinda\WebSecurity\Token\Exception':    // client
-            case 'Lucinda\WebSecurity\Token\ExpiredException':    // client
-            case 'Lucinda\WebSecurity\Token\RegenerationException':    // client
+            case 'Lucinda\STDOUT\MethodNotAllowedException':   
+            case 'Lucinda\STDOUT\PathNotFoundException':   
+            case 'Lucinda\STDOUT\Request\UploadedFiles\Exception':   
+            case 'Lucinda\STDOUT\ValidationFailedException':   
+            case 'Lucinda\WebSecurity\Authentication\Form\Exception':
+            case 'Lucinda\WebSecurity\Authentication\OAuth2\Exception':
+            case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':   
+            case 'Lucinda\WebSecurity\Token\EncryptionException':   
+            case 'Lucinda\WebSecurity\Token\Exception':   
+            case 'Lucinda\WebSecurity\Token\ExpiredException':   
+            case 'Lucinda\WebSecurity\Token\RegenerationException':
                 $exception->error_type = "CLIENT";
                 break;
-            case 'Lucinda\WebSecurity\SecurityPacket':    // none
+            case 'Lucinda\WebSecurity\SecurityPacket':
                 $exception->error_type = "NONE";
                 break;
         }

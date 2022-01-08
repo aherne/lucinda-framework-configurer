@@ -44,15 +44,12 @@ class FeaturesValidator
      */
     private function validateSQLServer(SQLServer $server): void
     {
-        $driver = "";
         switch ($server->driver) {
             case 0: // mysql
-                $driver = "mysql";
-                $pdo = new \PDO($driver.":dbname=".$server->schema.";host=".$server->host, $server->user, $server->password);
+                $pdo = new \PDO("mysql:dbname=".$server->schema.";host=".$server->host, $server->user, $server->password);
                 $pdo->exec("SHOW TABLES");
                 break;
         }
-        $server->driver = $driver;
     }
     
     /**
@@ -63,7 +60,6 @@ class FeaturesValidator
      */
     private function validateNoSQLServer(NoSQLServer $server): void
     {
-        $driver = "";
         switch ($server->driver) {
             case 0:
                 if (!class_exists("\Redis")) {
@@ -74,30 +70,30 @@ class FeaturesValidator
                 if (!$result) {
                     throw new \Exception("Connection to server failed: redis");
                 }
-                $driver = "redis";
                 break;
             case 1:
-                if (class_exists("\Memcached")) {
-                    $memcached = new \Memcached();
-                    $result = $memcached->connect($server->host, ($server->port?$server->port:11211));
-                    $result = $memcached->set("test", 1);
-                    if (!$result) {
-                        throw new \Exception("Connection to server failed: memcached");
-                    }
-                    $memcached->delete("test");
-                    $driver = "memcached";
-                } elseif (class_exists("\Memcache")) {
-                    $memcache = new \Memcache();
-                    $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
-                    if (!$result) {
-                        throw new \Exception("Connection to server failed: memcache");
-                    }
-                    $driver = "memcache";
-                } else {
-                    throw new \Exception("Extension not installed: memcache or memcached");
+                if (class_exists("\Memcache")) {
+                    throw new \Exception("Extension not installed: memcache");
+                }
+                $memcache = new \Memcache();
+                $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
+                if (!$result) {
+                    throw new \Exception("Connection to server failed: memcache");
                 }
                 break;
             case 2:
+                if (!class_exists("\Memcached")) {
+                    throw new \Exception("Extension not installed: memcached");
+                }
+                $memcached = new \Memcached();
+                $result = $memcached->connect($server->host, ($server->port?$server->port:11211));
+                $result = $memcached->set("test", 1);
+                if (!$result) {
+                    throw new \Exception("Connection to server failed: memcached");
+                }
+                $memcached->delete("test");
+                break;
+            case 3:
                 if (!class_exists("\Couchbase\PasswordAuthenticator")) {
                     throw new \Exception("Extension not installed: couchbase");
                 }
@@ -112,19 +108,18 @@ class FeaturesValidator
                 } catch (\CouchbaseException $e) {
                     throw new \Exception("Connection to server failed: couchbase");
                 }
-                $driver = "couchbase";
                 break;
-            case 3:
+            case 4:
+                if (!function_exists("\apc_store")) {
+                    throw new \Exception("Extension not installed: apcu");
+                }
+                break;
+            case 5:
                 if (function_exists("\apcu_store")) {
-                    $driver = "apcu";
-                } elseif (function_exists("apc_store")) {
-                    $driver = "apc";
-                } else {
                     throw new \Exception("Extension not installed: apcu");
                 }
                 break;
         }
-        $server->driver = $driver;
     }
     
     /**

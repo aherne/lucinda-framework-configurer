@@ -14,12 +14,12 @@ class Exception
     /**
      * @var string
      */
-    public string $controller;
+    public ?string $controller = null;
     
     /**
      * @var string
      */
-    public string $view;
+    public ?string $view = null;
     
     /**
      * @var string
@@ -27,7 +27,7 @@ class Exception
     public string $error_type;
     
     /**
-     * @var boolean
+     * @var int
      */
-    public bool $http_status;
+    public ?int $http_status = null;
 }

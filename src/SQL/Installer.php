@@ -10,7 +10,7 @@ class Installer
 {
     const ROLES = ["MEMBERS"=>1, "ADMINISTRATORS"=>2];
     
-    private Features$features;
+    private Features $features;
     private \PDO $pdo;
     
     /**
@@ -21,6 +21,13 @@ class Installer
     public function __construct(Features $features)
     {
         $this->features = $features;
+
+        $driver = match($this->features->sqlServer->driver) {
+            0 => "mysql"
+        };
+        $pdo = new \PDO($driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = $pdo;
         
         if ($this->features->migrations && $this->features->migrations->storageMethod==0) {
             $this->setMigrationsTable();
@@ -33,10 +40,6 @@ class Installer
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
-        
-        $pdo = new \PDO($this->features->sqlServer->driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->pdo = $pdo;
         
         $this->cleanUp();
         
@@ -171,7 +174,7 @@ class Installer
     private function setMigrationsTable(): void
     {
         $this->pdo->exec("
-            CREATE TABLE migrations
+            CREATE TABLE IF NOT EXISTS migrations
             (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             class_name VARCHAR(255) NOT NULL,
@@ -189,7 +192,7 @@ class Installer
     private function setSessionsTable(): void
     {
         $this->pdo->exec("
-            CREATE TABLE sessions
+            CREATE TABLE IF NOT EXISTS sessions
             (
             id VARCHAR(50) NOT NULL,
             value BLOB NOT NULL,

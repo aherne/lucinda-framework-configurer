@@ -10,9 +10,11 @@ class NoSQLServer
      * @var integer
      * @message Choose NoSQL driver
      * @option Redis
-     * @option Memcache / Memcached
+     * @option Memcache
+     * @option Memcached
      * @option Couchbase
-     * @option APC / APCu
+     * @option APC
+     * @option APCu
      * @default 0
      */
     public int $driver;
@@ -24,7 +26,7 @@ class NoSQLServer
      * @validator (([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])
      * @if driver=0,1,2
      */
-    public string $host;
+    public string $host = "127.0.0.1";
     
     /**
      * @var integer
@@ -33,28 +35,28 @@ class NoSQLServer
      * @optional
      * @if driver=0,1,2
      */
-    public int $port;
+    public int $port = 0;
     
     /**
      * @var string
      * @message Write username
      * @if driver=2
      */
-    public string $user;
+    public string $user = "";
     
     /**
      * @var string
      * @message Write password
      * @if driver=2
      */
-    public string $password;
+    public string $password = "";
     
     /**
      * @var string
      * @message Write bucket name
      * @if driver=2
      */
-    public string $bucket;
+    public string $bucket = "";
     
     /**
      * @var string
@@ -62,5 +64,5 @@ class NoSQLServer
      * @if driver=2
      * @optional
      */
-    public string $bucket_password;
+    public string $bucket_password = "";
 }

@@ -28,7 +28,7 @@ class SQLServer
      * @validator ([0-9]+)
      * @optional
      */
-    public int $port;
+    public int $port = 0;
     
     /**
      * @var string

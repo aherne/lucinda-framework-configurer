@@ -11,7 +11,7 @@ class CORS
      * @message Choose whether or not credentials are allowed in CORS requests
      * @default 1
      */
-    public bool $allow_credentials;
+    public bool $allow_credentials = true;
     
     /**
      * @var integer
@@ -19,7 +19,7 @@ class CORS
      * @default 0
      * @validator ([0-9]+)
      */
-    public int $max_age;
+    public int $max_age = 0;
     
     /**
      * @var string

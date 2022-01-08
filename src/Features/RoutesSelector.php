@@ -8,7 +8,7 @@ use Lucinda\Configurer\Features\Routes\Route;
  */
 class RoutesSelector
 {
-    private Routes $routes;
+    private ?Routes $routes = null;
     private Features $features;
     
     /**

@@ -14,5 +14,5 @@ class Users
     /**
      * @var string
      */
-    public string $default_roles;
+    public string $default_roles = "";
 }

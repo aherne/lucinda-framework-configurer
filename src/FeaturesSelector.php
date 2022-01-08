@@ -60,12 +60,16 @@ class FeaturesSelector
                     }
                 }
                 $result = $this->prompt($i, "[".$j."/".($i==0?sizeof($properties)-3:sizeof($properties))."]", $className, $name, $info);
-                if (str_starts_with($info->getType(), "\\") && $result==="1") {
-                    $childClassName = $info->getType();
-                    $object->$name = new $childClassName();
-                    $this->run($i+1, $childClassName, $object->$name);
+                if (str_starts_with($info->getType(), "\\")) {
+                    if ($result=="1") {
+                        $childClassName = $info->getType();
+                        $object->$name = new $childClassName();
+                        $this->run($i+1, $childClassName, $object->$name);
+                    } else {
+                        $object->$name = null;
+                    }
                 } else {
-                    $object->$name = $result;
+                    $object->$name = ($info->getType()=="integer"?(int) $result:$result);
                 }
             }
         }

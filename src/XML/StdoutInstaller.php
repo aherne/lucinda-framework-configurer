@@ -134,9 +134,13 @@ class StdoutInstaller extends Installer
         if (!$this->features->sqlServer) {
             return;
         }
+
+        $driver = match($this->features->sqlServer->driver) {
+            0 => "mysql"
+        };
         
         $server = $this->xml->addChild("sql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
-        $server->addAttribute("driver", $this->features->sqlServer->driver);
+        $server->addAttribute("driver", $driver);
         $server->addAttribute("host", $this->features->sqlServer->host);
         if ($this->features->sqlServer->port) {
             $server->addAttribute("port", $this->features->sqlServer->port);
@@ -155,15 +159,24 @@ class StdoutInstaller extends Installer
         if (!$this->features->nosqlServer) {
             return;
         }
+
+        $driver = match($this->features->nosqlServer->driver) {
+            0 => "redis",
+            1 => "memcache",
+            2 => "memcached",
+            3 => "couchbase",
+            4 => "apc",
+            5 => "apcu"
+        };
         
         $server = $this->xml->addChild("nosql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
-        $server->addAttribute("driver", $this->features->nosqlServer->driver);
-        if (!in_array($this->features->nosqlServer->driver, ["apc","apcu"])) {
+        $server->addAttribute("driver", $driver);
+        if (!in_array($driver, ["apc","apcu"])) {
             $server->addAttribute("host", $this->features->nosqlServer->host);
             if ($this->features->nosqlServer->port) {
                 $server->addAttribute("port", $this->features->nosqlServer->port);
             }
-            if ($this->features->nosqlServer->driver == "couchbase") {
+            if ($driver == "couchbase") {
                 $server->addAttribute("username", $this->features->nosqlServer->user);
                 $server->addAttribute("password", $this->features->nosqlServer->password);
                 $server->addAttribute("bucket_name", $this->features->nosqlServer->bucket);

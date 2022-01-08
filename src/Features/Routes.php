@@ -9,10 +9,10 @@ class Routes
     /**
      * @var string
      */
-    public string $default_roles;
+    public string $default_roles = "";
     
     /**
-     * @var \Lucinda\Configurer\Features\Routes[]
+     * @var \Lucinda\Configurer\Features\Routes\Route[]
      */
     public array $routes = [];
 }

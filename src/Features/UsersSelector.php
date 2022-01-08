@@ -8,7 +8,7 @@ use Lucinda\Configurer\Features\Users\User;
  */
 class UsersSelector
 {
-    private Users $users;
+    private ?Users $users = null;
     private Features $features;
     
     /**

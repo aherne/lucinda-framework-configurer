@@ -19,30 +19,30 @@ class Route
     /**
      * @var string
      */
-    public string $controller;
+    public ?string $controller = null;
     
     /**
      * @var string
      */
-    public string $view;
+    public ?string $view = null;
     
     /**
      * @var string
      */
-    public string $roles;
+    public ?string $roles = null;
     
     /**
      * @var boolean
      */
-    public bool $no_cache;
+    public bool $no_cache = false;
     
     /**
      * @var integer
      */
-    public int $cache_expiration;
+    public ?int $cache_expiration = null;
     
     /**
      * @var string
      */
-    public string $allowed_methods;
+    public ?string $allowed_methods = null;
 }
