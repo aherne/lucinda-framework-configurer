@@ -310,10 +310,10 @@ class StdoutInstaller extends Installer
             $session = $this->xml->addChild("session");
             $session->addAttribute("auto_start", 1);
             if ($this->features->isLoadBalanced) {
-                if ($this->features->nosqlServer) {
-                    $session->addAttribute("handler", "Lucinda\Project\DAO\NoSQLSessionHandler");
-                } elseif ($this->features->sqlServer) {
+                if ($this->features->sqlServer) {
                     $session->addAttribute("handler", "Lucinda\Project\DAO\SQLSessionHandler");
+                } elseif ($this->features->nosqlServer) {
+                    $session->addAttribute("handler", "Lucinda\Project\DAO\NoSQLSessionHandler");
                 }                
             }
         }
