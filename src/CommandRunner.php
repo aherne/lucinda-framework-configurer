@@ -21,6 +21,12 @@ class CommandRunner
                 new ProjectCreator($installationFolder);
                 echo "Project installed successfully at: ".$installationFolder."\n";
                 break;
+            case "create-folders":
+                mkdir("compilations");
+                chmod("compilations", 0777);
+                mkdir("compilations/checksums");
+                chmod("compilations/checksums", 0777);
+                break;
             default:
                 throw new \Exception("Invalid option: ".$command."!");
                 break;
