@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer;
 
 /**
@@ -19,7 +20,11 @@ class CommandRunner
         switch ($command) {
             case "project":
                 new ProjectCreator($installationFolder);
-                echo "Project installed successfully at: ".$installationFolder."\n";
+                echo "Project installed successfully at: " . $installationFolder . "\n";
+                break;
+            case "vhost":
+                $creator = new HostCreator($installationFolder);
+                echo "Project installed successfully at: " . $creator->getHostCreated() . "\n";
                 break;
             case "create-folders":
                 mkdir("compilations");
@@ -28,7 +33,7 @@ class CommandRunner
                 chmod("compilations/checksums", 0777);
                 break;
             default:
-                throw new \Exception("Invalid option: ".$command."!");
+                throw new \Exception("Invalid option: " . $command . "!");
                 break;
         }
     }
