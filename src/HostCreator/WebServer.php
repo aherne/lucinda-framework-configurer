@@ -58,7 +58,7 @@ class WebServer
             file_get_contents($configurationFile)
         );
 
-        // sets development environment for
+        // sets development environment for NGINX
         if ($this->name == "nginx") {
             $fpm = new PhpFpm($this->operatingSystemFamily);
             $body = str_replace("(SOCKET_FILE)", $fpm->getSocketFile(), $body);
@@ -69,17 +69,24 @@ class WebServer
                     $socketConfig,
                     $configurationFileBody . "\nenv[ENVIRONMENT] = " . $virtualHost->getDevelopmentEnvironment()
                 );
+                if ($this->operatingSystemFamily == OperatingSystemFamily::LINUX) {
+                    $this->executeCommand("systemctl restart ".$fpm->getServiceName());
+                } else {
+                    $this->executeCommand("brew services restart ".$fpm->getServiceName());
+                }
             }
         }
+
+        // writes virtual host
         if (!str_ends_with($this->virtualHostsFile, "/")) {
-            file_put_contents($this->virtualHostsFile, "\r\n\r\n" . $body, FILE_APPEND);
+            file_put_contents($this->virtualHostsFile, "\n\n" . $body, FILE_APPEND);
         } else {
-            $fileName = $this->virtualHostsFile . "/" . $virtualHost->getHostName();
+            $fileName = $this->virtualHostsFile . $virtualHost->getSiteName().".conf";
             file_put_contents($fileName, $body);
             if ($this->name == "apache2") {
-                $this->executeCommand("a2ensite " . $virtualHost->getHostName());
-            } else if ($this->name == "nginx") {
-                $this->executeCommand("cp " . $fileName . " " . dirname($this->virtualHostsFile) . "/sites-enabled/");
+                $this->executeCommand("a2ensite " . $virtualHost->getSiteName());
+            } else if (str_contains($fileName, "/sites-available/")) {
+                $this->executeCommand("ln -s " . $fileName . " " . str_replace("/sites-available/", "/sites-enabled/", $fileName));
             }
         }
     }
@@ -109,14 +116,13 @@ class WebServer
     /**
      * Sets path to web server executable (if windows) or web server process name (if linux/mac)
      *
-     * @param string $documentRoot
      * @return void
      * @throws \Exception
      */
-    private function setExecutablePath(string $documentRoot): void
+    private function setExecutablePath(): void
     {
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
-            $this->executablePath = $this->locate(dirname($documentRoot), "httpd.exe");
+            $this->executablePath = $this->locate(dirname($this->documentRoot), "httpd.exe");
             if (!$this->executablePath) {
                 throw new \Exception("Web server could not be detected: httpd.exe!");
             }
@@ -160,6 +166,7 @@ class WebServer
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
             $baseDir = dirname($this->documentRoot);
             $this->virtualHostsFile = $this->locate($baseDir, "conf/extra/httpd-vhosts.conf");
+            // TODO: add WIN support
         } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if ($this->name == "httpd") {
                 $this->virtualHostsFile = "/opt/homebrew/etc/httpd/extra/httpd-vhosts.conf";
@@ -225,9 +232,9 @@ class WebServer
      */
     private function executeCommand(string $command): string
     {
-        $results = shell_exec($command . ($this->operatingSystemFamily != OperatingSystemFamily::WINDOWS ? " &2>1" : ""));
+        $results = (string) shell_exec($command . ($this->operatingSystemFamily != OperatingSystemFamily::WINDOWS ? " &2>1" : ""));
         if (str_contains(strtolower($results), "error")) {
-            throw new Exception("Operation ended with error: " . $results);
+            throw new \Exception("Operation ended with error: " . $results);
         }
         return $results;
     }

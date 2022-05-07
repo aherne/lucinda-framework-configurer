@@ -7,8 +7,10 @@ namespace Lucinda\Configurer\HostCreator;
  */
 class PhpFpm
 {
+    private OperatingSystemFamily $operatingSystemFamily;
     private string $configurationFile;
     private string $socketFile;
+    private string $serviceName;
 
     /**
      * @param OperatingSystemFamily $operatingSystemFamily
@@ -16,9 +18,11 @@ class PhpFpm
      */
     public function __construct(OperatingSystemFamily $operatingSystemFamily)
     {
+        $this->operatingSystemFamily = $operatingSystemFamily;
         $rawPhpVersion = $this->getRawPhpVersion();
-        $this->setConfigurationFile($operatingSystemFamily, $rawPhpVersion);
-        $this->setSocketFile($operatingSystemFamily, $rawPhpVersion);
+        $this->setConfigurationFile($rawPhpVersion);
+        $this->setSocketFile($rawPhpVersion);
+        $this->setServiceName($rawPhpVersion);
     }
 
     /**
@@ -35,19 +39,18 @@ class PhpFpm
     /**
      * Searches for PHP-FPM configuration file and records location
      *
-     * @param OperatingSystemFamily $operatingSystemFamily
      * @param string $rawPhpVersion
      * @return void
      * @throws \Exception
      */
-    private function setConfigurationFile(OperatingSystemFamily $operatingSystemFamily, string $rawPhpVersion): void
+    private function setConfigurationFile(string $rawPhpVersion): void
     {
-        if ($operatingSystemFamily == OperatingSystemFamily::LINUX) {
+        if ($this->operatingSystemFamily == OperatingSystemFamily::LINUX) {
             $this->configurationFile = "/etc/php/" . $rawPhpVersion . "/fpm/php-fpm.conf";
         } else {
-            // TODO: add MAC support
+            // TODO: add MAC/WIN support
         }
-        if (!file_exists($this->configurationFile)) {
+        if (!$this->configurationFile || !file_exists($this->configurationFile)) {
             throw new \Exception("PHP-FPM is required for current PHP version!");
         }
     }
@@ -65,19 +68,18 @@ class PhpFpm
     /**
      * Searches for PHP-FPM socket file and records location
      *
-     * @param OperatingSystemFamily $operatingSystemFamily
      * @param string $rawPhpVersion
      * @return void
      * @throws \Exception
      */
-    private function setSocketFile(OperatingSystemFamily $operatingSystemFamily, string $rawPhpVersion): void
+    private function setSocketFile(string $rawPhpVersion): void
     {
-        if ($operatingSystemFamily == OperatingSystemFamily::LINUX) {
+        if ($this->operatingSystemFamily == OperatingSystemFamily::LINUX) {
             $this->socketFile = "/var/run/php/php" . $rawPhpVersion . "-fpm.sock";
         } else {
-            // TODO: add MAC support
+            // TODO: add MAC/WIN support
         }
-        if (!file_exists($this->socketFile)) {
+        if (!$this->socketFile || !file_exists($this->socketFile)) {
             throw new \Exception("PHP-FPM is required for current PHP version!");
         }
     }
@@ -92,4 +94,30 @@ class PhpFpm
         return $this->socketFile;
     }
 
+    /**
+     * Sets name of PHP-FPM service
+     * 
+     * @param string $rawPhpVersion
+     * @return void
+     */
+    private function setServiceName(string $rawPhpVersion): void
+    {
+        if ($this->operatingSystemFamily == OperatingSystemFamily::LINUX) {
+            $this->serviceName = "php".$rawPhpVersion."-fpm";
+        } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
+            $this->serviceName = "php".str_replace(".", "", $rawPhpVersion);
+        } else {
+            // TODO: add WIN support
+        }
+    }
+
+    /**
+     * Gets name of PHP-FPM service
+     *
+     * @return string
+     */
+    public function getServiceName(): string
+    {
+        return $this->serviceName;
+    }
 }
