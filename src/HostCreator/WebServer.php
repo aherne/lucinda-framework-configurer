@@ -50,7 +50,7 @@ class WebServer
                 "(ENVIRONMENT)"
             ],
             [
-                $this->documentRoot,
+                str_replace(DIRECTORY_SEPARATOR, "/", $this->documentRoot),
                 $virtualHost->getHostName(),
                 $virtualHost->getSiteName(),
                 $virtualHost->getDevelopmentEnvironment()
@@ -99,7 +99,11 @@ class WebServer
     public function restart(): void
     {
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
-            $this->executeCommand($this->executablePath . " -k restart");
+            if (str_contains($this->executablePath, "wamp")) {
+                $this->executeCommand($this->executablePath . " -k restart -n wampapache64");
+            } else {
+                echo "Please restart apache manually in your XAMPP control panel!\n";
+            }
         } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if (str_contains($this->virtualHostsFile, "/homebrew/")) {
                 $this->executeCommand("brew services restart " . $this->name);
@@ -122,7 +126,7 @@ class WebServer
     private function setExecutablePath(): void
     {
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
-            $this->executablePath = $this->locate(dirname($this->documentRoot), "httpd.exe");
+            $this->executablePath = str_replace("/", DIRECTORY_SEPARATOR, $this->locate(dirname($this->documentRoot), "httpd.exe"));
             if (!$this->executablePath) {
                 throw new \Exception("Web server could not be detected: httpd.exe!");
             }
@@ -166,7 +170,6 @@ class WebServer
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
             $baseDir = dirname($this->documentRoot);
             $this->virtualHostsFile = $this->locate($baseDir, "conf/extra/httpd-vhosts.conf");
-            // TODO: add WIN support
         } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if ($this->name == "httpd") {
                 $this->virtualHostsFile = "/opt/homebrew/etc/httpd/extra/httpd-vhosts.conf";

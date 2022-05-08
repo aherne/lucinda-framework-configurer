@@ -30,7 +30,7 @@ class VirtualHost
      */
     private function setSiteName(string $installationFolder): void
     {
-        $this->siteName = str_replace(dirname($installationFolder) . "/", "", $installationFolder);
+        $this->siteName = str_replace(dirname($installationFolder) . DIRECTORY_SEPARATOR, "", $installationFolder);
     }
 
     /**
