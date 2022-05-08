@@ -106,7 +106,7 @@ class WebServer
             }
         } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if (str_contains($this->virtualHostsFile, "/homebrew/")) {
-                $this->executeCommand("brew services restart " . $this->name);
+                echo "To restart webserver run this command (as normal user): brew services restart " . $this->name."\n";
             } else if ($this->name == "httpd") {
                 $this->executeCommand("apachectl graceful");
             } else {

@@ -51,7 +51,7 @@ class HostCreator
             return OperatingSystemFamily::WINDOWS;
         } elseif (str_contains($operatingSystemInfo, "Linux")) {
             return OperatingSystemFamily::LINUX;
-        } elseif (str_contains($operatingSystemInfo, "Mac")) {
+        } elseif (str_contains($operatingSystemInfo, "Darwin")) {
             return OperatingSystemFamily::MAC;
         } else {
             throw new \Exception("Operating system not yet supported for automatic host creation: " . $operatingSystemInfo);
