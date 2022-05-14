@@ -21,6 +21,10 @@ class CommandRunner
                 new ProjectCreator($installationFolder);
                 echo "Project installed successfully at: ".$installationFolder."\n";
                 break;
+            case "vhost":
+                $creator = new HostCreator($installationFolder);
+                echo "Project installed successfully at: " . $creator->getHostCreated() . "\n";
+                break;
             case "create-folders":
                 mkdir("compilations");
                 chmod("compilations", 0777);
