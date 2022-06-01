@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO;
@@ -26,7 +27,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO
         }
         return $result["user_id"];
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::logout()

@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authorization\DAO\UserAuthorizationDAO;

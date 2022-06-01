@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO;
@@ -27,7 +28,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
         }
         return $result["user_id"];
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::logout()
@@ -35,13 +36,13 @@ class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
     public function logout(int|string $userID): void
     {
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authorization\UserRoles::getRoles()
      */
     public function getRoles(int|string|null $userID): array
     {
-        return ($userID?["MEMBERS"]:["GUESTS"]);
+        return ($userID ? ["MEMBERS"] : ["GUESTS"]);
     }
 }

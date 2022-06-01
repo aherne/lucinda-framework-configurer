@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authorization\UserRoles;
@@ -14,6 +15,6 @@ class UsersFormAuthentication implements UserRoles
      */
     public function getRoles(int|string|null $userID): array
     {
-        return ($userID?["MEMBERS"]:["GUESTS"]);
+        return ($userID ? ["MEMBERS"] : ["GUESTS"]);
     }
 }

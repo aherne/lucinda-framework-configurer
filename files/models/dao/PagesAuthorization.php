@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO;
@@ -22,7 +23,7 @@ class PagesAuthorization extends PageAuthorizationDAO
             ":id"=>$this->pageID
         ], self::DRIVER_NAME)->toValue();
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO::detectID()

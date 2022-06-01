@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Project\DAO;
 
 use Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO;
@@ -22,19 +23,19 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
         if (!$userInformation->getEmail()) {
             return null;
         }
-        
+
         // get driver ID
         $driverID = \SQL("
             SELECT id FROM oauth2_providers WHERE name=:driver
         ", [
             ":driver"=>$vendorName
         ], self::DRIVER_NAME)->toValue();
-        
+
         // driver must exist
         if (!$driverID) {
             return null;
         }
-        
+
         // detects user based on driver and remote id
         $userID = \SQL("
             SELECT user_id FROM users__oauth2 
@@ -55,7 +56,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
             ], self::DRIVER_NAME);
             return $userID;
         }
-        
+
         // detects user based on email
         $userID = \SQL("
             SELECT id FROM users WHERE email=:email
@@ -74,7 +75,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
             ], self::DRIVER_NAME);
             return $userID;
         }
-        
+
         // creates user
         $userID = \SQL("
             INSERT INTO users (name, email) VALUES (:name, :email)
@@ -93,7 +94,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
         ], self::DRIVER_NAME);
         return $userID;
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO::logout()
@@ -106,7 +107,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
             ":user_id"=>$userID
         ], self::DRIVER_NAME);
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\Framework\OAuth2\UserDAO::getVendor()
@@ -121,7 +122,7 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
             ":user_id"=>$userID
         ], self::DRIVER_NAME)->toValue();
     }
-    
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\Framework\OAuth2\UserDAO::getAccessToken()
