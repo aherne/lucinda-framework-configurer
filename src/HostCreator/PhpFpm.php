@@ -96,7 +96,7 @@ class PhpFpm
 
     /**
      * Sets name of PHP-FPM service
-     * 
+     *
      * @param string $rawPhpVersion
      * @return void
      */
@@ -104,7 +104,7 @@ class PhpFpm
     {
         if ($this->operatingSystemFamily == OperatingSystemFamily::LINUX) {
             $this->serviceName = "php".$rawPhpVersion."-fpm";
-        } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
+        } elseif ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             $this->serviceName = "php".str_replace(".", "", $rawPhpVersion);
         } else {
             // TODO: add WIN support

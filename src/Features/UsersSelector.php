@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 use Lucinda\Configurer\Features\Users\User;
@@ -10,7 +11,7 @@ class UsersSelector
 {
     private ?Users $users = null;
     private Features $features;
-    
+
     /**
      * @param Features $features
      */
@@ -25,7 +26,7 @@ class UsersSelector
         $this->addUser("John Doe");
         $this->addUser("Jane Doe");
     }
-    
+
     /**
      * Adds user based on name
      *
@@ -41,7 +42,7 @@ class UsersSelector
                 $user->username = "john";
                 $user->email = "john@doe.com";
                 $user->password = password_hash("doe", PASSWORD_BCRYPT);
-                $user->roles = $this->features->security->isCMS?"MEMBERS,ADMINISTRATORS":"MEMBERS";
+                $user->roles = $this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "MEMBERS";
                 break;
             case "Jane Doe":
                 $user->id = 2;
@@ -53,7 +54,7 @@ class UsersSelector
         }
         $this->users->users[] = $user;
     }
-    
+
     /**
      * Gets all users added
      *

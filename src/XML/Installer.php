@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\XML;
 
 use Lucinda\Configurer\Features\Features;
@@ -8,13 +9,13 @@ use Lucinda\Configurer\Features\Features;
  */
 abstract class Installer
 {
-    const DEFAULT_ENVIRONMENT = "local";
-    const DEFAULT_VERSION = "0.0.2";
+    public const DEFAULT_ENVIRONMENT = "local";
+    public const DEFAULT_VERSION = "0.0.2";
 
     protected \SimpleXMLElement $xml;
     protected Features $features;
     protected string $xmlFilePath;
-    
+
     /**
      * Sets up XML to write
      *
@@ -56,12 +57,12 @@ abstract class Installer
         $console->addAttribute("class", "Lucinda\Project\ViewResolvers\Console");
         $console->addAttribute("charset", "UTF-8");
     }
-    
+
     /**
      * Populates XML based on user choices
      */
     abstract protected function generateXML(): void;
-    
+
     /**
      * Overrides project XML with one compiled here.
      */

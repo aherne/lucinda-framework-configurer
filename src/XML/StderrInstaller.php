@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\XML;
 
 /**
@@ -6,8 +7,8 @@ namespace Lucinda\Configurer\XML;
  */
 class StderrInstaller extends Installer
 {
-    const DEFAULT_ROUTE = "default";
-    
+    public const DEFAULT_ROUTE = "default";
+
     /**
      * {@inheritDoc}
      * @see Installer::generateXML()
@@ -22,7 +23,7 @@ class StderrInstaller extends Installer
         $this->setTemplatingTag();
         $this->setRoutesTag();
     }
-    
+
     /**
      * Populates <application> tag @ stderr.xml
      */
@@ -30,13 +31,13 @@ class StderrInstaller extends Installer
     {
         $application = $this->xml->addChild("application");
         $application->addAttribute("version", self::DEFAULT_VERSION);
-        $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
+        $application->addAttribute("default_format", (!$this->features->isREST ? "html" : "json"));
         $application->addAttribute("default_route", self::DEFAULT_ROUTE);
         if ($this->features->security) {
             $application->addAttribute("redirect", "1");
         }
     }
-    
+
     /**
      * Populates <display_errors> tag @ stderr.xml
      */
@@ -56,7 +57,7 @@ class StderrInstaller extends Installer
         $reporter->addAttribute("path", "errors");
         $reporter->addAttribute("format", "%d %f %l %m");
     }
-    
+
     /**
      * Populates <templating> tag @ stdout.xml
      */
@@ -65,27 +66,27 @@ class StderrInstaller extends Installer
         if ($this->features->isREST) {
             return;
         }
-        
+
         $templating = $this->xml->addChild("templating");
         $templating->addAttribute("compilations_path", "compilations");
         $templating->addAttribute("tags_path", "templates/tags");
         $templating->addAttribute("templates_path", "templates/views");
         $templating->addAttribute("templates_extension", "html");
     }
-    
+
     /**
      * Populates <exceptions> tag @ stderr.xml
      */
     private function setRoutesTag(): void
     {
         $routes = $this->xml->addChild("routes");
-        
+
         $route = $routes->addChild("route");
         $route->addAttribute("id", self::DEFAULT_ROUTE);
         $route->addAttribute("controller", "Lucinda\Project\Controllers\Error");
         $route->addAttribute("error_type", "LOGICAL");
         $route->addAttribute("http_status", "500");
-        
+
         foreach ($this->features->exceptions->exceptions as $info) {
             $route = $routes->addChild("route");
             $route->addAttribute("id", $info->class);

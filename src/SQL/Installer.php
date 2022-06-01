@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\SQL;
 
 use Lucinda\Configurer\Features\Features;
@@ -8,11 +9,11 @@ use Lucinda\Configurer\Features\Features;
  */
 class Installer
 {
-    const ROLES = ["MEMBERS"=>1, "ADMINISTRATORS"=>2];
-    
+    public const ROLES = ["MEMBERS"=>1, "ADMINISTRATORS"=>2];
+
     private Features $features;
     private \PDO $pdo;
-    
+
     /**
      * SQLInstallation constructor.
      * @param Features $features
@@ -22,31 +23,31 @@ class Installer
     {
         $this->features = $features;
 
-        $driver = match($this->features->sqlServer->driver) {
+        $driver = match ($this->features->sqlServer->driver) {
             0 => "mysql"
         };
         $pdo = new \PDO($driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo = $pdo;
-        
+
         if ($this->features->migrations && $this->features->migrations->storageMethod==0) {
             $this->setMigrationsTable();
         }
-        
+
         if ($this->features->isLoadBalanced && $this->features->sqlServer) {
             $this->setSessionsTable();
         }
-        
+
         if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
             return;
         }
-        
+
         $this->cleanUp();
-        
+
         if (!$features->nosqlServer) {
             $this->setThrottlerTable();
         }
-        
+
         if ($this->features->security->authenticationMethod == 1) {
             $this->setOauth2ProvidersTable();
             $this->setUsersTable2();
@@ -55,7 +56,7 @@ class Installer
         } elseif ($this->features->security->authenticationMethod == 0) {
             $this->setUsersTable1();
         }
-        
+
         if ($this->features->security->authorizationMethod == 0) {
             $this->setResourcesTable();
             if ($this->features->security->authenticationMethod == 2) {
@@ -107,7 +108,7 @@ class Installer
                 ");
         }
     }
-    
+
     private function setUsersTable2(): void
     {
         $this->pdo->exec("
@@ -128,7 +129,7 @@ class Installer
                 ");
         }
     }
-    
+
     private function setUsersTable3(): void
     {
         $this->pdo->exec("
@@ -148,7 +149,7 @@ class Installer
                 ");
         }
     }
-    
+
     /**
      * Sets table that stores login attempts and penalties
      */
@@ -167,7 +168,7 @@ class Installer
              ) Engine=InnoDB;
             ");
     }
-    
+
     /**
      * Sets table that stores migrations
      */
@@ -185,7 +186,7 @@ class Installer
             ) Engine=INNODB
             ");
     }
-    
+
     /**
      * Sets table that stores sessions
      */
@@ -222,7 +223,7 @@ class Installer
         foreach ($this->features->routes->routes as $route) {
             $this->pdo->exec("
             INSERT INTO resources (id, url, is_public) VALUES
-            (".$route->id.", '".$route->url."', ".(str_contains($route->roles, "GUESTS") ?1:0).")");
+            (".$route->id.", '".$route->url."', ".(str_contains($route->roles, "GUESTS") ? 1 : 0).")");
         }
     }
 
@@ -356,7 +357,7 @@ class Installer
         unique(name)
         ) Engine=INNODB
         ");
-        
+
         $this->pdo->exec("
         INSERT INTO oauth2_providers (id, name) VALUES
         (1, 'Facebook'),

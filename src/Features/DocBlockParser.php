@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -14,7 +15,7 @@ class DocBlockParser
     private bool $optional = false;
     private string $validator;
     private array $condition = [];
-    
+
     /**
      * @param string $documentation
      */
@@ -29,7 +30,7 @@ class DocBlockParser
         $this->setValidator($documentation);
         $this->setCondition($documentation);
     }
-    
+
     /**
      * Detects class that handles the field based on @handler annotation
      *
@@ -43,7 +44,7 @@ class DocBlockParser
             $this->handler = trim($matches[1]);
         }
     }
-    
+
     /**
      * Gets class that handles the field based on @handler annotation
      *
@@ -65,7 +66,7 @@ class DocBlockParser
         preg_match("/@var\s([^\\n]+)/", $documentation, $matches);
         $this->type = trim($matches[1]);
     }
-    
+
     /**
      * Gets field type based on @var annotation
      *
@@ -75,7 +76,7 @@ class DocBlockParser
     {
         return $this->type;
     }
-    
+
     /**
      * Detects message to prompt client based on @message annotation
      *
@@ -87,7 +88,7 @@ class DocBlockParser
         preg_match("/@message\s([^\\n]+)/", $documentation, $matches);
         $this->message = trim($matches[1]);
     }
-    
+
     /**
      * Gets message to prompt client
      *
@@ -97,7 +98,7 @@ class DocBlockParser
     {
         return $this->message;
     }
-    
+
     /**
      * Detects options to display to client based on @option annotation
      *
@@ -112,7 +113,7 @@ class DocBlockParser
             $this->options = ["No","Yes"];
         }
     }
-    
+
     /**
      * Gets options to display to client
      *
@@ -122,7 +123,7 @@ class DocBlockParser
     {
         return $this->options;
     }
-    
+
     /**
      * Detects default option index / default value to assume client has filled in case it hit enter on prompt based on @default annotation
      *
@@ -132,9 +133,9 @@ class DocBlockParser
     {
         $matches = [];
         preg_match("/@default\s([^\\n]+)/", $documentation, $matches);
-        $this->default = (isset($matches[1])?trim($matches[1]):"");
+        $this->default = (isset($matches[1]) ? trim($matches[1]) : "");
     }
-    
+
     /**
      * Gets default option index / default value to assume client has filled in case it hit enter on prompt
      *
@@ -144,7 +145,7 @@ class DocBlockParser
     {
         return $this->default;
     }
-    
+
     /**
      * Detects whether or not field will be optional based on @optional annotation
      *
@@ -154,8 +155,8 @@ class DocBlockParser
     {
         $this->optional = str_contains($documentation, "@optional");
     }
-    
-    
+
+
     /**
      * Gets whether field will be optional for client
      *
@@ -165,7 +166,7 @@ class DocBlockParser
     {
         return $this->optional;
     }
-    
+
     /**
      * Detects regex to apply in field value validation based on @validator annotation
      *
@@ -175,7 +176,7 @@ class DocBlockParser
     {
         $matches = [];
         preg_match("/@validator\s([^\\n]+)/", $documentation, $matches);
-        $validator = !empty($matches[1])?trim($matches[1]):"";
+        $validator = !empty($matches[1]) ? trim($matches[1]) : "";
         if (!$validator) {
             if (!empty($this->options)) {
                 $this->validator = "([0-".(sizeof($this->options)-1)."]{1})";
@@ -188,7 +189,7 @@ class DocBlockParser
             $this->validator = $validator;
         }
     }
-    
+
     /**
      * Gets regex to apply in field value validation
      *
@@ -198,7 +199,7 @@ class DocBlockParser
     {
         return $this->validator;
     }
-    
+
     /**
      * Detects whether field should be displayed based on previous selections
      *
@@ -212,7 +213,7 @@ class DocBlockParser
             $this->condition = [$matches[1]=>explode(",", $matches[2])];
         }
     }
-    
+
     /**
      * Gets whether field should be displayed based on previous selections
      *

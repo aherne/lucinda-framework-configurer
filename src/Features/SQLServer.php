@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -13,7 +14,7 @@ class SQLServer
      * @default 0
      */
     public int $driver;
-    
+
     /**
      * @var string
      * @message Write server host ip
@@ -21,7 +22,7 @@ class SQLServer
      * @validator (([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])
      */
     public string $host;
-    
+
     /**
      * @var integer
      * @message Write server port
@@ -29,19 +30,19 @@ class SQLServer
      * @optional
      */
     public int $port = 0;
-    
+
     /**
      * @var string
      * @message Write username
      */
     public string $user;
-    
+
     /**
      * @var string
      * @message Write password
      */
     public string $password;
-    
+
     /**
      * @var string
      * @message Write schema your app will be installed into

@@ -1,8 +1,9 @@
 <?php
+
 namespace Lucinda\Configurer;
 
-use \Lucinda\Configurer\Features\Features;
-use \Lucinda\Configurer\Features\DocBlockParser;
+use Lucinda\Configurer\Features\Features;
+use Lucinda\Configurer\Features\DocBlockParser;
 
 /**
  * Wrapper of Features object, able to interpret its fields into a console installer
@@ -10,7 +11,7 @@ use \Lucinda\Configurer\Features\DocBlockParser;
 class FeaturesSelector
 {
     private Features $features;
-    
+
     /**
      * Begins selector
      */
@@ -20,7 +21,7 @@ class FeaturesSelector
         $i=0;
         $this->run($i, '\Lucinda\Configurer\Features\Features', $this->features);
     }
-    
+
     /**
      * Instances and reads class fields documentation and sets up a prompter for users to set them
      *
@@ -36,7 +37,7 @@ class FeaturesSelector
         foreach ($rc->getProperties() as $property) {
             $properties[$property->getName()] = new DocBlockParser($property->getDocComment());
         }
-        
+
         // create object
         $j = 0;
         foreach ($properties as $name=>$info) {
@@ -51,15 +52,15 @@ class FeaturesSelector
                 }
                 if ($className=='\Lucinda\Configurer\Features\Security') {
                     if ($name=="persistenceDrivers") {
-                        $object->$name = ($this->features->isREST?1:0);
+                        $object->$name = ($this->features->isREST ? 1 : 0);
                         continue;
                     }
                     if ($name=="authorizationMethod") {
-                        $object->$name = ($this->features->security->isCMS?0:1);
+                        $object->$name = ($this->features->security->isCMS ? 0 : 1);
                         continue;
                     }
                 }
-                $result = $this->prompt($i, "[".$j."/".($i==0?sizeof($properties)-3:sizeof($properties))."]", $className, $name, $info);
+                $result = $this->prompt($i, "[".$j."/".($i==0 ? sizeof($properties)-3 : sizeof($properties))."]", $className, $name, $info);
                 if (str_starts_with($info->getType(), "\\")) {
                     if ($result=="1") {
                         $childClassName = $info->getType();
@@ -69,7 +70,7 @@ class FeaturesSelector
                         $object->$name = null;
                     }
                 } else {
-                    $object->$name = ($info->getType()=="integer"?(int) $result:$result);
+                    $object->$name = ($info->getType()=="integer" ? (int) $result : $result);
                 }
             }
         }
@@ -97,9 +98,9 @@ class FeaturesSelector
             foreach ($options as $i=>$option) {
                 echo $indent."     ".$i.". ".$option."\n";
             }
-            $message = $indent."     Choose one of above".($defaultOption!==""?" or hit enter to confirm #".$defaultOption:($info->getOptional()?" or hit enter for default":"")).": ";
+            $message = $indent."     Choose one of above".($defaultOption!=="" ? " or hit enter to confirm #".$defaultOption : ($info->getOptional() ? " or hit enter for default" : "")).": ";
         } else {
-            $message = $indent.$index." ".$info->getMessage().($defaultOption!==""?" or hit enter to confirm '".$defaultOption."'":($info->getOptional()?" or hit enter for default":"")).": ";
+            $message = $indent.$index." ".$info->getMessage().($defaultOption!=="" ? " or hit enter to confirm '".$defaultOption."'" : ($info->getOptional() ? " or hit enter for default" : "")).": ";
         }
         $result = \readline($message);
         if ($result==="") {
@@ -114,7 +115,7 @@ class FeaturesSelector
         }
         return $result;
     }
-    
+
     /**
      * Performs automatic regex-based validation of value prompted by user based on @validator annotation, allowing also to fine grain validation for certain fields
      *
@@ -133,7 +134,7 @@ class FeaturesSelector
             throw new \Exception($className."#".$parameterName." misses validator");
         }
     }
-    
+
     /**
      * Validates whether to display field prompt based on @if annotation
      *
@@ -150,7 +151,7 @@ class FeaturesSelector
         }
         return false;
     }
-    
+
     /**
      * Gets features set by user
      *

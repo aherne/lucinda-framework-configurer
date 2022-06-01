@@ -8,13 +8,19 @@ use Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO;
  */
 class PagesAuthorization extends PageAuthorizationDAO
 {
+    public const DRIVER_NAME = "";
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authorization\DAO\PageAuthorizationDAO::isPublic()
      */
     public function isPublic(): bool
     {
-        return SQL("SELECT is_public FROM resources WHERE id=:id", array(":id"=>$this->pageID))->toValue();
+        return \SQL("
+            SELECT is_public FROM resources WHERE id=:id
+        ", [
+            ":id"=>$this->pageID
+        ], self::DRIVER_NAME)->toValue();
     }
     
     /**
@@ -23,6 +29,10 @@ class PagesAuthorization extends PageAuthorizationDAO
      */
     public function detectID(string $pageURL): ?int
     {
-        return SQL("SELECT id FROM resources WHERE url=:url", array(":url"=>$pageURL))->toValue();
+        return \SQL("
+            SELECT id FROM resources WHERE url=:url
+        ", [
+            ":url"=>$pageURL
+        ], self::DRIVER_NAME)->toValue();
     }
 }

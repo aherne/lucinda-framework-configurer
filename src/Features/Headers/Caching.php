@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features\Headers;
 
 /**
@@ -12,7 +13,7 @@ class Caching
      * @default 0
      */
     public bool $no_cache = false;
-    
+
     /**
      * @var integer
      * @message Write how many seconds you want response to be served from browser cache without any server round-trip

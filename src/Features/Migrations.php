@@ -1,11 +1,12 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
  * Struct encapsulating options to configure Migrations API installation
  */
 class Migrations
-{    
+{
     /**
      * @var integer
      * @message Choose where migrations progress will be stored

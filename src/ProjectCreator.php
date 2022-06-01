@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer;
 
 use Lucinda\Configurer\Features\Features;
@@ -49,14 +50,14 @@ class ProjectCreator
     {
         chmod($installationFolder, 0777);
         chdir($installationFolder);
-        
+
         echo "Setting up XML files\n";
         new StdoutInstaller($features, $installationFolder.DIRECTORY_SEPARATOR."stdout.xml");
         new StderrInstaller($features, $installationFolder.DIRECTORY_SEPARATOR."stderr.xml");
-        
+
         echo "Setting up php dependencies\n";
         new CodeInstaller($features, $installationFolder);
-        
+
         echo "Setting up tables\n";
         new SqlInstaller($features);
     }

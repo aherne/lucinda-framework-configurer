@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -13,7 +14,7 @@ class Internationalization
      * @validator ([a-z]{2}_[A-Z]{2})
      */
     public string $defaultLocale;
-    
+
     /**
      * @var integer
      * @message Choose method user locale (language) will be detected with

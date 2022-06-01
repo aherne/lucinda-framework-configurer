@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 use Lucinda\Configurer\Features\Routes\Route;
@@ -10,18 +11,18 @@ class RoutesSelector
 {
     private ?Routes $routes = null;
     private Features $features;
-    
+
     /**
      * @param Features $features
      */
     public function __construct(Features $features)
     {
         $this->features = $features;
-        
+
         $this->routes = new Routes();
         $this->addRoute("index");
         if ($features->security) {
-            $this->routes->default_roles = $features->security->isCMS?"MEMBERS,ADMINISTRATORS":"GUESTS,MEMBERS";
+            $this->routes->default_roles = $features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "GUESTS,MEMBERS";
             $this->addRoute("login");
             $this->addRoute("logout");
             if ($features->security->isCMS) {
@@ -31,7 +32,7 @@ class RoutesSelector
             }
         }
     }
-    
+
     /**
      * Adds route based on uri
      *
@@ -86,7 +87,7 @@ class RoutesSelector
         if ($this->features->security) {
             switch ($url) {
                 case "index":
-                    $route->roles = ($this->features->security->isCMS?"MEMBERS,ADMINISTRATORS":"GUESTS,MEMBERS");
+                    $route->roles = ($this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "GUESTS,MEMBERS");
                     break;
                 case "login":
                     $route->roles = "GUESTS";
@@ -129,7 +130,7 @@ class RoutesSelector
         }
         $this->routes->routes[] = $route;
     }
-    
+
     /**
      * Gets all routes added
      *

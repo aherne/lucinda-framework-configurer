@@ -9,13 +9,19 @@ use Lucinda\WebSecurity\Authorization\UserRoles;
  */
 class UsersFormAuthentication implements UserAuthenticationDAO, UserRoles
 {
+    public const DRIVER_NAME = "";
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::login()
      */
     public function login(string $username, string $password): int|string|null
     {
-        $result = SQL("SELECT id AS user_id, password FROM users WHERE username=:user", array(":user"=>$username))->toRow();
+        $result = \SQL("
+            SELECT id AS user_id, password FROM users WHERE username=:user
+        ", [
+            ":user"=>$username
+        ], self::DRIVER_NAME)->toRow();
         if (empty($result) || !password_verify($password, $result["password"])) {
             return null; // login failed
         }

@@ -51,7 +51,7 @@ class HostsFile
         $contents = file_get_contents($this->path);
         if (!is_writable($this->path)) {
             throw new \Exception("Script must be ran by superuser/root!");
-        } else if (!str_contains($contents, "\t" . $hostName)) {
+        } elseif (!str_contains($contents, "\t" . $hostName)) {
             file_put_contents($this->path, $contents . "\n127.0.0.1\t" . $hostName, FILE_APPEND);
             return true;
         } else {

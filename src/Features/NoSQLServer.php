@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -18,7 +19,7 @@ class NoSQLServer
      * @default 0
      */
     public int $driver;
-    
+
     /**
      * @var string
      * @message Write server host ip
@@ -27,7 +28,7 @@ class NoSQLServer
      * @if driver=0,1,2
      */
     public string $host = "127.0.0.1";
-    
+
     /**
      * @var integer
      * @message Write server port
@@ -36,28 +37,28 @@ class NoSQLServer
      * @if driver=0,1,2
      */
     public int $port = 0;
-    
+
     /**
      * @var string
      * @message Write username
      * @if driver=2
      */
     public string $user = "";
-    
+
     /**
      * @var string
      * @message Write password
      * @if driver=2
      */
     public string $password = "";
-    
+
     /**
      * @var string
      * @message Write bucket name
      * @if driver=2
      */
     public string $bucket = "";
-    
+
     /**
      * @var string
      * @message Write bucket password

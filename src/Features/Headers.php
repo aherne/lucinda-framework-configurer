@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -12,7 +13,7 @@ class Headers
      * @default 1
      */
     public ?\Lucinda\Configurer\Features\Headers\Caching $caching = null;
-    
+
     /**
      * @var \Lucinda\Configurer\Features\Headers\CORS
      * @message Do you want to answer OPTIONS requests that point to pages in your site for CORS validation

@@ -10,6 +10,8 @@ use Lucinda\Framework\OAuth2\UserDAO;
  */
 class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
 {
+    public const DRIVER_NAME = "";
+
     /**
      * {@inheritDoc}
      * @see \Lucinda\WebSecurity\Authentication\OAuth2\VendorAuthenticationDAO::login()
@@ -22,10 +24,11 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
         }
         
         // get driver ID
-        $driverID = SQL(
-            "SELECT id FROM oauth2_providers WHERE name=:driver",
-            [":driver"=>$vendorName]
-        )->toValue();
+        $driverID = \SQL("
+            SELECT id FROM oauth2_providers WHERE name=:driver
+        ", [
+            ":driver"=>$vendorName
+        ], self::DRIVER_NAME)->toValue();
         
         // driver must exist
         if (!$driverID) {
@@ -33,37 +36,61 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
         }
         
         // detects user based on driver and remote id
-        $userID = SQL(
-            "SELECT user_id FROM users__oauth2 WHERE driver_id=:driver AND remote_user_id=:remote_user",
-            [":driver"=>$driverID, ":remote_user"=>$userInformation->getId()]
-        )->toValue();
+        $userID = \SQL("
+            SELECT user_id FROM users__oauth2 
+            WHERE driver_id=:driver AND remote_user_id=:remote_user
+        ", [
+            ":driver"=>$driverID,
+            ":remote_user"=>$userInformation->getId()
+        ], self::DRIVER_NAME)->toValue();
         if ($userID) {
-            SQL(
-                "UPDATE users__oauth2 SET access_token=:access_token WHERE driver_id=:driver AND remote_user_id=:remote_user",
-                [":driver"=>$driverID, ":remote_user"=>$userInformation->getId(), ":access_token"=>$accessToken]
-            );
+            SQL("
+                UPDATE users__oauth2 
+                SET access_token=:access_token 
+                WHERE driver_id=:driver AND remote_user_id=:remote_user
+            ", [
+                ":driver"=>$driverID,
+                ":remote_user"=>$userInformation->getId(),
+                ":access_token"=>$accessToken
+            ], self::DRIVER_NAME);
             return $userID;
         }
         
         // detects user based on email
-        $userID = SQL("SELECT id FROM users WHERE email=:email", [":email"=>$userInformation->getEmail()])->toValue();
+        $userID = \SQL("
+            SELECT id FROM users WHERE email=:email
+        ", [
+            ":email"=>$userInformation->getEmail()
+        ], self::DRIVER_NAME)->toValue();
         if ($userID) {
-            SQL(
-                "INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) VALUES (:user_id, :remote_user,  :driver, :access_token)",
-                [":user_id"=>$userID, ":remote_user"=>$userInformation->getId(), ":driver"=>$driverID, ":access_token"=>$accessToken]
-            );
+            \SQL("
+                INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) 
+                VALUES (:user_id, :remote_user,  :driver, :access_token)
+            ", [
+                ":user_id"=>$userID,
+                ":remote_user"=>$userInformation->getId(),
+                ":driver"=>$driverID,
+                ":access_token"=>$accessToken
+            ], self::DRIVER_NAME);
             return $userID;
         }
         
         // creates user
-        $userID = SQL(
-            "INSERT INTO users (name, email) VALUES (:name, :email)",
-            [":name"=>$userInformation->getName(), ":email"=>$userInformation->getEmail()]
-        )->getInsertId();
-        SQL(
-            "INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) VALUES (:user_id, :remote_user,  :driver, :access_token)",
-            [":user_id"=>$userID, ":remote_user"=>$userInformation->getId(), ":driver"=>$driverID, ":access_token"=>$accessToken]
-        );
+        $userID = \SQL("
+            INSERT INTO users (name, email) VALUES (:name, :email)
+        ", [
+            ":name"=>$userInformation->getName(),
+            ":email"=>$userInformation->getEmail()
+        ], self::DRIVER_NAME)->getInsertId();
+        \SQL("
+            INSERT INTO users__oauth2 (user_id, remote_user_id, driver_id, access_token) 
+            VALUES (:user_id, :remote_user,  :driver, :access_token)
+        ", [
+            ":user_id"=>$userID,
+            ":remote_user"=>$userInformation->getId(),
+            ":driver"=>$driverID,
+            ":access_token"=>$accessToken
+        ], self::DRIVER_NAME);
         return $userID;
     }
     
@@ -73,7 +100,11 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      */
     public function logout(int|string $userID): void
     {
-        SQL("UPDATE users__oauth2 SET access_token = '' WHERE user_id = :user_id", [":user_id"=>$userID]);
+        \SQL("
+            UPDATE users__oauth2 SET access_token = '' WHERE user_id = :user_id
+        ", [
+            ":user_id"=>$userID
+        ], self::DRIVER_NAME);
     }
     
     /**
@@ -82,11 +113,13 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      */
     public function getVendor(int|string $userID): ?string
     {
-        return SQL("
+        return \SQL("
             SELECT t2.name FROM users__oauth2 AS t1
             INNER JOIN oauth2_providers AS t2 ON t1.driver_id = t2.id
             WHERE t1.user_id=:user_id
-            ", [":user_id"=>$userID])->toValue();
+        ", [
+            ":user_id"=>$userID
+        ], self::DRIVER_NAME)->toValue();
     }
     
     /**
@@ -95,6 +128,10 @@ class UsersOAuth2Authentication implements VendorAuthenticationDAO, UserDAO
      */
     public function getAccessToken(int|string $userID): ?string
     {
-        return SQL("SELECT access_token FROM users__oauth2 WHERE user_id=:user_id", [":user_id"=>$userID])->toValue();
+        return \SQL("
+            SELECT access_token FROM users__oauth2 WHERE user_id=:user_id
+        ", [
+            ":user_id"=>$userID
+        ], self::DRIVER_NAME)->toValue();
     }
 }

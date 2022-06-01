@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -10,7 +11,7 @@ class Users
      * @var \Lucinda\Configurer\Features\Users\User[]
      */
     public array $users = [];
-    
+
     /**
      * @var string
      */

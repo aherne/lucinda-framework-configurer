@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -12,7 +13,7 @@ class Security
      * @default 0
      */
     public bool $isCMS = false;
-    
+
     /**
      * @var integer
      * @message Choose mediums login state will be persisted into
@@ -20,7 +21,7 @@ class Security
      * @option SYNCHRONIZER TOKEN
      */
     public int $persistenceDrivers;
-    
+
     /**
      * @var integer
      * @message Choose authentication method
@@ -30,7 +31,7 @@ class Security
      * @default 0
      */
     public int $authenticationMethod;
-    
+
     /**
      * @var integer
      * @message Choose authorization method

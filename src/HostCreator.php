@@ -12,7 +12,7 @@ use Lucinda\Configurer\HostCreator\WebServer;
  */
 class HostCreator
 {
-    const DEFAULT_ENVIRONMENT = "local";
+    public const DEFAULT_ENVIRONMENT = "local";
     private string $hostCreated;
 
     /**

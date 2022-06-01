@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features;
 
 /**
@@ -10,7 +11,7 @@ class Routes
      * @var string
      */
     public string $default_roles = "";
-    
+
     /**
      * @var \Lucinda\Configurer\Features\Routes\Route[]
      */

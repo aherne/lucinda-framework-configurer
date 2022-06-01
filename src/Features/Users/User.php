@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\Features\Users;
 
 /**
@@ -10,27 +11,27 @@ class User
      * @var integer
      */
     public int $id;
-    
+
     /**
      * @var string
      */
     public string $name;
-    
+
     /**
      * @var string
      */
     public string $email;
-    
+
     /**
      * @var string
      */
     public string $username;
-    
+
     /**
      * @var string
      */
     public string $password;
-    
+
     /**
      * @var string
      */

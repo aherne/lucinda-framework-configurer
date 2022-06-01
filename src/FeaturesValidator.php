@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer;
 
 use Lucinda\Configurer\Features\Features;
@@ -10,9 +11,9 @@ use Lucinda\Configurer\Features\NoSQLServer;
  */
 class FeaturesValidator
 {
-    const HOSTNAME_REGEX = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
+    public const HOSTNAME_REGEX = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
     private Features $features;
-    
+
     /**
      * @param Features $features
      * @throws \Exception
@@ -36,7 +37,7 @@ class FeaturesValidator
             $this->validateInternationalization($features);
         }
     }
-    
+
     /**
      * Validates SQL server selected by opening a connection and running a query on it
      *
@@ -51,7 +52,7 @@ class FeaturesValidator
                 break;
         }
     }
-    
+
     /**
      * Validates nosql server selected by opening a connection
      *
@@ -66,7 +67,7 @@ class FeaturesValidator
                     throw new \Exception("Extension not installed: redis");
                 }
                 $redis = new \Redis();
-                $result = $redis->connect($server->host, ($server->port?$server->port:6379));
+                $result = $redis->connect($server->host, ($server->port ? $server->port : 6379));
                 if (!$result) {
                     throw new \Exception("Connection to server failed: redis");
                 }
@@ -76,7 +77,7 @@ class FeaturesValidator
                     throw new \Exception("Extension not installed: memcache");
                 }
                 $memcache = new \Memcache();
-                $result = $memcache->connect($server->host, ($server->port?$server->port:11211));
+                $result = $memcache->connect($server->host, ($server->port ? $server->port : 11211));
                 if (!$result) {
                     throw new \Exception("Connection to server failed: memcache");
                 }
@@ -86,7 +87,7 @@ class FeaturesValidator
                     throw new \Exception("Extension not installed: memcached");
                 }
                 $memcached = new \Memcached();
-                $result = $memcached->connect($server->host, ($server->port?$server->port:11211));
+                $result = $memcached->connect($server->host, ($server->port ? $server->port : 11211));
                 $result = $memcached->set("test", 1);
                 if (!$result) {
                     throw new \Exception("Connection to server failed: memcached");
@@ -100,10 +101,10 @@ class FeaturesValidator
                 try {
                     $authenticator = new \Couchbase\PasswordAuthenticator();
                     $authenticator->username($server->user)->password($server->password);
-                    
+
                     $cluster = new \CouchbaseCluster("couchbase://".$server->host);
                     $cluster->authenticate($authenticator);
-                    
+
                     $cluster->openBucket($server->bucket, (string) $server->password);
                 } catch (\CouchbaseException $e) {
                     throw new \Exception("Connection to server failed: couchbase");
@@ -121,10 +122,10 @@ class FeaturesValidator
                 break;
         }
     }
-    
+
     /**
      * Validates migrations settings to check if associated server was configured
-     * 
+     *
      * @param Features $features
      * @throws \Exception
      */
@@ -140,7 +141,7 @@ class FeaturesValidator
             }
         }
     }
-    
+
     /**
      * Validates security settings by matching them with sql and nosql servers chosen
      *
@@ -156,7 +157,7 @@ class FeaturesValidator
             throw new \Exception("Form authentication requires a SQL or NoSQL server for login throttling");
         }
     }
-    
+
     /**
      * Validates internationalization settings
      *

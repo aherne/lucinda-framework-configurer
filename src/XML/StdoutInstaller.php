@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Configurer\XML;
 
 /**
@@ -6,9 +7,9 @@ namespace Lucinda\Configurer\XML;
  */
 class StdoutInstaller extends Installer
 {
-    const DEFAULT_ROUTE = "index";
-    const SALT_LENGTH=128;
-    
+    public const DEFAULT_ROUTE = "index";
+    public const SALT_LENGTH=128;
+
     /**
      * {@inheritDoc}
      * @see Installer::generateXML()
@@ -29,7 +30,7 @@ class StdoutInstaller extends Installer
         $this->setUsersTag();
         $this->setSessionTag();
     }
-    
+
     /**
      * Populates <application> tag @ stdout.xml
      */
@@ -37,10 +38,10 @@ class StdoutInstaller extends Installer
     {
         $application = $this->xml->addChild("application");
         $application->addAttribute("version", self::DEFAULT_VERSION);
-        $application->addAttribute("default_format", (!$this->features->isREST?"html":"json"));
+        $application->addAttribute("default_format", (!$this->features->isREST ? "html" : "json"));
         $application->addAttribute("default_route", "index");
     }
-    
+
     /**
      * Populates <templating> tag @ stdout.xml
      */
@@ -49,14 +50,14 @@ class StdoutInstaller extends Installer
         if ($this->features->isREST) {
             return;
         }
-        
+
         $templating = $this->xml->addChild("templating");
         $templating->addAttribute("compilations_path", "compilations");
         $templating->addAttribute("tags_path", "templates/tags");
         $templating->addAttribute("templates_path", "templates/views");
         $templating->addAttribute("templates_extension", "html");
     }
-    
+
     /**
      * Populates <loggers> tag @ stdout.xml
      */
@@ -65,15 +66,15 @@ class StdoutInstaller extends Installer
         if (!$this->features->logging) {
             return;
         }
-        
+
         $loggers = $this->xml->addChild("loggers");
-        
+
         $logger = $loggers->addChild(self::DEFAULT_ENVIRONMENT)->addChild("logger");
         $logger->addAttribute("class", "Lucinda\Project\Loggers\File");
         $logger->addAttribute("path", "messages");
         $logger->addAttribute("format", "%d %f %l %m");
     }
-    
+
     /**
      * Populates <internationalization> tag @ stdout.xml
      */
@@ -82,7 +83,7 @@ class StdoutInstaller extends Installer
         if (!$this->features->internationalization) {
             return;
         }
-        
+
         $detectionMethod = "";
         switch ($this->features->internationalization->detectionMethod) {
             case "0":
@@ -95,14 +96,14 @@ class StdoutInstaller extends Installer
                 $detectionMethod = "session";
                 break;
         }
-        
+
         $internationalization = $this->xml->addChild("internationalization");
         $internationalization->addAttribute("locale", $this->features->internationalization->defaultLocale);
         $internationalization->addAttribute("method", $detectionMethod);
         $internationalization->addAttribute("folder", "locale");
         $internationalization->addAttribute("domain", "messages");
     }
-    
+
     /**
      * Populates <http_caching> tag @ stdout.xml
      */
@@ -111,7 +112,7 @@ class StdoutInstaller extends Installer
         if (!$this->features->headers) {
             return;
         }
-        
+
         $headers = $this->xml->addChild("headers");
         if ($this->features->headers->caching) {
             $headers->addAttribute("no_cache", $this->features->headers->caching->no_cache);
@@ -125,7 +126,7 @@ class StdoutInstaller extends Installer
             $headers->addAttribute("allowed_response_headers", $this->features->headers->cors->allowed_response_headers);
         }
     }
-    
+
     /**
      * Populates <sql> tag @ stdout.xml
      */
@@ -135,10 +136,10 @@ class StdoutInstaller extends Installer
             return;
         }
 
-        $driver = match($this->features->sqlServer->driver) {
+        $driver = match ($this->features->sqlServer->driver) {
             0 => "mysql"
         };
-        
+
         $server = $this->xml->addChild("sql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
         $server->addAttribute("driver", $driver);
         $server->addAttribute("host", $this->features->sqlServer->host);
@@ -150,7 +151,7 @@ class StdoutInstaller extends Installer
         $server->addAttribute("schema", $this->features->sqlServer->schema);
         $server->addAttribute("charset", "UTF8");
     }
-    
+
     /**
      * Populates <nosql> tag @ stdout.xml
      */
@@ -160,7 +161,7 @@ class StdoutInstaller extends Installer
             return;
         }
 
-        $driver = match($this->features->nosqlServer->driver) {
+        $driver = match ($this->features->nosqlServer->driver) {
             0 => "redis",
             1 => "memcache",
             2 => "memcached",
@@ -168,7 +169,7 @@ class StdoutInstaller extends Installer
             4 => "apc",
             5 => "apcu"
         };
-        
+
         $server = $this->xml->addChild("nosql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
         $server->addAttribute("driver", $driver);
         if (!in_array($driver, ["apc","apcu"])) {
@@ -186,7 +187,7 @@ class StdoutInstaller extends Installer
             }
         }
     }
-    
+
     /**
      * Populates <security> tag @ stdout.xml
      */
@@ -195,12 +196,12 @@ class StdoutInstaller extends Installer
         if (!$this->features->security) {
             return;
         }
-        
+
         $security = $this->xml->addChild("security");
-        
+
         $csrf = $security->addChild("csrf");
         $csrf->addAttribute("secret", $this->generateSecret());
-        
+
         $persistenceDrivers = $security->addChild("persistence");
         switch ($this->features->security->persistenceDrivers) {
             case 0:
@@ -213,7 +214,7 @@ class StdoutInstaller extends Installer
                 $synchronizerToken->addAttribute("secret", $this->generateSecret());
                 break;
         }
-        
+
         $authentication = $security->addChild("authentication");
         $form = $authentication->addChild("form");
         if ($this->features->nosqlServer) {
@@ -231,7 +232,7 @@ class StdoutInstaller extends Installer
                 $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
                 break;
         }
-        
+
         $authorization = $security->addChild("authorization");
         switch ($this->features->security->authorizationMethod) {
             case 0:
@@ -244,7 +245,7 @@ class StdoutInstaller extends Installer
                 break;
         }
     }
-    
+
     /**
      * Populates <routes> tag @ stdout.xml
      */
@@ -277,8 +278,8 @@ class StdoutInstaller extends Installer
             }
         }
     }
-    
-    
+
+
     /**
      * Populates <users> tag @ stdout.xml
      */
@@ -287,7 +288,7 @@ class StdoutInstaller extends Installer
         if (!$this->features->users || !$this->features->security || $this->features->security->authenticationMethod!=2) {
             return;
         }
-        
+
         $users = $this->xml->addChild("users");
         $users->addAttribute("roles", $this->features->users->default_roles);
         foreach ($this->features->users->users as $info) {
@@ -300,7 +301,7 @@ class StdoutInstaller extends Installer
             $user->addAttribute("roles", $info->roles);
         }
     }
-    
+
     /**
      * Populates <session> tag @ stdout.xml
      */
@@ -314,11 +315,11 @@ class StdoutInstaller extends Installer
                     $session->addAttribute("handler", "Lucinda\Project\DAO\SQLSessionHandler");
                 } elseif ($this->features->nosqlServer) {
                     $session->addAttribute("handler", "Lucinda\Project\DAO\NoSQLSessionHandler");
-                }                
+                }
             }
         }
     }
-    
+
     /**
      * Generates cryptographically secure key
      *

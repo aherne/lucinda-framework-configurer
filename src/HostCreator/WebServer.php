@@ -85,7 +85,7 @@ class WebServer
             file_put_contents($fileName, $body);
             if ($this->name == "apache2") {
                 $this->executeCommand("a2ensite " . $virtualHost->getSiteName());
-            } else if (str_contains($fileName, "/sites-available/")) {
+            } elseif (str_contains($fileName, "/sites-available/")) {
                 $this->executeCommand("ln -s " . $fileName . " " . str_replace("/sites-available/", "/sites-enabled/", $fileName));
             }
         }
@@ -104,10 +104,10 @@ class WebServer
             } else {
                 echo "Please restart apache manually in your XAMPP control panel!\n";
             }
-        } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
+        } elseif ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if (str_contains($this->virtualHostsFile, "/homebrew/")) {
                 echo "To restart webserver run this command (as normal user): brew services restart " . $this->name."\n";
-            } else if ($this->name == "httpd") {
+            } elseif ($this->name == "httpd") {
                 $this->executeCommand("apachectl graceful");
             } else {
                 $this->executeCommand("nginx -s reload");
@@ -149,9 +149,9 @@ class WebServer
             $results = $this->executeCommand("lsof -i TCP:80");
             if (str_contains($results, "nginx")) {
                 $this->name = "nginx";
-            } else if (str_contains($results, "apache2")) {
+            } elseif (str_contains($results, "apache2")) {
                 $this->name = "apache2";
-            } else if (str_contains($results, "httpd")) {
+            } elseif (str_contains($results, "httpd")) {
                 $this->name = "httpd";
             } else {
                 throw new \Exception("No known web server is running right now!");
@@ -170,13 +170,13 @@ class WebServer
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
             $baseDir = dirname($this->documentRoot);
             $this->virtualHostsFile = $this->locate($baseDir, "conf/extra/httpd-vhosts.conf");
-        } else if ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
+        } elseif ($this->operatingSystemFamily == OperatingSystemFamily::MAC) {
             if ($this->name == "httpd") {
                 $this->virtualHostsFile = "/opt/homebrew/etc/httpd/extra/httpd-vhosts.conf";
                 if (!file_exists($this->virtualHostsFile)) {
                     $this->virtualHostsFile = "/usr/local/etc/httpd/extra/httpd-vhosts.conf";
                 }
-            } else if ($this->name == "nginx") {
+            } elseif ($this->name == "nginx") {
                 $this->virtualHostsFile = "/opt/homebrew/etc/nginx/nginx.conf";
                 if (!file_exists($this->virtualHostsFile)) {
                     $this->virtualHostsFile = "/usr/local/etc/nginx/nginx.conf";
@@ -188,7 +188,7 @@ class WebServer
                 if (!file_exists($this->virtualHostsFile)) {
                     $this->virtualHostsFile = "/etc/nginx/conf.d/";
                 }
-            } else if ($this->name == "httpd") {
+            } elseif ($this->name == "httpd") {
                 $this->virtualHostsFile = "/etc/httpd/conf.d/";
             } else {
                 $this->virtualHostsFile = "/etc/apache2/sites-available/";
