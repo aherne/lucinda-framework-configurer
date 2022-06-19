@@ -37,20 +37,20 @@ class UsersSelector
         $user = new User();
         $user->name = $name;
         switch ($name) {
-            case "John Doe":
-                $user->id = 1;
-                $user->username = "john";
-                $user->email = "john@doe.com";
-                $user->password = password_hash("doe", PASSWORD_BCRYPT);
-                $user->roles = $this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "MEMBERS";
-                break;
-            case "Jane Doe":
-                $user->id = 2;
-                $user->username = "jane";
-                $user->email = "jane@doe.com";
-                $user->password = password_hash("doe", PASSWORD_BCRYPT);
-                $user->roles = "MEMBERS";
-                break;
+        case "John Doe":
+            $user->id = 1;
+            $user->username = "john";
+            $user->email = "john@doe.com";
+            $user->password = password_hash("doe", PASSWORD_BCRYPT);
+            $user->roles = $this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "MEMBERS";
+            break;
+        case "Jane Doe":
+            $user->id = 2;
+            $user->username = "jane";
+            $user->email = "jane@doe.com";
+            $user->password = password_hash("doe", PASSWORD_BCRYPT);
+            $user->roles = "MEMBERS";
+            break;
         }
         $this->users->users[] = $user;
     }

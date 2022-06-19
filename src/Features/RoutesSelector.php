@@ -9,6 +9,7 @@ use Lucinda\Configurer\Features\Routes\Route;
  */
 class RoutesSelector
 {
+    public const CACHE_EXPIRATION = 10;
     private ?Routes $routes = null;
     private Features $features;
 
@@ -42,93 +43,122 @@ class RoutesSelector
     {
         $route = new Route();
         $route->url = $url;
-        // set controller & id
-        switch ($url) {
-            case "index":
-                $route->controller = "Lucinda\Project\Controllers\Index";
-                $route->id = 1;
-                break;
-            case "login":
-                $route->controller = "Lucinda\Project\Controllers\Login";
-                $route->id = 2;
-                break;
-            case "logout":
-                $route->id = 3;
-                break;
-            case "members":
-                $route->controller = "Lucinda\Project\Controllers\Members";
-                $route->id = 4;
-                break;
-            case "restricted":
-                $route->controller = "Lucinda\Project\Controllers\Restricted";
-                $route->id = 5;
-                break;
-        }
-        // set view
+        $route->id = $this->getId($url);
+        $route->controller = $this->getController($url);
         if (!$this->features->isREST) {
-            switch ($url) {
-                case "index":
-                    $route->view = "index";
-                    break;
-                case "login":
-                    $route->view = "login";
-                    break;
-                case "logout":
-                    break;
-                case "members":
-                    $route->view = "members";
-                    break;
-                case "restricted":
-                    $route->view = "restricted";
-                    break;
-            }
+            $route->view = $this->getView($url);
+        }
+        if ($this->features->security) {
+            $route->roles = $this->getRoles($url);
         }
         // set roles
-        if ($this->features->security) {
-            switch ($url) {
-                case "index":
-                    $route->roles = ($this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "GUESTS,MEMBERS");
-                    break;
-                case "login":
-                    $route->roles = "GUESTS";
-                    break;
-                case "logout":
-                case "members":
-                    $route->roles = "MEMBERS,ADMINISTRATORS";
-                    break;
-                case "restricted":
-                    $route->roles = "ADMINISTRATORS";
-                    break;
-            }
-        }
         if ($this->features->headers) {
             if ($this->features->headers->caching) {
-                switch ($url) {
-                    case "index":
-                        $route->no_cache = 0;
-                        $route->cache_expiration = 10;
-                        break;
-                    case "login":
-                    case "logout":
-                        $route->no_cache = 1;
-                        break;
+                $route->no_cache = $this->getNoCache($url);
+                if ($url == "index") {
+                    $route->cache_expiration = self::CACHE_EXPIRATION;
                 }
             }
             if ($this->features->headers->cors) {
-                switch ($url) {
-                    case "login":
-                        $route->allowed_methods = "GET,POST";
-                        break;
-                    case "index":
-                    case "logout":
-                    case "members":
-                    case "restricted":
-                        $route->allowed_methods = "GET";
-                        break;
-                }
+                $route->allowed_methods = $this->getAllowedMethods($url);
             }
         }
         $this->routes->routes[] = $route;
+    }
+
+    /**
+     * Gets unique identifier matching route
+     *
+     * @param  string $url
+     * @return int
+     */
+    private function getId(string $url): int
+    {
+        return match ($url) {
+            "index"=>1,
+            "login"=>2,
+            "logout"=>3,
+            "members"=>4,
+            "restricted"=>5
+        };
+    }
+
+    /**
+     * Gets controller matching route
+     *
+     * @param  string $url
+     * @return string|null
+     */
+    private function getController(string $url): ?string
+    {
+        return match ($url) {
+            "index"=>"Lucinda\Project\Controllers\Index",
+            "login"=>"Lucinda\Project\Controllers\Login",
+            "logout"=>null,
+            "members"=>"Lucinda\Project\Controllers\Members",
+            "restricted"=>"Lucinda\Project\Controllers\Restricted"
+        };
+    }
+
+    /**
+     * Gets view matching route
+     *
+     * @param  string $url
+     * @return string|null
+     */
+    private function getView(string $url): ?string
+    {
+        return match ($url) {
+            "index"=>"index",
+            "login"=>"login",
+            "logout"=>null,
+            "members"=>"members",
+            "restricted"=>"restricted"
+        };
+    }
+
+    /**
+     * Gets access control roles matching route (separated by comma)
+     *
+     * @param  string $url
+     * @return string
+     */
+    private function getRoles(string $url): string
+    {
+        return match ($url) {
+            "index"=>($this->features->security->isCMS ? "MEMBERS,ADMINISTRATORS" : "GUESTS,MEMBERS"),
+            "login"=>"GUESTS",
+            "logout", "members" =>"MEMBERS,ADMINISTRATORS",
+            "restricted"=>"ADMINISTRATORS"
+        };
+    }
+
+    /**
+     * Gets CORS Access-Control-Allow-Methods header value matching route
+     *
+     * @param  string $url
+     * @return string
+     */
+    private function getAllowedMethods(string $url): string
+    {
+        return match ($url) {
+            "index", "logout", "members", "restricted"=>"GET",
+            "login"=>"GET,POST"
+        };
+    }
+
+    /**
+     * Gets whether caching should be prevented based on route
+     *
+     * @param  string $url
+     * @return bool
+     */
+    private function getNoCache(string $url): bool
+    {
+        return match ($url) {
+            "login", "logout" => true,
+            default => false,
+        };
     }
 
     /**

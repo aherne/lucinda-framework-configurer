@@ -8,19 +8,19 @@ namespace Lucinda\Configurer\Features;
 class Internationalization
 {
     /**
-     * @var string
-     * @message Write the default locale your site will be using
-     * @default en_US
+     * @var       string
+     * @message   Write the default locale your site will be using
+     * @default   en_US
      * @validator ([a-z]{2}_[A-Z]{2})
      */
     public string $defaultLocale;
 
     /**
-     * @var integer
+     * @var     integer
      * @message Choose method user locale (language) will be detected with
-     * @option Based on request header 'Accept-Language'
-     * @option By value of request parameter 'locale'
-     * @option By value of session parameter 'locale'
+     * @option  Based on request header 'Accept-Language'
+     * @option  By value of request parameter 'locale'
+     * @option  By value of session parameter 'locale'
      */
     public int $detectionMethod;
 }

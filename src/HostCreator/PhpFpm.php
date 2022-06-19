@@ -13,7 +13,7 @@ class PhpFpm
     private string $serviceName;
 
     /**
-     * @param OperatingSystemFamily $operatingSystemFamily
+     * @param  OperatingSystemFamily $operatingSystemFamily
      * @throws \Exception
      */
     public function __construct(OperatingSystemFamily $operatingSystemFamily)
@@ -39,7 +39,7 @@ class PhpFpm
     /**
      * Searches for PHP-FPM configuration file and records location
      *
-     * @param string $rawPhpVersion
+     * @param  string $rawPhpVersion
      * @return void
      * @throws \Exception
      */
@@ -68,7 +68,7 @@ class PhpFpm
     /**
      * Searches for PHP-FPM socket file and records location
      *
-     * @param string $rawPhpVersion
+     * @param  string $rawPhpVersion
      * @return void
      * @throws \Exception
      */
@@ -97,7 +97,7 @@ class PhpFpm
     /**
      * Sets name of PHP-FPM service
      *
-     * @param string $rawPhpVersion
+     * @param  string $rawPhpVersion
      * @return void
      */
     private function setServiceName(string $rawPhpVersion): void

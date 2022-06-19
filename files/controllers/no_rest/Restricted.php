@@ -11,6 +11,7 @@ class Restricted extends Controller
 {
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\MVC\Runnable::run()
      */
     public function run(): void

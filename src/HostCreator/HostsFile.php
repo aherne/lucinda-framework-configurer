@@ -10,7 +10,7 @@ class HostsFile
     private string $path;
 
     /**
-     * @param OperatingSystemFamily $operatingSystemFamily
+     * @param  OperatingSystemFamily $operatingSystemFamily
      * @throws \Exception
      */
     public function __construct(OperatingSystemFamily $operatingSystemFamily)
@@ -21,7 +21,7 @@ class HostsFile
     /**
      * Sets absolute path to hosts file where local domains are registered
      *
-     * @param OperatingSystemFamily $operatingSystem
+     * @param  OperatingSystemFamily $operatingSystem
      * @throws \Exception If file could not be detected
      */
     private function setHostsFile(OperatingSystemFamily $operatingSystem): void
@@ -42,7 +42,7 @@ class HostsFile
     /**
      * Adds host name in hosts file based on operating system
      *
-     * @param string $hostName
+     * @param  string $hostName
      * @return bool
      * @throws \Exception If not ran by superuser/root
      */

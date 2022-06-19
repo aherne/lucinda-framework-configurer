@@ -10,10 +10,16 @@ class DocBlockParser
     private ?string $handler = null;
     private string $type;
     private string $message;
+    /**
+     * @var string[]
+     */
     private array $options = [];
     private string $default;
     private bool $optional = false;
     private string $validator;
+    /**
+     * @var array<string,string[]>
+     */
     private array $condition = [];
 
     /**
@@ -39,7 +45,7 @@ class DocBlockParser
     private function setHandler(string $documentation): void
     {
         $matches = [];
-        preg_match("/@handler\s([^\\n]+)/", $documentation, $matches);
+        preg_match("/@handler\s+([^\\n]+)/", $documentation, $matches);
         if (!empty($matches)) {
             $this->handler = trim($matches[1]);
         }
@@ -63,7 +69,7 @@ class DocBlockParser
     private function setType(string $documentation): void
     {
         $matches = [];
-        preg_match("/@var\s([^\\n]+)/", $documentation, $matches);
+        preg_match("/@var\s+([^\\n]+)/", $documentation, $matches);
         $this->type = trim($matches[1]);
     }
 
@@ -85,7 +91,7 @@ class DocBlockParser
     private function setMessage(string $documentation): void
     {
         $matches = [];
-        preg_match("/@message\s([^\\n]+)/", $documentation, $matches);
+        preg_match("/@message\s+([^\\n]+)/", $documentation, $matches);
         $this->message = trim($matches[1]);
     }
 
@@ -107,7 +113,7 @@ class DocBlockParser
     private function setOptions(string $documentation): void
     {
         $matches = [];
-        preg_match_all("/@option\s([^\\n]+)/", $documentation, $matches);
+        preg_match_all("/@option\s+([^\\n]+)/", $documentation, $matches);
         $this->options = $matches[1];
         if ($this->type == "boolean" || strpos($this->type, "\\")===0) {
             $this->options = ["No","Yes"];
@@ -117,7 +123,7 @@ class DocBlockParser
     /**
      * Gets options to display to client
      *
-     * @return string
+     * @return string[]
      */
     public function getOptions(): array
     {
@@ -125,14 +131,15 @@ class DocBlockParser
     }
 
     /**
-     * Detects default option index / default value to assume client has filled in case it hit enter on prompt based on @default annotation
+     * Detects default option index / default value to assume client has filled in case it hit enter on prompt
+     * based on @default annotation
      *
      * @param string $documentation
      */
     private function setDefaultOption(string $documentation): void
     {
         $matches = [];
-        preg_match("/@default\s([^\\n]+)/", $documentation, $matches);
+        preg_match("/@default\s+([^\\n]+)/", $documentation, $matches);
         $this->default = (isset($matches[1]) ? trim($matches[1]) : "");
     }
 
@@ -162,7 +169,7 @@ class DocBlockParser
      *
      * @return boolean
      */
-    public function getOptional(): bool
+    public function hasOptional(): bool
     {
         return $this->optional;
     }
@@ -175,7 +182,7 @@ class DocBlockParser
     private function setValidator(string $documentation): void
     {
         $matches = [];
-        preg_match("/@validator\s([^\\n]+)/", $documentation, $matches);
+        preg_match("/@validator\s+([^\\n]+)/", $documentation, $matches);
         $validator = !empty($matches[1]) ? trim($matches[1]) : "";
         if (!$validator) {
             if (!empty($this->options)) {
@@ -208,7 +215,7 @@ class DocBlockParser
     private function setCondition(string $documentation): void
     {
         $matches = [];
-        preg_match("/@if\s([^=]+)=([a-zA-Z0-9',]+)/", $documentation, $matches);
+        preg_match("/@if\s+([^=]+)=([a-zA-Z0-9',]+)/", $documentation, $matches);
         if (!empty($matches)) {
             $this->condition = [$matches[1]=>explode(",", $matches[2])];
         }
@@ -217,7 +224,7 @@ class DocBlockParser
     /**
      * Gets whether field should be displayed based on previous selections
      *
-     * @return array
+     * @return array<string,string[]>
      */
     public function getCondition(): array
     {

@@ -14,8 +14,8 @@ class WebServer
     private string $executablePath;
 
     /**
-     * @param OperatingSystemFamily $operatingSystem
-     * @param string $documentRoot
+     * @param  OperatingSystemFamily $operatingSystem
+     * @param  string                $documentRoot
      * @throws \Exception
      */
     public function __construct(OperatingSystemFamily $operatingSystem, string $documentRoot)
@@ -30,7 +30,7 @@ class WebServer
     /**
      * Registers virtualhost for current web server
      *
-     * @param VirtualHost $virtualHost
+     * @param  VirtualHost $virtualHost
      * @return void
      * @throws \Exception
      */
@@ -86,7 +86,8 @@ class WebServer
             if ($this->name == "apache2") {
                 $this->executeCommand("a2ensite " . $virtualHost->getSiteName());
             } elseif (str_contains($fileName, "/sites-available/")) {
-                $this->executeCommand("ln -s " . $fileName . " " . str_replace("/sites-available/", "/sites-enabled/", $fileName));
+                $newFileName = str_replace("/sites-available/", "/sites-enabled/", $fileName);
+                $this->executeCommand("ln -s " . $fileName . " " . $newFileName);
             }
         }
     }
@@ -126,7 +127,11 @@ class WebServer
     private function setExecutablePath(): void
     {
         if ($this->operatingSystemFamily == OperatingSystemFamily::WINDOWS) {
-            $this->executablePath = str_replace("/", DIRECTORY_SEPARATOR, $this->locate(dirname($this->documentRoot), "httpd.exe"));
+            $this->executablePath = str_replace(
+                "/",
+                DIRECTORY_SEPARATOR,
+                $this->locate(dirname($this->documentRoot), "httpd.exe")
+            );
             if (!$this->executablePath) {
                 throw new \Exception("Web server could not be detected: httpd.exe!");
             }
@@ -160,7 +165,8 @@ class WebServer
     }
 
     /**
-     * Detects location of generic virtual hosts file (if windows/mac) or folder to write individual virtual hosts into (if linux)
+     * Detects location of generic virtual hosts file (if windows/mac) or folder to write individual virtual hosts
+     * into (if linux)
      *
      * @return void
      * @throws \Exception
@@ -202,8 +208,8 @@ class WebServer
     /**
      * Recursively locates file in folder and returns absolute path
      *
-     * @param string $folder
-     * @param string $search
+     * @param  string $folder
+     * @param  string $search
      * @return string|null
      */
     private function locate(string $folder, string $search): string|null
@@ -229,13 +235,14 @@ class WebServer
     /**
      * Executes command in operating system
      *
-     * @param string $command
+     * @param  string $command
      * @return string
      * @throws \Exception
      */
     private function executeCommand(string $command): string
     {
-        $results = (string) shell_exec($command . ($this->operatingSystemFamily != OperatingSystemFamily::WINDOWS ? " &2>1" : ""));
+        $isWindows = $this->operatingSystemFamily == OperatingSystemFamily::WINDOWS;
+        $results = (string) shell_exec($command . (!$isWindows ? " &2>1" : ""));
         if (str_contains(strtolower($results), "error")) {
             throw new \Exception("Operation ended with error: " . $results);
         }

@@ -16,7 +16,7 @@ class Installer
      * Kick-starts setup procedure
      *
      * @param Features $features
-     * @param string $installationFolder
+     * @param string   $installationFolder
      */
     public function __construct(Features $features, string $installationFolder)
     {
@@ -35,19 +35,42 @@ class Installer
      */
     private function createFolders(): void
     {
-        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."Validators");
+        $this->makeFolder(
+            $this->rootFolder.DIRECTORY_SEPARATOR.
+            "src".DIRECTORY_SEPARATOR.
+            "Validators"
+        );
 
         if (!$this->features->isREST) {
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags");
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags".DIRECTORY_SEPARATOR."site");
+            $this->makeFolder(
+                $this->rootFolder.DIRECTORY_SEPARATOR.
+                "templates".DIRECTORY_SEPARATOR.
+                "tags"
+            );
+            $this->makeFolder(
+                $this->rootFolder.DIRECTORY_SEPARATOR.
+                "templates".DIRECTORY_SEPARATOR.
+                "tags".DIRECTORY_SEPARATOR.
+                "site"
+            );
         }
 
         if ($this->features->internationalization) {
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale");
-            $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."locale".DIRECTORY_SEPARATOR.$this->features->internationalization->defaultLocale);
+            $this->makeFolder(
+                $this->rootFolder.DIRECTORY_SEPARATOR.
+                "locale"
+            );
+            $this->makeFolder(
+                $this->rootFolder.DIRECTORY_SEPARATOR.
+                "locale".DIRECTORY_SEPARATOR.
+                $this->features->internationalization->defaultLocale
+            );
         }
 
-        $this->makeFolder($this->rootFolder.DIRECTORY_SEPARATOR."public");
+        $this->makeFolder(
+            $this->rootFolder.DIRECTORY_SEPARATOR.
+            "public"
+        );
     }
 
     /**
@@ -55,16 +78,33 @@ class Installer
      */
     private function createControllers(): void
     {
-        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."controllers".DIRECTORY_SEPARATOR.($this->features->isREST ? "rest" : "no_rest");
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."Controllers";
+        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.
+            "files".DIRECTORY_SEPARATOR.
+            "controllers".DIRECTORY_SEPARATOR.
+            ($this->features->isREST ? "rest" : "no_rest");
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR.
+            "src".DIRECTORY_SEPARATOR.
+            "Controllers";
 
-        copy($sourceFolder.DIRECTORY_SEPARATOR."Index.php", $destinationFolder.DIRECTORY_SEPARATOR."Index.php");
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."Index.php",
+            $destinationFolder.DIRECTORY_SEPARATOR."Index.php"
+        );
         if ($this->features->security) {
-            copy($sourceFolder.DIRECTORY_SEPARATOR."Login.php", $destinationFolder.DIRECTORY_SEPARATOR."Login.php");
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR."Login.php",
+                $destinationFolder.DIRECTORY_SEPARATOR."Login.php"
+            );
             if ($this->features->security->isCMS) {
-                copy($sourceFolder.DIRECTORY_SEPARATOR."Restricted.php", $destinationFolder.DIRECTORY_SEPARATOR."Restricted.php");
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."Restricted.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."Restricted.php"
+                );
             } else {
-                copy($sourceFolder.DIRECTORY_SEPARATOR."Members.php", $destinationFolder.DIRECTORY_SEPARATOR."Members.php");
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR."Members.php",
+                    $destinationFolder.DIRECTORY_SEPARATOR."Members.php"
+                );
             }
         }
     }
@@ -74,51 +114,64 @@ class Installer
      */
     private function createModels(): void
     {
-        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."models";
-        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."src";
+        $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.
+            "files".DIRECTORY_SEPARATOR.
+            "models".DIRECTORY_SEPARATOR.
+            "dao";
+        $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR.
+            "src".DIRECTORY_SEPARATOR.
+            "DAO";
 
-        // if security is not enabled, do nothing
-        if (!$this->features->security) {
-            return;
-        }
-
-        // if authentication & authorization are done based on ACL, do nothing
-        if ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1) {
+        // if security is not enabled OR authentication & authorization are done based on ACL, do nothing
+        if (!$this->features->security
+            || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)
+        ) {
             return;
         }
 
         // install data access objects based on user selections
-        $increment = 0;
-        if ($this->features->security->authenticationMethod==0) {
-            $increment = ($this->features->security->authorizationMethod==0 ? 1 : ($this->features->security->isCMS ? 3 : 5));
-        } elseif ($this->features->security->authenticationMethod==1) {
-            $increment = ($this->features->security->authorizationMethod==0 ? 2 : ($this->features->security->isCMS ? 4 : 6));
-        } elseif ($this->features->security->authorizationMethod==0) {
-            $increment = ($this->features->security->isCMS ? 7 : 8);
-        }
-        if ($increment) {
+        if ($version = $this->getUsersFormAuthenticationVersion()) {
             copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersFormAuthentication".$increment.".php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersFormAuthentication.php"
+                $sourceFolder.DIRECTORY_SEPARATOR."UsersFormAuthentication".$version.".php",
+                $destinationFolder.DIRECTORY_SEPARATOR."UsersFormAuthentication.php"
             );
         }
         if ($this->features->security->authenticationMethod==1) {
             copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php"
+                $sourceFolder.DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php",
+                $destinationFolder.DIRECTORY_SEPARATOR."UsersOAuth2Authentication.php"
             );
         }
         if ($this->features->security->authorizationMethod==0) {
             copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."PagesAuthorization.php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."PagesAuthorization.php"
+                $sourceFolder.DIRECTORY_SEPARATOR."PagesAuthorization.php",
+                $destinationFolder.DIRECTORY_SEPARATOR."PagesAuthorization.php"
             );
-            $increment = ($this->features->security->isCMS ? 1 : 2);
+            $version = ($this->features->security->isCMS ? 1 : 2);
             copy(
-                $sourceFolder.DIRECTORY_SEPARATOR."dao".DIRECTORY_SEPARATOR."UsersAuthorization".$increment.".php",
-                $destinationFolder.DIRECTORY_SEPARATOR."DAO".DIRECTORY_SEPARATOR."UsersAuthorization.php"
+                $sourceFolder.DIRECTORY_SEPARATOR."UsersAuthorization".$version.".php",
+                $destinationFolder.DIRECTORY_SEPARATOR."UsersAuthorization.php"
             );
         }
+    }
+
+    /**
+     * Gets version of UsersFormAuthentication class to install (if any)
+     *
+     * @return int
+     */
+    private function getUsersFormAuthenticationVersion(): int
+    {
+        $increment = 0;
+        $authorizationMethod = $this->features->security->authorizationMethod;
+        if ($this->features->security->authenticationMethod==0) {
+            $increment = ($authorizationMethod==0 ? 1 : ($this->features->security->isCMS ? 3 : 5));
+        } elseif ($this->features->security->authenticationMethod==1) {
+            $increment = ($authorizationMethod==0 ? 2 : ($this->features->security->isCMS ? 4 : 6));
+        } elseif ($authorizationMethod==0) {
+            $increment = ($this->features->security->isCMS ? 7 : 8);
+        }
+        return $increment;
     }
 
     /**
@@ -133,28 +186,58 @@ class Installer
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."views";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."views";
         if (!$this->features->security) {
-            copy($sourceFolder.DIRECTORY_SEPARATOR."index.html", $destinationFolder.DIRECTORY_SEPARATOR."index.html");
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR."index.html",
+                $destinationFolder.DIRECTORY_SEPARATOR."index.html"
+            );
         } else {
             $subfolder = ($this->features->security->isCMS ? "cms" : "no_cms");
-            copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."index.html", $destinationFolder.DIRECTORY_SEPARATOR."index.html");
-            copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."login.html", $destinationFolder.DIRECTORY_SEPARATOR."login.html");
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."index.html",
+                $destinationFolder.DIRECTORY_SEPARATOR."index.html"
+            );
+            copy(
+                $sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."login.html",
+                $destinationFolder.DIRECTORY_SEPARATOR."login.html"
+            );
             if ($this->features->security->isCMS) {
-                copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."restricted.html", $destinationFolder.DIRECTORY_SEPARATOR."restricted.html");
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."restricted.html",
+                    $destinationFolder.DIRECTORY_SEPARATOR."restricted.html"
+                );
             } else {
-                copy($sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."members.html", $destinationFolder.DIRECTORY_SEPARATOR."members.html");
+                copy(
+                    $sourceFolder.DIRECTORY_SEPARATOR.$subfolder.DIRECTORY_SEPARATOR."members.html",
+                    $destinationFolder.DIRECTORY_SEPARATOR."members.html"
+                );
             }
         }
 
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."tags";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."templates".DIRECTORY_SEPARATOR."tags";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html");
-        copy($sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html", $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html");
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html",
+            $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."status.html"
+        );
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html",
+            $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."header.html"
+        );
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html",
+            $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."footer.html"
+        );
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html",
+            $destinationFolder.DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."welcome.html"
+        );
 
         $sourceFolder = dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."public";
         $destinationFolder = $this->rootFolder.DIRECTORY_SEPARATOR."public";
-        copy($sourceFolder.DIRECTORY_SEPARATOR."default.css", $destinationFolder.DIRECTORY_SEPARATOR."default.css");
+        copy(
+            $sourceFolder.DIRECTORY_SEPARATOR."default.css",
+            $destinationFolder.DIRECTORY_SEPARATOR."default.css"
+        );
     }
 
     /**
@@ -165,6 +248,37 @@ class Installer
         $destinationFile = $this->rootFolder.DIRECTORY_SEPARATOR."index.php";
 
         // detects event listeners to add based on user selections
+        $eventListeners = $this->getEventListeners();
+
+        // composes bootstrap body
+        $bootstrap = file_get_contents(
+            dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."index.tpl"
+        );
+        $events = "";
+        foreach ($eventListeners["HTTP"] as $name=>$type) {
+            $events .= "    ".'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.
+                ', Lucinda\Project\EventListeners\\'.$name.'::class);'."\n";
+        }
+        $bootstrap = str_replace("(EVENTS_HTTP)", substr($events, 0, -1), $bootstrap);
+        $events = "";
+        foreach ($eventListeners["CONSOLE"] as $name=>$type) {
+            $events .= "    ".'$object->addEventListener(Lucinda\ConsoleSTDOUT\EventType::'.$type.
+                ', Lucinda\Project\EventListeners\Console\\'.$name.'::class);'."\n";
+        }
+        $bootstrap = str_replace("(EVENTS_CONSOLE)", substr($events, 0, -1), $bootstrap);
+        file_put_contents(
+            $destinationFile,
+            str_replace("(EVENTS)", substr($events, 0, -1), $bootstrap)
+        );
+    }
+
+    /**
+     * Gets event listeners to create
+     *
+     * @return array<string,array<string,string>>
+     */
+    private function getEventListeners(): array
+    {
         $eventListeners = [];
         $eventListeners["CONSOLE"]["Error"] = "APPLICATION";
         if ($this->features->logging) {
@@ -195,20 +309,7 @@ class Installer
                 $eventListeners["HTTP"]["HttpCaching"] = "RESPONSE";
             }
         }
-
-        // composes bootstrap body
-        $bootstrap = file_get_contents(dirname(__DIR__, 2).DIRECTORY_SEPARATOR."files".DIRECTORY_SEPARATOR."index.tpl");
-        $events = "";
-        foreach ($eventListeners["HTTP"] as $name=>$type) {
-            $events .= "    ".'$object->addEventListener(Lucinda\STDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\\'.$name.'::class);'."\n";
-        }
-        $bootstrap = str_replace("(EVENTS_HTTP)", substr($events, 0, -1), $bootstrap);
-        $events = "";
-        foreach ($eventListeners["CONSOLE"] as $name=>$type) {
-            $events .= "    ".'$object->addEventListener(Lucinda\ConsoleSTDOUT\EventType::'.$type.', Lucinda\Project\EventListeners\Console\\'.$name.'::class);'."\n";
-        }
-        $bootstrap = str_replace("(EVENTS_CONSOLE)", substr($events, 0, -1), $bootstrap);
-        file_put_contents($destinationFile, str_replace("(EVENTS)", substr($events, 0, -1), $bootstrap));
+        return $eventListeners;
     }
 
     /**

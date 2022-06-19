@@ -2,6 +2,8 @@
 
 namespace Lucinda\Configurer\XML;
 
+use Lucinda\WebSecurity\Token\SaltGenerator;
+
 /**
  * Populates stdout.xml based on features selected by user
  */
@@ -12,6 +14,7 @@ class StdoutInstaller extends Installer
 
     /**
      * {@inheritDoc}
+     *
      * @see Installer::generateXML()
      */
     protected function generateXML(): void
@@ -86,15 +89,15 @@ class StdoutInstaller extends Installer
 
         $detectionMethod = "";
         switch ($this->features->internationalization->detectionMethod) {
-            case "0":
-                $detectionMethod = "header";
-                break;
-            case "1":
-                $detectionMethod = "request";
-                break;
-            case "2":
-                $detectionMethod = "session";
-                break;
+        case "0":
+            $detectionMethod = "header";
+            break;
+        case "1":
+            $detectionMethod = "request";
+            break;
+        case "2":
+            $detectionMethod = "session";
+            break;
         }
 
         $internationalization = $this->xml->addChild("internationalization");
@@ -115,15 +118,36 @@ class StdoutInstaller extends Installer
 
         $headers = $this->xml->addChild("headers");
         if ($this->features->headers->caching) {
-            $headers->addAttribute("no_cache", $this->features->headers->caching->no_cache);
-            $headers->addAttribute("expiration", $this->features->headers->caching->expiration);
-            $headers->addAttribute("cacheable", "Lucinda\Project\Cacheables\Etag");
+            $headers->addAttribute(
+                "no_cache",
+                (string) (int) $this->features->headers->caching->no_cache
+            );
+            $headers->addAttribute(
+                "expiration",
+                (string) $this->features->headers->caching->expiration
+            );
+            $headers->addAttribute(
+                "cacheable",
+                "Lucinda\Project\Cacheables\Etag"
+            );
         }
         if ($this->features->headers->cors) {
-            $headers->addAttribute("allow_credentials", $this->features->headers->cors->allow_credentials);
-            $headers->addAttribute("cors_max_age", $this->features->headers->cors->max_age);
-            $headers->addAttribute("allowed_request_headers", $this->features->headers->cors->allowed_request_headers);
-            $headers->addAttribute("allowed_response_headers", $this->features->headers->cors->allowed_response_headers);
+            $headers->addAttribute(
+                "allow_credentials",
+                (string) (int) $this->features->headers->cors->allow_credentials
+            );
+            $headers->addAttribute(
+                "cors_max_age",
+                (string) $this->features->headers->cors->max_age
+            );
+            $headers->addAttribute(
+                "allowed_request_headers",
+                $this->features->headers->cors->allowed_request_headers
+            );
+            $headers->addAttribute(
+                "allowed_response_headers",
+                $this->features->headers->cors->allowed_response_headers
+            );
         }
     }
 
@@ -140,11 +164,14 @@ class StdoutInstaller extends Installer
             0 => "mysql"
         };
 
-        $server = $this->xml->addChild("sql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
+        $server = $this->xml
+            ->addChild("sql")
+            ->addChild(self::DEFAULT_ENVIRONMENT)
+            ->addChild("server");
         $server->addAttribute("driver", $driver);
         $server->addAttribute("host", $this->features->sqlServer->host);
         if ($this->features->sqlServer->port) {
-            $server->addAttribute("port", $this->features->sqlServer->port);
+            $server->addAttribute("port", (string) $this->features->sqlServer->port);
         }
         $server->addAttribute("username", $this->features->sqlServer->user);
         $server->addAttribute("password", $this->features->sqlServer->password);
@@ -170,12 +197,15 @@ class StdoutInstaller extends Installer
             5 => "apcu"
         };
 
-        $server = $this->xml->addChild("nosql")->addChild(self::DEFAULT_ENVIRONMENT)->addChild("server");
+        $server = $this->xml
+            ->addChild("nosql")
+            ->addChild(self::DEFAULT_ENVIRONMENT)
+            ->addChild("server");
         $server->addAttribute("driver", $driver);
         if (!in_array($driver, ["apc","apcu"])) {
             $server->addAttribute("host", $this->features->nosqlServer->host);
             if ($this->features->nosqlServer->port) {
-                $server->addAttribute("port", $this->features->nosqlServer->port);
+                $server->addAttribute("port", (string) $this->features->nosqlServer->port);
             }
             if ($driver == "couchbase") {
                 $server->addAttribute("username", $this->features->nosqlServer->user);
@@ -204,15 +234,15 @@ class StdoutInstaller extends Installer
 
         $persistenceDrivers = $security->addChild("persistence");
         switch ($this->features->security->persistenceDrivers) {
-            case 0:
-                $persistenceDrivers->addChild("session");
-                $rememberMe = $persistenceDrivers->addChild("remember_me");
-                $rememberMe->addAttribute("secret", $this->generateSecret());
-                break;
-            case 1:
-                $synchronizerToken =$persistenceDrivers->addChild("synchronizer_token");
-                $synchronizerToken->addAttribute("secret", $this->generateSecret());
-                break;
+        case 0:
+            $persistenceDrivers->addChild("session");
+            $rememberMe = $persistenceDrivers->addChild("remember_me");
+            $rememberMe->addAttribute("secret", $this->generateSecret());
+            break;
+        case 1:
+            $synchronizerToken =$persistenceDrivers->addChild("synchronizer_token");
+            $synchronizerToken->addAttribute("secret", $this->generateSecret());
+            break;
         }
 
         $authentication = $security->addChild("authentication");
@@ -223,26 +253,26 @@ class StdoutInstaller extends Installer
             $form->addAttribute("throttler", "Lucinda\Project\DAO\SQLLoginThrottler");
         }
         switch ($this->features->security->authenticationMethod) {
-            case 0:
-                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
-                break;
-            case 1:
-                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
-                $oauth2 = $authentication->addChild("oauth2");
-                $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
-                break;
+        case 0:
+            $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
+            break;
+        case 1:
+            $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
+            $oauth2 = $authentication->addChild("oauth2");
+            $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
+            break;
         }
 
         $authorization = $security->addChild("authorization");
         switch ($this->features->security->authorizationMethod) {
-            case 0:
-                $dao = $authorization->addChild("by_dao");
-                $dao->addAttribute("page_dao", "Lucinda\Project\DAO\PagesAuthorization");
-                $dao->addAttribute("user_dao", "Lucinda\Project\DAO\UsersAuthorization");
-                break;
-            case 1:
-                $authorization->addChild("by_route");
-                break;
+        case 0:
+            $dao = $authorization->addChild("by_dao");
+            $dao->addAttribute("page_dao", "Lucinda\Project\DAO\PagesAuthorization");
+            $dao->addAttribute("user_dao", "Lucinda\Project\DAO\UsersAuthorization");
+            break;
+        case 1:
+            $authorization->addChild("by_route");
+            break;
         }
     }
 
@@ -268,10 +298,10 @@ class StdoutInstaller extends Installer
                 $route->addAttribute("roles", $info->roles);
             }
             if ($info->no_cache!==null) {
-                $route->addAttribute("no_cache", $info->no_cache);
+                $route->addAttribute("no_cache", (string) (int) $info->no_cache);
             }
             if ($info->cache_expiration!==null) {
-                $route->addAttribute("cache_expiration", $info->cache_expiration);
+                $route->addAttribute("cache_expiration", (string) $info->cache_expiration);
             }
             if ($info->allowed_methods!==null) {
                 $route->addAttribute("allowed_methods", $info->allowed_methods);
@@ -285,7 +315,10 @@ class StdoutInstaller extends Installer
      */
     private function setUsersTag(): void
     {
-        if (!$this->features->users || !$this->features->security || $this->features->security->authenticationMethod!=2) {
+        if (!$this->features->users
+            || !$this->features->security
+            || $this->features->security->authenticationMethod!=2
+        ) {
             return;
         }
 
@@ -293,7 +326,7 @@ class StdoutInstaller extends Installer
         $users->addAttribute("roles", $this->features->users->default_roles);
         foreach ($this->features->users->users as $info) {
             $user = $users->addChild("user");
-            $user->addAttribute("id", $info->id);
+            $user->addAttribute("id", (string) $info->id);
             $user->addAttribute("name", $info->name);
             $user->addAttribute("email", $info->email);
             $user->addAttribute("username", $info->username);
@@ -307,9 +340,11 @@ class StdoutInstaller extends Installer
      */
     private function setSessionTag(): void
     {
-        if (!$this->features->isREST && (($this->features->internationalization && $this->features->internationalization->detectionMethod==2) || ($this->features->security && $this->features->security->persistenceDrivers==0))) {
+        if (!$this->features->isREST && (($this->features->internationalization && $this->features->internationalization->detectionMethod==2)
+            || ($this->features->security && $this->features->security->persistenceDrivers==0))
+        ) {
             $session = $this->xml->addChild("session");
-            $session->addAttribute("auto_start", 1);
+            $session->addAttribute("auto_start", "1");
             if ($this->features->isLoadBalanced) {
                 if ($this->features->sqlServer) {
                     $session->addAttribute("handler", "Lucinda\Project\DAO\SQLSessionHandler");
@@ -327,7 +362,7 @@ class StdoutInstaller extends Installer
      */
     private function generateSecret(): string
     {
-        $saltGenerator = new \Lucinda\WebSecurity\Token\SaltGenerator(self::SALT_LENGTH);
+        $saltGenerator = new SaltGenerator(self::SALT_LENGTH);
         return $saltGenerator->getSalt();
     }
 }

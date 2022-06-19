@@ -11,6 +11,7 @@ class UsersFormAuthentication implements UserRoles
 {
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\WebSecurity\Authorization\UserRoles::getRoles()
      */
     public function getRoles(int|string|null $userID): array

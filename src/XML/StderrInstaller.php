@@ -11,6 +11,7 @@ class StderrInstaller extends Installer
 
     /**
      * {@inheritDoc}
+     *
      * @see Installer::generateXML()
      */
     protected function generateXML(): void
@@ -44,7 +45,7 @@ class StderrInstaller extends Installer
     private function setDisplayErrorsTag(): void
     {
         $application = $this->xml->addChild("display_errors");
-        $application->addChild(self::DEFAULT_ENVIRONMENT, 1);
+        $application->addChild(self::DEFAULT_ENVIRONMENT, "1");
     }
 
     /**
@@ -98,7 +99,7 @@ class StderrInstaller extends Installer
                 $route->addAttribute("view", $info->view);
             }
             if ($info->http_status!==null) {
-                $route->addAttribute("http_status", $info->http_status);
+                $route->addAttribute("http_status", (string) $info->http_status);
             }
         }
     }

@@ -18,7 +18,7 @@ class HostCreator
     /**
      * Kick-starts host creation based on features selected by user.
      *
-     * @param string $installationFolder Folder where site is installed
+     * @param  string $installationFolder Folder where site is installed
      * @throws \Exception If host creation fails.
      */
     public function __construct(string $installationFolder)
@@ -63,7 +63,7 @@ class HostCreator
      *
      * @return string
      */
-    public function getHostCreated()
+    public function getHostCreated(): string
     {
         return $this->hostCreated;
     }

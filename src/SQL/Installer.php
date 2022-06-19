@@ -16,19 +16,14 @@ class Installer
 
     /**
      * SQLInstallation constructor.
-     * @param Features $features
+     *
+     * @param  Features $features
      * @throws \Exception If installation fails.
      */
     public function __construct(Features $features)
     {
         $this->features = $features;
-
-        $driver = match ($this->features->sqlServer->driver) {
-            0 => "mysql"
-        };
-        $pdo = new \PDO($driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host, $this->features->sqlServer->user, $this->features->sqlServer->password);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->pdo = $pdo;
+        $this->pdo = $this->getConnection();
 
         if ($this->features->migrations && $this->features->migrations->storageMethod==0) {
             $this->setMigrationsTable();
@@ -38,7 +33,9 @@ class Installer
             $this->setSessionsTable();
         }
 
-        if (!$this->features->security || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)) {
+        if (!$this->features->security
+            || ($this->features->security->authenticationMethod==2 && $this->features->security->authorizationMethod==1)
+        ) {
             return;
         }
 
@@ -73,11 +70,41 @@ class Installer
     }
 
     /**
+     * Gets connection to database server via PDO driver
+     *
+     * @return \PDO
+     */
+    private function getConnection(): \PDO
+    {
+        $driver = match ($this->features->sqlServer->driver) {
+            0 => "mysql"
+        };
+        $pdo = new \PDO(
+            $driver.":dbname=".$this->features->sqlServer->schema.";host=".$this->features->sqlServer->host,
+            $this->features->sqlServer->user,
+            $this->features->sqlServer->password
+        );
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    }
+
+    /**
      * Drops tables to be created later
      */
-    private function cleanUp()
+    private function cleanUp(): void
     {
-        $tables = array("users__form", "users__oauth2", "oauth2_providers", "users_resources", "roles_resources", "users_roles", "roles", "resources", "users", "user_logins");
+        $tables = [
+            "users__form",
+            "users__oauth2",
+            "oauth2_providers",
+            "users_resources",
+            "roles_resources",
+            "users_roles",
+            "roles",
+            "resources",
+            "users",
+            "user_logins"
+        ];
         foreach ($tables as $table) {
             $this->pdo->exec("DROP TABLE IF EXISTS ".$table);
         }
@@ -88,7 +115,8 @@ class Installer
      */
     private function setUsersTable1(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE users (
             	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             	username VARCHAR(255) NOT NULL,
@@ -100,18 +128,22 @@ class Installer
             	UNIQUE(username),
                 UNIQUE(email)
             ) Engine=INNODB
-            ");
+            "
+        );
         foreach ($this->features->users->users as $user) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
                 INSERT INTO users (id, username, password, name, email) VALUES
                 (".$user->id.", '".$user->username."', '".$user->password."', '".$user->name."', '".$user->email."')
-                ");
+                "
+            );
         }
     }
 
     private function setUsersTable2(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE users
             (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -121,18 +153,22 @@ class Installer
             PRIMARY KEY(id),
             UNIQUE(email)
             ) Engine=INNODB
-            ");
+            "
+        );
         foreach ($this->features->users->users as $user) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
                 INSERT INTO users (id, name, email) VALUES
                 (".$user->id.", '".$user->name."', '".$user->email."')
-                ");
+                "
+            );
         }
     }
 
     private function setUsersTable3(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE users
             (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -141,12 +177,15 @@ class Installer
             PRIMARY KEY(id),
             UNIQUE(email)
             ) Engine=INNODB
-            ");
+            "
+        );
         foreach ($this->features->users->users as $user) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
                 INSERT INTO users (id, email) VALUES
                 (".$user->id.", '".$user->email."')
-                ");
+                "
+            );
         }
     }
 
@@ -155,7 +194,8 @@ class Installer
      */
     private function setThrottlerTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
              CREATE TABLE user_logins (
              id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
              ip VARCHAR(45) NOT NULL,
@@ -166,7 +206,8 @@ class Installer
              PRIMARY KEY(id),
              UNIQUE(ip, username)
              ) Engine=InnoDB;
-            ");
+            "
+        );
     }
 
     /**
@@ -174,7 +215,8 @@ class Installer
      */
     private function setMigrationsTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE IF NOT EXISTS migrations
             (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -184,7 +226,8 @@ class Installer
             PRIMARY KEY(id),
             UNIQUE(class_name)
             ) Engine=INNODB
-            ");
+            "
+        );
     }
 
     /**
@@ -192,7 +235,8 @@ class Installer
      */
     private function setSessionsTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE IF NOT EXISTS sessions
             (
             id VARCHAR(50) NOT NULL,
@@ -202,7 +246,8 @@ class Installer
             PRIMARY KEY(id),
             UNIQUE(class_name)
             ) Engine=INNODB
-            ");
+            "
+        );
     }
 
     /**
@@ -210,7 +255,8 @@ class Installer
      */
     private function setResourcesTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
             CREATE TABLE resources
             (
             id smallint unsigned not null auto_increment,
@@ -219,11 +265,14 @@ class Installer
             PRIMARY KEY(id),
             unique(url)
             ) Engine=INNODB
-            ");
+            "
+        );
         foreach ($this->features->routes->routes as $route) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
             INSERT INTO resources (id, url, is_public) VALUES
-            (".$route->id.", '".$route->url."', ".(str_contains($route->roles, "GUESTS") ? 1 : 0).")");
+            (".$route->id.", '".$route->url."', ".(str_contains($route->roles, "GUESTS") ? 1 : 0).")"
+            );
         }
     }
 
@@ -232,7 +281,8 @@ class Installer
      */
     public function setRolesTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE roles
         (
         id tinyint unsigned not null auto_increment,
@@ -240,12 +290,15 @@ class Installer
         PRIMARY KEY(id),
         unique(name)
         ) Engine=INNODB
-        ");
+        "
+        );
         foreach (self::ROLES as $name=>$id) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
             INSERT INTO roles (id, name) VALUES
             (".$id.", '".$name."')
-            ");
+            "
+            );
         }
     }
 
@@ -254,7 +307,8 @@ class Installer
      */
     public function setUsersRolesTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE users_roles
         (
         id int unsigned not null auto_increment,
@@ -264,14 +318,17 @@ class Installer
         foreign key(user_id) references users(id) on delete cascade,
         foreign key(role_id) references roles(id) on delete cascade
         ) Engine=INNODB
-        ");
+        "
+        );
         foreach ($this->features->users->users as $user) {
             $userRoles = explode(",", $user->roles);
             foreach ($userRoles as $role) {
-                $this->pdo->exec("
+                $this->pdo->exec(
+                    "
                 INSERT INTO users_roles (user_id, role_id) VALUES
                 (".$user->id.", ".self::ROLES[$role].")
-                ");
+                "
+                );
             }
         }
     }
@@ -281,7 +338,8 @@ class Installer
      */
     public function setRolesResourcesTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE roles_resources
         (
         id int unsigned not null auto_increment,
@@ -291,15 +349,18 @@ class Installer
         foreign key(role_id) references roles(id) on delete cascade,
         foreign key(resource_id) references resources(id) on delete cascade
         ) Engine=INNODB
-        ");
+        "
+        );
         foreach ($this->features->routes->routes as $route) {
             $routeRoles = explode(",", $route->roles);
             foreach ($routeRoles as $role) {
                 if (isset(self::ROLES[$role])) {
-                    $this->pdo->exec("
+                    $this->pdo->exec(
+                        "
                     INSERT INTO roles_resources (resource_id, role_id) VALUES
                     (".$route->id.", ".self::ROLES[$role].")
-                    ");
+                    "
+                    );
                 }
             }
         }
@@ -310,7 +371,8 @@ class Installer
      */
     public function setUsersResourcesTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE users_resources
         (
         id int unsigned not null auto_increment,
@@ -320,23 +382,26 @@ class Installer
         foreign key(user_id) references users(id) on delete cascade,
         foreign key(resource_id) references resources(id) on delete cascade
         ) Engine=INNODB
-        ");
+        "
+        );
         $userRoles = [];
         foreach ($this->features->users->users as $user) {
             $userRoles[$user->id] = explode(",", $user->roles);
         }
         $resourceRoles = [];
-        foreach ($this->features->routes->route as $route) {
+        foreach ($this->features->routes->routes as $route) {
             $resourceRoles[$route->id] = explode(",", $route->roles);
         }
         foreach ($userRoles as $userID=>$roles1) {
             foreach ($resourceRoles as $resourceID=>$roles2) {
                 foreach ($roles1 as $role) {
                     if (in_array($role, $roles2)) {
-                        $this->pdo->exec("
+                        $this->pdo->exec(
+                            "
                         INSERT INTO users_resources (resource_id, user_id) VALUES
                         (".$resourceID.", ".$userID.")
-                        ");
+                        "
+                        );
                     }
                 }
             }
@@ -348,7 +413,8 @@ class Installer
      */
     public function setOauth2ProvidersTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE oauth2_providers
         (
         id tinyint unsigned not null auto_increment,
@@ -356,9 +422,11 @@ class Installer
         PRIMARY KEY(id),
         unique(name)
         ) Engine=INNODB
-        ");
+        "
+        );
 
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         INSERT INTO oauth2_providers (id, name) VALUES
         (1, 'Facebook'),
         (2, 'Google'),
@@ -368,7 +436,8 @@ class Installer
         (6, 'VK'),
         (7, 'Yahoo'),
         (8, 'Yandex')
-        ");
+        "
+        );
     }
 
     /**
@@ -376,7 +445,8 @@ class Installer
      */
     public function setUsersOauth2Table(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE users__oauth2
         (
         id int unsigned not null auto_increment,
@@ -388,7 +458,8 @@ class Installer
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
         UNIQUE(remote_user_id, driver_id)
         ) Engine=INNODB
-        ");
+        "
+        );
     }
 
     /**
@@ -396,7 +467,8 @@ class Installer
      */
     public function setUsersFormTable(): void
     {
-        $this->pdo->exec("
+        $this->pdo->exec(
+            "
         CREATE TABLE users__form
         (
         id int unsigned not null auto_increment,
@@ -409,12 +481,15 @@ class Installer
         UNIQUE(user_id),
         KEY(username, password)
         ) Engine=INNODB
-        ");
+        "
+        );
         foreach ($this->features->users->users as $user) {
-            $this->pdo->exec("
+            $this->pdo->exec(
+                "
                 INSERT INTO users__form (user_id, username, password) VALUES
                 (".$user->id.", '".$user->username."', '".$user->password."')
-                ");
+                "
+            );
         }
     }
 }

@@ -13,15 +13,20 @@ class UsersFormAuthentication implements UserAuthenticationDAO
 
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::login()
      */
     public function login(string $username, string $password): int|string|null
     {
-        $result = \SQL("
+        $result = \SQL(
+            "
             SELECT id AS user_id, password FROM users WHERE username=:user
-        ", [
+        ",
+            [
             ":user"=>$username
-        ], self::DRIVER_NAME)->toRow();
+            ],
+            self::DRIVER_NAME
+        )->toRow();
         if (empty($result) || !password_verify($password, $result["password"])) {
             return null; // login failed
         }
@@ -30,6 +35,7 @@ class UsersFormAuthentication implements UserAuthenticationDAO
 
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\WebSecurity\Authentication\DAO\UserAuthenticationDAO::logout()
      */
     public function logout(int|string $userID): void

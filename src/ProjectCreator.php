@@ -16,7 +16,7 @@ class ProjectCreator
     /**
      * Creates project
      *
-     * @param string $installationFolder
+     * @param  string $installationFolder
      * @throws \Exception
      */
     public function __construct(string $installationFolder)
@@ -42,8 +42,8 @@ class ProjectCreator
     /**
      * Creates project on disk based on features selected by user
      *
-     * @param string $installationFolder
-     * @param Features $features
+     * @param  string   $installationFolder
+     * @param  Features $features
      * @throws \Exception
      */
     private function writeFiles(string $installationFolder, Features $features): void

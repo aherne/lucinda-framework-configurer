@@ -20,7 +20,7 @@ abstract class Installer
      * Sets up XML to write
      *
      * @param Features $features
-     * @param string $xmlFilePath
+     * @param string   $xmlFilePath
      */
     public function __construct(Features $features, string $xmlFilePath)
     {

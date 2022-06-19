@@ -12,7 +12,7 @@ class VirtualHost
     private string $developmentEnvironment;
 
     /**
-     * @param string $installationFolder
+     * @param  string $installationFolder
      * @throws \Exception
      */
     public function __construct(string $installationFolder)
@@ -24,13 +24,17 @@ class VirtualHost
     /**
      * Detects current project folder in WEBROOT
      *
-     * @param string $installationFolder
-     * @return void
+     * @param   string $installationFolder
+     * @return  void
      * @example example.com if installation folder is /var/www/html/example.conf
      */
     private function setSiteName(string $installationFolder): void
     {
-        $this->siteName = str_replace(dirname($installationFolder) . DIRECTORY_SEPARATOR, "", $installationFolder);
+        $this->siteName = str_replace(
+            dirname($installationFolder) . DIRECTORY_SEPARATOR,
+            "",
+            $installationFolder
+        );
     }
 
     /**
@@ -52,7 +56,8 @@ class VirtualHost
     private function setHostName(): void
     {
         $this->hostName = \readline("-  Write your domain name: ");
-        preg_match("/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/", $this->hostName, $matches);
+        $regex = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
+        preg_match($regex, $this->hostName, $matches);
         if (empty($matches)) {
             throw new \Exception("Host name invalid or empty!");
         }

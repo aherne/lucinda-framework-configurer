@@ -11,6 +11,7 @@ class Members extends RestController
 {
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\MVC\Runnable::run()
      */
     protected function GET()

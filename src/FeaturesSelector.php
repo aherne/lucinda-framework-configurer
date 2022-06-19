@@ -14,6 +14,8 @@ class FeaturesSelector
 
     /**
      * Begins selector
+     *
+     * @throws \Exception
      */
     public function __construct()
     {
@@ -25,21 +27,15 @@ class FeaturesSelector
     /**
      * Instances and reads class fields documentation and sets up a prompter for users to set them
      *
-     * @param int $i
-     * @param string $className
-     * @param object $object
+     * @param  int    $indentFactor
+     * @param  string $className
+     * @param  object $object
+     * @throws \Exception
      */
-    private function run(int $i, string $className, object $object): void
+    private function run(int $indentFactor, string $className, object $object): void
     {
-        // compile properties
-        $properties = [];
-        $rc = new \ReflectionClass($className);
-        foreach ($rc->getProperties() as $property) {
-            $properties[$property->getName()] = new DocBlockParser($property->getDocComment());
-        }
-
-        // create object
         $j = 0;
+        $properties = $this->getClassFields($className);
         foreach ($properties as $name=>$info) {
             $j++;
             if ($handler = $info->getHandler()) {
@@ -60,12 +56,13 @@ class FeaturesSelector
                         continue;
                     }
                 }
-                $result = $this->prompt($i, "[".$j."/".($i==0 ? sizeof($properties)-3 : sizeof($properties))."]", $className, $name, $info);
+                $index = "[".$j."/".($indentFactor==0 ? sizeof($properties)-3 : sizeof($properties))."]";
+                $result = $this->prompt($indentFactor, $index, $className, $name, $info);
                 if (str_starts_with($info->getType(), "\\")) {
                     if ($result=="1") {
                         $childClassName = $info->getType();
                         $object->$name = new $childClassName();
-                        $this->run($i+1, $childClassName, $object->$name);
+                        $this->run($indentFactor+1, $childClassName, $object->$name);
                     } else {
                         $object->$name = null;
                     }
@@ -77,57 +74,117 @@ class FeaturesSelector
     }
 
     /**
+     * Gets encapsulated version of feature class fields
+     *
+     * @param  string $className
+     * @return array<string,DocBlockParser>
+     * @throws \ReflectionException
+     */
+    private function getClassFields(string $className): array
+    {
+        $properties = [];
+        $reflectionClass = new \ReflectionClass($className);
+        $fields = $reflectionClass->getProperties();
+        foreach ($fields as $property) {
+            $properties[$property->getName()] = new DocBlockParser($property->getDocComment());
+        }
+        return $properties;
+    }
+
+    /**
      * Prompts user to set respective class field and runs regex validation on values prompted by user
      *
-     * @param int $k
-     * @param string $index
-     * @param string $className
-     * @param string $parameterName
-     * @param DocBlockParser $info
+     * @param  int            $indentFactor
+     * @param  string         $index
+     * @param  string         $className
+     * @param  string         $parameterName
+     * @param  DocBlockParser $info
      * @return string
      * @throws \Exception
      */
-    private function prompt(int $k, string $index, string $className, string $parameterName, DocBlockParser $info): string
-    {
-        $indent = str_repeat(" ", 5*$k);
-        $defaultOption = $info->getDefaultOption();
-        $message = "";
-        if (!empty($info->getOptions())) {
-            echo $indent.$index." ".$info->getMessage().":\n";
-            $options = $info->getOptions();
-            foreach ($options as $i=>$option) {
-                echo $indent."     ".$i.". ".$option."\n";
-            }
-            $message = $indent."     Choose one of above".($defaultOption!=="" ? " or hit enter to confirm #".$defaultOption : ($info->getOptional() ? " or hit enter for default" : "")).": ";
-        } else {
-            $message = $indent.$index." ".$info->getMessage().($defaultOption!=="" ? " or hit enter to confirm '".$defaultOption."'" : ($info->getOptional() ? " or hit enter for default" : "")).": ";
-        }
-        $result = \readline($message);
+    private function prompt(
+        int $indentFactor,
+        string $index,
+        string $className,
+        string $parameterName,
+        DocBlockParser $info
+    ): string {
+        $indent = str_repeat(" ", 5*$indentFactor);
+        echo $this->getMainMessage($index, $indent, $info);
+        $result = \readline($this->getInteractiveMessage($index, $indent, $info));
         if ($result==="") {
-            $result = $defaultOption;
+            $result = $info->getDefaultOption();
         }
-        if ($info->getOptional() && !$result) {
+        if ($info->hasOptional() && !$result) {
             return $result;
         }
         if (!$this->validateValue($className, $parameterName, $info->getValidator(), $result)) {
             echo $indent."ERROR: value entered is invalid!\n";
-            return $this->prompt($k, $index, $className, $parameterName, $info);
+            return $this->prompt($indentFactor, $index, $className, $parameterName, $info);
         }
         return $result;
     }
 
     /**
-     * Performs automatic regex-based validation of value prompted by user based on @validator annotation, allowing also to fine grain validation for certain fields
+     * Gets body of interactive message to display
      *
-     * @param string $className
-     * @param string $parameterName
-     * @param string $regex
-     * @param string $result
+     * @param  string         $index
+     * @param  string         $indent
+     * @param  DocBlockParser $info
+     * @return string
+     */
+    private function getInteractiveMessage(string $index, string $indent, DocBlockParser $info): string
+    {
+        $defaultOptionText =  "";
+        if ($info->getDefaultOption() !== "") {
+            $defaultOptionText = " or hit enter to confirm '".$info->getDefaultOption()."'";
+        } elseif ($info->hasOptional()) {
+            $defaultOptionText = " or hit enter for default";
+        }
+        $message = "";
+        if (!empty($info->getOptions())) {
+            $message = $indent."     Choose one of above".$defaultOptionText.": ";
+        } else {
+            $message = $indent.$index." ".$info->getMessage().$defaultOptionText.": ";
+        }
+        return $message;
+    }
+
+    /**
+     * Gets body of options text associated to interactive message
+     *
+     * @param  string         $index
+     * @param  string         $indent
+     * @param  DocBlockParser $info
+     * @return string
+     */
+    private function getMainMessage(string $index, string $indent, DocBlockParser $info): string
+    {
+        $message = $indent.$index." ".$info->getMessage().":\n";
+        $options = $info->getOptions();
+        foreach ($options as $i=>$option) {
+            $message .= $indent."     ".$i.". ".$option."\n";
+        }
+        return $message;
+    }
+
+    /**
+     * Performs automatic regex-based validation of value prompted by user based on @validator annotation, allowing
+     * also to fine grain validation for certain fields
+     *
+     * @param  string $className
+     * @param  string $parameterName
+     * @param  string $regex
+     * @param  string $result
      * @throws \Exception
      * @return bool
      */
-    private function validateValue(string $className, string $parameterName, string $regex, string $result): bool
-    {
+    private function validateValue(
+        string $className,
+        string $parameterName,
+        string $regex,
+        $result
+    ): bool {
         if ($regex) {
             return preg_match("/^".$regex."$/", $result)>0;
         } else {
@@ -138,8 +195,8 @@ class FeaturesSelector
     /**
      * Validates whether to display field prompt based on @if annotation
      *
-     * @param object $object
-     * @param array $condition
+     * @param  object                 $object
+     * @param  array<string,string[]> $condition
      * @return bool
      */
     private function validateCondition(object $object, array $condition): bool

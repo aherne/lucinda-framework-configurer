@@ -1,16 +1,16 @@
 body {
-	font-family: Courier New;
+    font-family: Courier New;
 }
 
 .status {
-	color: red;
-	font-weight: bold;
+    color: red;
+    font-weight: bold;
 }
 
 img {
-	width: 500px;
+    width: 500px;
 }
 
 .panel {
-	color: blue;
+    color: blue;
 }
