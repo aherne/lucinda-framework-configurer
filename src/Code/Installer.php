@@ -281,10 +281,6 @@ class Installer
     {
         $eventListeners = [];
         $eventListeners["CONSOLE"]["Error"] = "APPLICATION";
-        if ($this->features->logging) {
-            $eventListeners["HTTP"]["Logging"] = "APPLICATION";
-            $eventListeners["CONSOLE"]["Logging"] = "APPLICATION";
-        }
         if ($this->features->sqlServer) {
             $eventListeners["HTTP"]["SQLDataSource"] = "APPLICATION";
             $eventListeners["CONSOLE"]["SQLDataSource"] = "APPLICATION";
@@ -294,6 +290,10 @@ class Installer
             $eventListeners["CONSOLE"]["NoSQLDataSource"] = "APPLICATION";
         }
         $eventListeners["HTTP"]["Error"] = "REQUEST";
+        if ($this->features->logging) {
+            $eventListeners["HTTP"]["Logging"] = "REQUEST";
+            $eventListeners["CONSOLE"]["Logging"] = "REQUEST";
+        }
         if ($this->features->security) {
             $eventListeners["HTTP"]["Security"] = "REQUEST";
         }

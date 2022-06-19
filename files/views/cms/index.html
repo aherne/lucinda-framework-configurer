@@ -29,14 +29,14 @@
 	</li>
 	<li><strong><a href="https://www.lucinda-framework.com/documentation/bootstrap" target="_blank">index.php</a></strong>: following <a href="https://www.lucinda-framework.com/documentation/classes#event-listeners" target="_blank">event listeners</a> were added:<br/>
 		<ul>
-			<:if test="!empty(${data.features.logging})">
-			<li>Lucinda\Project\EventListeners\Logging</li>
-			</:if>
 			<:if test="!empty(${data.features.sqlServer})">
 			<li>Lucinda\Project\EventListeners\SQLDataSource</li>
 			</:if>
 			<:if test="!empty(${data.features.nosqlServer})">
 			<li>Lucinda\Project\EventListeners\NoSQLDataSource</li>
+			</:if>
+			<:if test="!empty(${data.features.logging})">
+			<li>Lucinda\Project\EventListeners\Logging</li>
 			</:if>
 			<:if test="!empty(${data.features.security})">
 			<li>Lucinda\Project\EventListeners\Security</li>
