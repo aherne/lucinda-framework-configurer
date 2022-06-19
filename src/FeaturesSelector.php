@@ -110,7 +110,9 @@ class FeaturesSelector
         DocBlockParser $info
     ): string {
         $indent = str_repeat(" ", 5*$indentFactor);
-        echo $this->getMainMessage($index, $indent, $info);
+        if (!empty($info->getOptions())) {
+            echo $this->getMainMessage($index, $indent, $info);
+        }
         $result = \readline($this->getInteractiveMessage($index, $indent, $info));
         if ($result==="") {
             $result = $info->getDefaultOption();
