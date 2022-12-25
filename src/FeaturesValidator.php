@@ -230,7 +230,7 @@ class FeaturesValidator
             $cluster->authenticate($authenticator);
 
             $cluster->openBucket($server->bucket, (string) $server->password);
-        } catch (\CouchbaseException $e) {
+        } catch (\CouchbaseException) {
             throw new \Exception("Connection to server failed: couchbase");
         }
     }
