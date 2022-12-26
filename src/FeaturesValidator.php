@@ -44,9 +44,9 @@ class FeaturesValidator
     private function validateSQLServer(SQLServer $server): void
     {
         switch ($server->driver) {
-        case 0: // mysql
-            $this->validateMySQL($server);
-            break;
+            case 0: // mysql
+                $this->validateMySQL($server);
+                break;
         }
     }
 
@@ -59,24 +59,24 @@ class FeaturesValidator
     private function validateNoSQLServer(NoSQLServer $server): void
     {
         switch ($server->driver) {
-        case 0:
-            $this->validateRedis($server);
-            break;
-        case 1:
-            $this->validateMemcache($server);
-            break;
-        case 2:
-            $this->validateMemcached($server);
-            break;
-        case 3:
-            $this->validateCouchbase($server);
-            break;
-        case 4:
-            $this->validateAPC();
-            break;
-        case 5:
-            $this->validateAPCu();
-            break;
+            case 0:
+                $this->validateRedis($server);
+                break;
+            case 1:
+                $this->validateMemcache($server);
+                break;
+            case 2:
+                $this->validateMemcached($server);
+                break;
+            case 3:
+                $this->validateCouchbase($server);
+                break;
+            case 4:
+                $this->validateAPC();
+                break;
+            case 5:
+                $this->validateAPCu();
+                break;
         }
     }
 

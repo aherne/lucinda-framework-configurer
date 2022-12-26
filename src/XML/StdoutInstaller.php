@@ -87,18 +87,12 @@ class StdoutInstaller extends Installer
             return;
         }
 
-        $detectionMethod = "";
-        switch ($this->features->internationalization->detectionMethod) {
-        case "0":
-            $detectionMethod = "header";
-            break;
-        case "1":
-            $detectionMethod = "request";
-            break;
-        case "2":
-            $detectionMethod = "session";
-            break;
-        }
+        $detectionMethod = match($this->features->internationalization->detectionMethod) {
+            0=>"header",
+            1=>"request",
+            2=>"session",
+            default=>""
+        };
 
         $internationalization = $this->xml->addChild("internationalization");
         $internationalization->addAttribute("locale", $this->features->internationalization->defaultLocale);
@@ -234,15 +228,15 @@ class StdoutInstaller extends Installer
 
         $persistenceDrivers = $security->addChild("persistence");
         switch ($this->features->security->persistenceDrivers) {
-        case 0:
-            $persistenceDrivers->addChild("session");
-            $rememberMe = $persistenceDrivers->addChild("remember_me");
-            $rememberMe->addAttribute("secret", $this->generateSecret());
-            break;
-        case 1:
-            $synchronizerToken =$persistenceDrivers->addChild("synchronizer_token");
-            $synchronizerToken->addAttribute("secret", $this->generateSecret());
-            break;
+            case 0:
+                $persistenceDrivers->addChild("session");
+                $rememberMe = $persistenceDrivers->addChild("remember_me");
+                $rememberMe->addAttribute("secret", $this->generateSecret());
+                break;
+            case 1:
+                $synchronizerToken =$persistenceDrivers->addChild("synchronizer_token");
+                $synchronizerToken->addAttribute("secret", $this->generateSecret());
+                break;
         }
 
         $authentication = $security->addChild("authentication");
@@ -253,26 +247,26 @@ class StdoutInstaller extends Installer
             $form->addAttribute("throttler", "Lucinda\Project\DAO\SQLLoginThrottler");
         }
         switch ($this->features->security->authenticationMethod) {
-        case 0:
-            $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
-            break;
-        case 1:
-            $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
-            $oauth2 = $authentication->addChild("oauth2");
-            $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
-            break;
+            case 0:
+                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
+                break;
+            case 1:
+                $form->addAttribute("dao", "Lucinda\Project\DAO\UsersFormAuthentication");
+                $oauth2 = $authentication->addChild("oauth2");
+                $oauth2->addAttribute("dao", "Lucinda\Project\DAO\UsersOAuth2Authentication");
+                break;
         }
 
         $authorization = $security->addChild("authorization");
         switch ($this->features->security->authorizationMethod) {
-        case 0:
-            $dao = $authorization->addChild("by_dao");
-            $dao->addAttribute("page_dao", "Lucinda\Project\DAO\PagesAuthorization");
-            $dao->addAttribute("user_dao", "Lucinda\Project\DAO\UsersAuthorization");
-            break;
-        case 1:
-            $authorization->addChild("by_route");
-            break;
+            case 0:
+                $dao = $authorization->addChild("by_dao");
+                $dao->addAttribute("page_dao", "Lucinda\Project\DAO\PagesAuthorization");
+                $dao->addAttribute("user_dao", "Lucinda\Project\DAO\UsersAuthorization");
+                break;
+            case 1:
+                $authorization->addChild("by_route");
+                break;
         }
     }
 

@@ -88,19 +88,11 @@ class ExceptionsSelector
      */
     private function getController(string $className): ?string
     {
-        switch ($className) {
-        case 'Lucinda\STDOUT\MethodNotAllowedException':
-        case 'Lucinda\STDOUT\PathNotFoundException':
-        case 'Lucinda\STDOUT\ValidationFailedException':
-        case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':
-        case 'Lucinda\WebSecurity\Token\Exception':
-            break;
-        case 'Lucinda\WebSecurity\SecurityPacket':
-            return "Lucinda\Project\Controllers\SecurityPacket";
-        default:
-            return "Lucinda\Project\Controllers\Error";
-        }
-        return null;
+        return match ($className) {
+            'Lucinda\STDOUT\MethodNotAllowedException', 'Lucinda\STDOUT\PathNotFoundException', 'Lucinda\STDOUT\ValidationFailedException', 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException', 'Lucinda\WebSecurity\Token\Exception' => null,
+            'Lucinda\WebSecurity\SecurityPacket' => "Lucinda\Project\Controllers\SecurityPacket",
+            default => "Lucinda\Project\Controllers\Error",
+        };
     }
 
     /**
@@ -111,19 +103,12 @@ class ExceptionsSelector
      */
     private function getView(string $className): ?string
     {
-        switch ($className) {
-        case 'Lucinda\STDOUT\MethodNotAllowedException':
-            return "405";
-        case 'Lucinda\STDOUT\PathNotFoundException':
-            return "404";
-        case 'Lucinda\STDOUT\ValidationFailedException':
-        case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':
-        case 'Lucinda\WebSecurity\Token\Exception':
-            return "400";
-        default:
-            break;
-        }
-        return null;
+        return match ($className) {
+            'Lucinda\STDOUT\MethodNotAllowedException' => "405",
+            'Lucinda\STDOUT\PathNotFoundException' => "404",
+            'Lucinda\STDOUT\ValidationFailedException', 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException', 'Lucinda\WebSecurity\Token\Exception' => "400",
+            default => null,
+        };
     }
 
     /**
@@ -134,18 +119,12 @@ class ExceptionsSelector
      */
     private function getHttpStatus(string $className): int
     {
-        switch ($className) {
-        case 'Lucinda\STDOUT\MethodNotAllowedException':
-            return 405;
-        case 'Lucinda\STDOUT\PathNotFoundException':
-            return 404;
-        case 'Lucinda\STDOUT\ValidationFailedException':
-        case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':
-        case 'Lucinda\WebSecurity\Token\Exception':
-            return 400;
-        default:
-            return 500;
-        }
+        return match ($className) {
+            'Lucinda\STDOUT\MethodNotAllowedException' => 405,
+            'Lucinda\STDOUT\PathNotFoundException' => 404,
+            'Lucinda\STDOUT\ValidationFailedException', 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException', 'Lucinda\WebSecurity\Token\Exception' => 400,
+            default => 500,
+        };
     }
 
     /**
@@ -156,50 +135,15 @@ class ExceptionsSelector
      */
     private function getErrorType(string $className): string
     {
-        switch ($className) {
-        case 'Lucinda\STDERR\ConfigurationException':
-        case 'Lucinda\Headers\ConfigurationException':
-        case 'Lucinda\Internationalization\ConfigurationException':
-        case 'Lucinda\Internationalization\DomainNotFoundException':
-        case 'Lucinda\Logging\ConfigurationException':
-        case 'Lucinda\STDOUT\ConfigurationException':
-        case 'Lucinda\NoSQL\ConfigurationException':
-        case 'Lucinda\NoSQL\KeyNotFoundException':
-        case 'Lucinda\OAuth2\Client\Exception':
-        case 'Lucinda\WebSecurity\ConfigurationException':
-        case 'Lucinda\SQL\ConfigurationException':
-        case 'Lucinda\SQL\Exception':
-        case 'Lucinda\Templating\ConfigurationException':
-        case 'Lucinda\MVC\ConfigurationException':
-            return "LOGICAL";
-        case 'Lucinda\STDERR\PHPException':
-        case '\JsonException':
-        case 'Lucinda\Headers\UserException':
-        case 'Lucinda\Internationalization\TranslationInvalidException':
-        case 'Lucinda\Templating\ViewException':
-            return "SYNTAX";
-        case 'Lucinda\NoSQL\ConnectionException':
-        case 'Lucinda\NoSQL\OperationFailedException':
-        case 'Lucinda\OAuth2\Server\Exception':
-        case 'Lucinda\SQL\ConnectionException':
-        case 'Lucinda\SQL\StatementException':
-            return "SERVER";
-        case 'Lucinda\STDOUT\MethodNotAllowedException':
-        case 'Lucinda\STDOUT\PathNotFoundException':
-        case 'Lucinda\STDOUT\Request\UploadedFiles\Exception':
-        case 'Lucinda\STDOUT\ValidationFailedException':
-        case 'Lucinda\WebSecurity\Authentication\Form\Exception':
-        case 'Lucinda\WebSecurity\Authentication\OAuth2\Exception':
-        case 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException':
-        case 'Lucinda\WebSecurity\Token\EncryptionException':
-        case 'Lucinda\WebSecurity\Token\Exception':
-        case 'Lucinda\WebSecurity\Token\ExpiredException':
-        case 'Lucinda\WebSecurity\Token\RegenerationException':
-            return "CLIENT";
-        case 'Lucinda\WebSecurity\SecurityPacket':
-            return "NONE";
-        }
-        return "SYNTAX"; // this shouldn't be triggered
+        return match ($className) {
+            'Lucinda\STDERR\ConfigurationException', 'Lucinda\Headers\ConfigurationException','Lucinda\Internationalization\ConfigurationException', 'Lucinda\Internationalization\DomainNotFoundException', 'Lucinda\Logging\ConfigurationException', 'Lucinda\STDOUT\ConfigurationException', 'Lucinda\NoSQL\ConfigurationException', 'Lucinda\NoSQL\KeyNotFoundException', 'Lucinda\OAuth2\Client\Exception', 'Lucinda\WebSecurity\ConfigurationException', 'Lucinda\SQL\ConfigurationException', 'Lucinda\SQL\Exception', 'Lucinda\Templating\ConfigurationException', 'Lucinda\MVC\ConfigurationException' => "LOGICAL",
+            'Lucinda\STDERR\PHPException', '\JsonException', 'Lucinda\Headers\UserException', 'Lucinda\Internationalization\TranslationInvalidException', 'Lucinda\Templating\ViewException' => "SYNTAX",
+            'Lucinda\NoSQL\ConnectionException', 'Lucinda\NoSQL\OperationFailedException', 'Lucinda\OAuth2\Server\Exception', 'Lucinda\SQL\ConnectionException', 'Lucinda\SQL\StatementException' => "SERVER",
+            'Lucinda\STDOUT\MethodNotAllowedException', 'Lucinda\STDOUT\PathNotFoundException', 'Lucinda\STDOUT\Request\UploadedFiles\Exception', 'Lucinda\STDOUT\ValidationFailedException', 'Lucinda\WebSecurity\Authentication\Form\Exception', 'Lucinda\WebSecurity\Authentication\OAuth2\Exception', 'Lucinda\WebSecurity\PersistenceDrivers\Session\HijackException', 'Lucinda\WebSecurity\Token\EncryptionException', 'Lucinda\WebSecurity\Token\Exception', 'Lucinda\WebSecurity\Token\ExpiredException', 'Lucinda\WebSecurity\Token\RegenerationException' => "CLIENT",
+            'Lucinda\WebSecurity\SecurityPacket' => "NONE",
+            default => "SYNTAX",
+        };
+        // this shouldn't be triggered
     }
 
     /**
